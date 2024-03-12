@@ -545,7 +545,7 @@
 	<tr>
 		<td><span class="badge badge-primary">INSTANCE</span></td>
 		<td><strong>STORIES_ENABLED</strong></td>
-		<td><span>{{config_cache('instance.stories.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('instance.stories.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">INSTANCE</span></td>
