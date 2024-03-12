@@ -740,7 +740,7 @@
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>PF_ENABLE_CLOUD</strong></td>
-		<td><span>{{config_cache('pixelfed.cloud_storage') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('pixelfed.cloud_storage') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>

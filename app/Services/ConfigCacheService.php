@@ -102,6 +102,7 @@ class ConfigCacheService
                 'pixelfed.optimize_image',
                 'pixelfed.optimize_video',
                 'pixelfed.max_collection_length',
+                'media.delete_local_after_cloud',
                 // 'system.user_mode'
             ];
 
