@@ -172,6 +172,8 @@ class ProfileController extends Controller
 
         $user = $this->getCachedUser($username);
 
+        abort_if(!$user, 404);
+
         return redirect($user->url());
     }
 
