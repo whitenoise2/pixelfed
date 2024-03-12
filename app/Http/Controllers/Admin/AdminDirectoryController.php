@@ -84,14 +84,14 @@ trait AdminDirectoryController
         $res['feature_config'] = [
             'media_types' => Str::of(config_cache('pixelfed.media_types'))->explode(','),
             'image_quality' => config_cache('pixelfed.image_quality'),
-            'optimize_image' => config_cache('pixelfed.optimize_image'),
+            'optimize_image' => (bool) config_cache('pixelfed.optimize_image'),
             'max_photo_size' => config_cache('pixelfed.max_photo_size'),
             'max_caption_length' => config_cache('pixelfed.max_caption_length'),
             'max_altext_length' => config_cache('pixelfed.max_altext_length'),
-            'enforce_account_limit' => config_cache('pixelfed.enforce_account_limit'),
+            'enforce_account_limit' => (bool) config_cache('pixelfed.enforce_account_limit'),
             'max_account_size' => config_cache('pixelfed.max_account_size'),
             'max_album_length' => config_cache('pixelfed.max_album_length'),
-            'account_deletion' => config_cache('pixelfed.account_deletion'),
+            'account_deletion' => (bool) config_cache('pixelfed.account_deletion'),
         ];
 
         if(config_cache('pixelfed.directory.testimonials')) {
