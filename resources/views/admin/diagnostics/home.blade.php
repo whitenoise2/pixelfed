@@ -66,7 +66,7 @@
 		</li>
 		<li>
 			<strong><span class="badge badge-primary">OAUTH</span> enabled: </strong>
-			<span>{{ config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span>
+			<span>{{ (bool) config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span>
 		</li>
 		<li>
 			<strong><span class="badge badge-primary">OAUTH</span> token_expiration</strong>
@@ -810,7 +810,7 @@
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>OAUTH_ENABLED</strong></td>
-		<td><span>{{config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{ (bool) config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>

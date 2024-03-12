@@ -131,7 +131,7 @@ class ApiV1Controller extends Controller
      */
     public function apps(Request $request)
     {
-        abort_if(! config_cache('pixelfed.oauth_enabled'), 404);
+        abort_if(! (bool) config_cache('pixelfed.oauth_enabled'), 404);
 
         $this->validate($request, [
             'client_name' => 'required',
