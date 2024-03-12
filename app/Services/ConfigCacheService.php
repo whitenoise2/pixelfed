@@ -97,6 +97,7 @@ class ConfigCacheService
                 'captcha.active.register',
                 'captcha.triggers.login.enabled',
                 'captcha.triggers.login.attempts',
+                'federation.custom_emoji.enabled',
                 // 'system.user_mode'
             ];
 

@@ -358,7 +358,7 @@
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
 		<td><strong>PF_NETWORK_TIMELINE</strong></td>
-		<td><span>{{config_cache('federation.network_timeline') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('federation.network_timeline') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
@@ -368,7 +368,7 @@
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
 		<td><strong>CUSTOM_EMOJI</strong></td>
-		<td><span>{{config_cache('federation.custom_emoji.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('federation.custom_emoji.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
