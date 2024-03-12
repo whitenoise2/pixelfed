@@ -1665,7 +1665,7 @@ class ApiV1Controller extends Controller
                     'statuses' => [
                         'characters_reserved_per_url' => 23,
                         'max_characters' => (int) config_cache('pixelfed.max_caption_length'),
-                        'max_media_attachments' => (int) config('pixelfed.max_album_length'),
+                        'max_media_attachments' => (int) config_cache('pixelfed.max_album_length'),
                     ],
                 ],
             ];
@@ -3308,9 +3308,9 @@ class ApiV1Controller extends Controller
         abort_unless($request->user()->tokenCan('write'), 403);
 
         $this->validate($request, [
-            'status' => 'nullable|string|max:' . config_cache('pixelfed.max_caption_length'),
+            'status' => 'nullable|string|max:'.(int) config_cache('pixelfed.max_caption_length'),
             'in_reply_to_id' => 'nullable',
-            'media_ids' => 'sometimes|array|max:'.config_cache('pixelfed.max_album_length'),
+            'media_ids' => 'sometimes|array|max:'.(int) config_cache('pixelfed.max_album_length'),
             'sensitive' => 'nullable',
             'visibility' => 'string|in:private,unlisted,public',
             'spoiler_text' => 'sometimes|max:140',
@@ -3436,7 +3436,7 @@ class ApiV1Controller extends Controller
             $mimes = [];
 
             foreach ($ids as $k => $v) {
-                if ($k + 1 > config_cache('pixelfed.max_album_length')) {
+                if ($k + 1 > (int) config_cache('pixelfed.max_album_length')) {
                     continue;
                 }
                 $m = Media::whereUserId($user->id)->whereNull('status_id')->findOrFail($v);
