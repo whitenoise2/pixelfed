@@ -183,7 +183,7 @@ class StatusEntityLexer implements ShouldQueue
             'photo:video:album',
         ];
 
-        if (config_cache('pixelfed.bouncer.enabled')) {
+        if ((bool) config_cache('pixelfed.bouncer.enabled')) {
             Bouncer::get($status);
         }
 

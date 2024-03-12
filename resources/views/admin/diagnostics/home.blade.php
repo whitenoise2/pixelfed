@@ -815,7 +815,7 @@
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>PF_BOUNCER_ENABLED</strong></td>
-		<td><span>{{config_cache('pixelfed.bouncer.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('pixelfed.bouncer.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
