@@ -89,6 +89,14 @@ class ConfigCacheService
                 'pixelfed.app_registration_confirm_rate_limit_decay',
                 'instance.embed.profile',
                 'instance.embed.post',
+
+                'captcha.enabled',
+                'captcha.secret',
+                'captcha.sitekey',
+                'captcha.active.login',
+                'captcha.active.register',
+                'captcha.triggers.login.enabled',
+                'captcha.triggers.login.attempts',
                 // 'system.user_mode'
             ];
 
