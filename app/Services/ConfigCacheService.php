@@ -98,6 +98,10 @@ class ConfigCacheService
                 'captcha.triggers.login.enabled',
                 'captcha.triggers.login.attempts',
                 'federation.custom_emoji.enabled',
+
+                'pixelfed.optimize_image',
+                'pixelfed.optimize_video',
+                'pixelfed.max_collection_length',
                 // 'system.user_mode'
             ];
 
