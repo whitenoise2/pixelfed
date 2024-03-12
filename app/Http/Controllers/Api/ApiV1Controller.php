@@ -1632,7 +1632,7 @@ class ApiV1Controller extends Controller
 
             return [
                 'uri' => config('pixelfed.domain.app'),
-                'title' => config('app.name'),
+                'title' => config_cache('app.name'),
                 'short_description' => config_cache('app.short_description'),
                 'description' => config_cache('app.description'),
                 'email' => config('instance.email'),
