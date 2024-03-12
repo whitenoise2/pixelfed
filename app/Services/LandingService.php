@@ -85,7 +85,7 @@ class LandingService
                 'media_types' => config_cache('pixelfed.media_types'),
             ],
             'features' => [
-                'federation' => config_cache('federation.activitypub.enabled'),
+                'federation' => (bool) config_cache('federation.activitypub.enabled'),
                 'timelines' => [
                     'local' => true,
                     'network' => (bool) config_cache('federation.network_timeline'),

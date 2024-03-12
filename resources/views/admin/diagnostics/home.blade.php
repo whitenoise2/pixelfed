@@ -298,7 +298,7 @@
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
 		<td><strong>ACTIVITY_PUB</strong></td>
-		<td><span>{{config_cache('federation.activitypub.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('federation.activitypub.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
