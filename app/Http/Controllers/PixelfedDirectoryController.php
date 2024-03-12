@@ -7,7 +7,10 @@ use App\Services\AccountService;
 use App\Services\StatusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Cache;
 use Storage;
+use App\Status;
+use App\User;
 
 class PixelfedDirectoryController extends Controller
 {
@@ -137,9 +140,15 @@ class PixelfedDirectoryController extends Controller
             'stories' => (bool) config_cache('instance.stories.enabled'),
         ];
 
+        $statusesCount = Cache::remember('api:nodeinfo:statuses', 21600, function() {
+            return Status::whereLocal(true)->count();
+        });
+        $usersCount = Cache::remember('api:nodeinfo:users', 43200, function() {
+            return User::count();
+        });
         $res['stats'] = [
-            'user_count' => \App\User::count(),
-            'post_count' => \App\Status::whereNull('uri')->count(),
+            'user_count' => (int) $usersCount,
+            'post_count' => (int) $statusesCount,
         ];
 
         $res['primary_locale'] = config('app.locale');
