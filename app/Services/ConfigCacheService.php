@@ -106,6 +106,24 @@ class ConfigCacheService
                 'instance.user_filters.max_user_blocks',
                 'instance.user_filters.max_user_mutes',
                 'instance.user_filters.max_domain_blocks',
+
+                'filesystems.disks.s3.key',
+                'filesystems.disks.s3.secret',
+                'filesystems.disks.s3.region',
+                'filesystems.disks.s3.bucket',
+                'filesystems.disks.s3.visibility',
+                'filesystems.disks.s3.url',
+                'filesystems.disks.s3.endpoint',
+                'filesystems.disks.s3.use_path_style_endpoint',
+
+                'filesystems.disks.spaces.key',
+                'filesystems.disks.spaces.secret',
+                'filesystems.disks.spaces.region',
+                'filesystems.disks.spaces.bucket',
+                'filesystems.disks.spaces.visibility',
+                'filesystems.disks.spaces.url',
+                'filesystems.disks.spaces.endpoint',
+                'filesystems.disks.spaces.use_path_style_endpoint',
                 // 'system.user_mode'
             ];
 
