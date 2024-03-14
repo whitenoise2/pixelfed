@@ -685,10 +685,10 @@ trait AdminSettingsController
         if($captcha) {
             $secret = $request->input('captcha_secret');
             $sitekey = $request->input('captcha_sitekey');
-            if(config_cache('captcha.secret') !== $secret && strpos('*', $secret) === false) {
+            if(config_cache('captcha.secret') != $secret && strpos($secret, '*') === false) {
                 ConfigCacheService::put('captcha.secret', $secret);
             }
-            if(config_cache('captcha.sitekey') !== $sitekey && strpos('*', $sitekey) === false) {
+            if(config_cache('captcha.sitekey') != $sitekey && strpos($sitekey, '*') === false) {
                 ConfigCacheService::put('captcha.sitekey', $sitekey);
             }
             ConfigCacheService::put('captcha.active.login', $request->boolean('captcha_on_login'));

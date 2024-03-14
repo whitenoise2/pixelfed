@@ -8,6 +8,14 @@ use Cache;
 class ConfigCacheService
 {
     const CACHE_KEY = 'config_cache:_v0-key:';
+    const PROTECTED_KEYS = [
+        'filesystems.disks.s3.key',
+        'filesystems.disks.s3.secret',
+        'filesystems.disks.spaces.key',
+        'filesystems.disks.spaces.secret',
+        'captcha.secret',
+        'captcha.sitekey',
+    ];
 
     public static function get($key)
     {
@@ -135,20 +143,34 @@ class ConfigCacheService
                 return config($key);
             }
 
+            $protect = false;
+            $protected = null;
+            if(in_array($key, self::PROTECTED_KEYS)) {
+                $protect = true;
+            }
+
             $v = config($key);
             $c = ConfigCacheModel::where('k', $key)->first();
 
             if ($c) {
-                return $c->v ?? config($key);
+                if($protect) {
+                    return decrypt($c->v) ?? config($key);
+                } else {
+                    return $c->v ?? config($key);
+                }
             }
 
             if (! $v) {
                 return;
             }
 
+            if($protect && $v) {
+                $protected = encrypt($v);
+            }
+
             $cc = new ConfigCacheModel;
             $cc->k = $key;
-            $cc->v = $v;
+            $cc->v = $protect ? $protected : $v;
             $cc->save();
 
             return $v;
@@ -159,8 +181,15 @@ class ConfigCacheService
     {
         $exists = ConfigCacheModel::whereK($key)->first();
 
+        $protect = false;
+        $protected = null;
+        if(in_array($key, self::PROTECTED_KEYS)) {
+            $protect = true;
+            $protected = encrypt($val);
+        }
+
         if ($exists) {
-            $exists->v = $val;
+            $exists->v = $protect ? $protected : $val;
             $exists->save();
             Cache::put(self::CACHE_KEY.$key, $val, now()->addHours(12));
 
@@ -169,7 +198,7 @@ class ConfigCacheService
 
         $cc = new ConfigCacheModel;
         $cc->k = $key;
-        $cc->v = $val;
+        $cc->v = $protect ? $protected : $val;
         $cc->save();
 
         Cache::put(self::CACHE_KEY.$key, $val, now()->addHours(12));
