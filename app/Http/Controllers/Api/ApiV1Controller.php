@@ -1103,7 +1103,7 @@ class ApiV1Controller extends Controller
         }
 
         $count = UserFilterService::blockCount($pid);
-        $maxLimit = intval(config('instance.user_filters.max_user_blocks'));
+        $maxLimit = (int) config_cache('instance.user_filters.max_user_blocks');
         if ($count == 0) {
             $filterCount = UserFilter::whereUserId($pid)
                 ->whereFilterType('block')
@@ -2145,7 +2145,7 @@ class ApiV1Controller extends Controller
         }
 
         $count = UserFilterService::muteCount($pid);
-        $maxLimit = intval(config('instance.user_filters.max_user_mutes'));
+        $maxLimit = (int) config_cache('instance.user_filters.max_user_mutes');
         if ($count == 0) {
             $filterCount = UserFilter::whereUserId($pid)
                 ->whereFilterType('mute')

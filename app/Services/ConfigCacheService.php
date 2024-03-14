@@ -103,6 +103,9 @@ class ConfigCacheService
                 'pixelfed.optimize_video',
                 'pixelfed.max_collection_length',
                 'media.delete_local_after_cloud',
+                'instance.user_filters.max_user_blocks',
+                'instance.user_filters.max_user_mutes',
+                'instance.user_filters.max_domain_blocks',
                 // 'system.user_mode'
             ];
 
