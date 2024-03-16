@@ -725,16 +725,25 @@ trait AdminSettingsController
         $this->validate($request, [
             'require_email_verification' => 'required',
             'enforce_account_limit' => 'required',
-            'admin_autofollow' => 'required'
+            'admin_autofollow' => 'required',
+            'max_user_blocks' => 'required',
+            'max_user_mutes' => 'required',
+            'max_domain_blocks' => 'required',
         ]);
 
         ConfigCacheService::put('pixelfed.enforce_email_verification', $request->boolean('require_email_verification'));
         ConfigCacheService::put('pixelfed.enforce_account_limit', $request->boolean('enforce_account_limit'));
         ConfigCacheService::put('account.autofollow', $request->boolean('admin_autofollow'));
+        ConfigCacheService::put('instance.user_filters.max_user_blocks', (int) $request->input('max_user_blocks'));
+        ConfigCacheService::put('instance.user_filters.max_user_mutes', (int) $request->input('max_user_mutes'));
+        ConfigCacheService::put('instance.user_filters.max_domain_blocks', (int) $request->input('max_domain_blocks'));
         $res = [
             'require_email_verification' => $request->boolean('require_email_verification'),
             'enforce_account_limit' => $request->boolean('enforce_account_limit'),
             'admin_autofollow' => $request->boolean('admin_autofollow'),
+            'max_user_blocks' => $request->input('max_user_blocks'),
+            'max_user_mutes' => $request->input('max_user_mutes'),
+            'max_domain_blocks' => $request->input('max_domain_blocks'),
         ];
         Cache::forget('api:v1:instance-data:rules');
         Cache::forget('api:v1:instance-data-response-v1');
