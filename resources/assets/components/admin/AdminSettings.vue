@@ -111,7 +111,7 @@
                                         <div class="card shadow-none border card-body" style="padding: 1.1rem 1.6rem">
                                             <div class="form-group mb-0">
                                                 <label for="form-summary" class="font-weight-bold">Admin Account</label>
-                                                <select v-model="landing.current_admin.id" class="form-control form-control-muted">
+                                                <select v-model="landing.current_admin" class="form-control form-control-muted">
                                                     <option disabled="" value="0">Select a designated admin</option>
                                                     <option v-for="(acct, index) in landing.admins" :key="'pfc-' + acct + index" :value="acct.profile_id">{{ acct.username }}</option>
                                                 </select>
@@ -729,21 +729,21 @@
 
                                         <form-input
                                             name="Max User Blocks"
-                                            :value="users.max_user_blocks"
+                                            :value="users.max_user_blocks.toString()"
                                             description="The max number of account blocks per user."
                                             @change="handleChange($event, 'users', 'max_user_blocks')"
                                         />
 
                                         <form-input
                                             name="Max User Mutes"
-                                            :value="users.max_user_mutes"
+                                            :value="users.max_user_mutes.toString()"
                                             description="The max number of account mutes per user."
                                             @change="handleChange($event, 'users', 'max_user_mutes')"
                                         />
 
                                         <form-input
                                             name="Max User Domain Blocks"
-                                            :value="users.max_domain_blocks"
+                                            :value="users.max_domain_blocks.toString()"
                                             description="The max number of domain blocks per user."
                                             @change="handleChange($event, 'users', 'max_domain_blocks')"
                                         />
@@ -794,19 +794,21 @@
                                             </div>
                                             <transition name="fade">
                                                 <div v-if="users.admin_autofollow" class="list-group list-group-flush">
-                                                    <div v-for="user in users.admin_autofollow_accounts" class="list-group-item">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <p class="font-weight-bold mb-0">&commat;{{ user }}</p>
-                                                            <button class="btn btn-link p-0" @click.prevent="removeAutofollow(user, $event)"><i class="fas fa-trash-alt text-danger"></i></button>
+                                                    <div v-if="users.admin_autofollow_accounts?.length">
+                                                        <div v-for="user in users.admin_autofollow_accounts" class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <p class="font-weight-bold mb-0">&commat;{{ user }}</p>
+                                                                <button class="btn btn-link p-0" @click.prevent="removeAutofollow(user, $event)"><i class="fas fa-trash-alt text-danger"></i></button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div v-if="!users.admin_autofollow_accounts.length" class="list-group-item">
+                                                    <div v-else class="list-group-item">
                                                         <p class="text-center mb-0">No autofollow accounts active.</p>
                                                     </div>
                                                 </div>
                                             </transition>
                                             <transition name="fade">
-                                                <div v-if="users.admin_autofollow" class="card-footer">
+                                                <div v-if="users.admin_autofollow && (users.admin_autofollow_accounts && users.admin_autofollow_accounts.length < 5)" class="card-footer">
                                                     <button
                                                         class="btn btn-primary btn-block rounded-pill"
                                                         @click.prevent="addAutofollow">Add Autofollow Account</button>
@@ -879,7 +881,9 @@
                 isSubmittingTimeoutHandler: undefined,
 
                 features: [],
-                landing: [],
+                landing: {
+                    current_admin: 0,
+                },
                 branding: [],
                 media: [],
                 mediaTypes: {
@@ -1213,6 +1217,7 @@
                 }).then(res => {
                     this.users.admin_autofollow_accounts = res.data.accounts;
                 }).catch(err => {
+                    swal("Oops!", "An error occurred, please try again later!", "error");
                 });
             },
 
@@ -1233,7 +1238,7 @@
                         username: username
                     })
                     .then(res => {
-                        if(!res.data.accounts.includes(username)) {
+                        if(!res.data.accounts.map(acc => acc.toLowerCase()).includes(username.toLowerCase())) {
                             swal("Oops!", "The account you attempted to add does not exist or cannot be added!", "error");
                         }
                         this.users.admin_autofollow_accounts = res.data.accounts;
@@ -1241,12 +1246,13 @@
                         swal.close();
                     })
                     .catch(err => {
-                        if (err) {
-                            swal("Oops!", "The account you attempted to add does not exist or cannot be added!", "error");
+                        if(err.response.data && err.response.data.message) {
+                            swal('Error', err.response.data.message, 'error');
                         } else {
-                            swal.stopLoading();
-                            swal.close();
+                            swal("Oops!", "The account you attempted to add does not exist or cannot be added!", "error");
                         }
+                        swal.stopLoading();
+                        swal.close();
                     });
                 })
 
@@ -1273,7 +1279,7 @@
 
             saveLanding() {
                 axios.post('/i/admin/api/settings/update/landing', {
-                    current_admin: this.landing.current_admin.id,
+                    current_admin: this.landing.current_admin,
                     show_directory: this.landing.show_directory,
                     show_explore: this.landing.show_explore
                 }).then(res => {
@@ -1383,6 +1389,7 @@
                     require_email_verification: this.users.require_email_verification,
                     enforce_account_limit: this.users.enforce_account_limit,
                     admin_autofollow: this.users.admin_autofollow,
+                    admin_autofollow_accounts: this.users.admin_autofollow_accounts,
                     max_user_blocks: this.users.max_user_blocks,
                     max_user_mutes: this.users.max_user_mutes,
                     max_domain_blocks: this.users.max_domain_blocks,
@@ -1392,6 +1399,13 @@
                     this.isSubmittingTimeoutHandler = setTimeout(() => {
                         this.isSubmittingTimeout = false;
                     }, 4000);
+                }).catch(err => {
+                    if(err.response.data.message) {
+                        swal('Error', err.response.data.message, 'error');
+                    } else {
+                        swal('Error', 'An unexpected error occurred, please try again!', 'error');
+                    }
+                    this.isSubmitting = false;
                 })
             },
 
