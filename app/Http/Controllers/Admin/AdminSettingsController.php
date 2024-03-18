@@ -742,9 +742,9 @@ trait AdminSettingsController
             'max_account_size' => 'required|integer|min:50000',
             'admin_autofollow' => 'required',
             'admin_autofollow_accounts' => 'sometimes',
-            'max_user_blocks' => 'required',
-            'max_user_mutes' => 'required',
-            'max_domain_blocks' => 'required',
+            'max_user_blocks' => 'required|integer|min:0|max:5000',
+            'max_user_mutes' => 'required|integer|min:0|max:5000',
+            'max_domain_blocks' => 'required|integer|min:0|max:5000',
         ]);
 
         $adminAutofollow = $request->boolean('admin_autofollow');
