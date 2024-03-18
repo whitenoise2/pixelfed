@@ -9,14 +9,13 @@ use App\Profile;
 use App\Services\AccountService;
 use App\Services\AdminSettingsService;
 use App\Services\ConfigCacheService;
+use App\Services\FilesystemService;
 use App\User;
 use App\Util\Site\Config;
 use Artisan;
 use Cache;
 use DB;
 use Illuminate\Http\Request;
-use App\Services\Internal\BeagleService;
-use App\Services\FilesystemService;
 
 trait AdminSettingsController
 {
@@ -74,7 +73,7 @@ trait AdminSettingsController
             'admin_account_id' => 'nullable',
             'regs' => 'required|in:open,filtered,closed',
             'account_migration' => 'nullable',
-            'rule_delete' => 'sometimes'
+            'rule_delete' => 'sometimes',
         ]);
 
         $orb = false;
@@ -335,7 +334,7 @@ trait AdminSettingsController
         $regState = $openReg ? 'open' : ($curOnboarding ? 'filtered' : 'closed');
         $accountMigration = (bool) config_cache('federation.migration');
         $autoFollow = config_cache('account.autofollow_usernames');
-        if(strlen($autoFollow) > 3) {
+        if (strlen($autoFollow) > 3) {
             $autoFollow = explode(',', $autoFollow);
         }
 
@@ -347,7 +346,7 @@ trait AdminSettingsController
     public function settingsApiRulesAdd(Request $request)
     {
         $this->validate($request, [
-            'rule' => 'required|string|min:5|max:1000'
+            'rule' => 'required|string|min:5|max:1000',
         ]);
 
         $rules = ConfigCacheService::get('app.rules');
@@ -357,7 +356,7 @@ trait AdminSettingsController
         } else {
             $json = json_decode($rules, true);
             $count = count($json);
-            if($count >= 30) {
+            if ($count >= 30) {
                 return response()->json(['message' => 'Max rules limit reached, you can set up to 30 rules at a time.'], 400);
             }
             $json[] = $val;
@@ -367,6 +366,7 @@ trait AdminSettingsController
         Cache::forget('api:v1:instance-data-response-v1');
         Cache::forget('api:v2:instance-data-response-v2');
         Config::refresh();
+
         return [$val];
     }
 
@@ -384,7 +384,7 @@ trait AdminSettingsController
         } else {
             $json = json_decode($rules, true);
             $idx = array_search($val, $json);
-            if($idx !== false) {
+            if ($idx !== false) {
                 unset($json[$idx]);
                 $json = array_values($json);
             }
@@ -426,17 +426,18 @@ trait AdminSettingsController
         $username = $request->input('username');
         $names = [];
         $existing = config_cache('account.autofollow_usernames');
-        if($existing) {
+        if ($existing) {
             $names = explode(',', $existing);
         }
 
-        if(in_array($username, $names)) {
+        if (in_array($username, $names)) {
             $key = array_search($username, $names);
-            if($key !== false) {
+            if ($key !== false) {
                 unset($names[$key]);
             }
         }
         ConfigCacheService::put('account.autofollow_usernames', implode(',', $names));
+
         return response()->json(['accounts' => array_values($names)]);
     }
 
@@ -449,16 +450,26 @@ trait AdminSettingsController
         $username = $request->input('username');
         $names = [];
         $existing = config_cache('account.autofollow_usernames');
-        if($existing) {
+        if ($existing) {
             $names = explode(',', $existing);
         }
 
-        $p = Profile::whereUsername($username)->whereNotNull('user_id')->first();
+        if ($existing && count($names)) {
+            if (count($names) >= 5) {
+                return response()->json(['message' => 'You can only add up to 5 accounts to be autofollowed.'], 400);
+            }
+            if (in_array(strtolower($username), array_map('strtolower', $names))) {
+                return response()->json(['message' => 'User already exists, please try again.'], 400);
+            }
+        }
+
+        $p = User::whereUsername($username)->whereNull('status')->first();
         if (! $p || in_array($p->username, $names)) {
             abort(404);
         }
-        array_push($names, strtolower($p->username));
+        array_push($names, $p->username);
         ConfigCacheService::put('account.autofollow_usernames', implode(',', $names));
+
         return response()->json(['accounts' => array_values($names)]);
     }
 
@@ -478,11 +489,11 @@ trait AdminSettingsController
         switch ($type) {
             case 'home':
                 return $this->settingsApiUpdateHomeType($request);
-            break;
+                break;
 
             case 'landing':
                 return $this->settingsApiUpdateLandingType($request);
-            break;
+                break;
 
             case 'posts':
                 return $this->settingsApiUpdatePostsType($request);
@@ -531,13 +542,13 @@ trait AdminSettingsController
         ConfigCacheService::put('pixelfed.open_registration', $regStatus === 'open');
         ConfigCacheService::put('instance.curated_registration.enabled', $regStatus === 'filtered');
         $cloudStorage = $request->boolean('cloud_storage');
-        if($cloudStorage !== (bool) config_cache('pixelfed.cloud_storage')) {
-            if(!$cloudStorage) {
+        if ($cloudStorage !== (bool) config_cache('pixelfed.cloud_storage')) {
+            if (! $cloudStorage) {
                 ConfigCacheService::put('pixelfed.cloud_storage', false);
             } else {
                 $cloud_disk = config('filesystems.cloud');
                 $cloud_ready = ! empty(config('filesystems.disks.'.$cloud_disk.'.key')) && ! empty(config('filesystems.disks.'.$cloud_disk.'.secret'));
-                if(!$cloud_ready) {
+                if (! $cloud_ready) {
                     return redirect()->back()->withErrors(['cloud_storage' => 'Must configure cloud storage before enabling!']);
                 } else {
                     ConfigCacheService::put('pixelfed.cloud_storage', true);
@@ -555,6 +566,7 @@ trait AdminSettingsController
         Cache::forget('api:v2:instance-data-response-v2');
         Cache::forget('api:v1:instance-data:contact');
         Config::refresh();
+
         return $request->all();
     }
 
@@ -593,7 +605,7 @@ trait AdminSettingsController
         $mediaTypes = $request->input('media_types');
         $mediaArray = explode(',', $mediaTypes);
         foreach ($mediaArray as $mediaType) {
-            if(!in_array($mediaType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4'])) {
+            if (! in_array($mediaType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4'])) {
                 return redirect()->back()->withErrors(['media_types' => 'Invalid media type']);
             }
         }
@@ -652,6 +664,7 @@ trait AdminSettingsController
         Cache::forget('api:v1:instance-data-response-v1');
         Cache::forget('api:v2:instance-data-response-v2');
         Config::refresh();
+
         return $res;
     }
 
@@ -682,13 +695,13 @@ trait AdminSettingsController
         ConfigCacheService::put('instance.embed.profile', $request->boolean('allow_profile_embeds'));
         ConfigCacheService::put('federation.custom_emoji.enabled', $request->boolean('custom_emoji_enabled'));
         $captcha = $request->boolean('captcha_enabled');
-        if($captcha) {
+        if ($captcha) {
             $secret = $request->input('captcha_secret');
             $sitekey = $request->input('captcha_sitekey');
-            if(config_cache('captcha.secret') != $secret && strpos($secret, '*') === false) {
+            if (config_cache('captcha.secret') != $secret && strpos($secret, '*') === false) {
                 ConfigCacheService::put('captcha.secret', $secret);
             }
-            if(config_cache('captcha.sitekey') != $sitekey && strpos($sitekey, '*') === false) {
+            if (config_cache('captcha.sitekey') != $sitekey && strpos($sitekey, '*') === false) {
                 ConfigCacheService::put('captcha.sitekey', $sitekey);
             }
             ConfigCacheService::put('captcha.active.login', $request->boolean('captcha_on_login'));
@@ -717,6 +730,7 @@ trait AdminSettingsController
         Cache::forget('api:v1:instance-data-response-v1');
         Cache::forget('api:v2:instance-data-response-v2');
         Config::refresh();
+
         return $res;
     }
 
@@ -726,10 +740,42 @@ trait AdminSettingsController
             'require_email_verification' => 'required',
             'enforce_account_limit' => 'required',
             'admin_autofollow' => 'required',
+            'admin_autofollow_accounts' => 'sometimes',
             'max_user_blocks' => 'required',
             'max_user_mutes' => 'required',
             'max_domain_blocks' => 'required',
         ]);
+
+        $adminAutofollow = $request->boolean('admin_autofollow');
+        $adminAutofollowAccounts = $request->input('admin_autofollow_accounts');
+        if ($adminAutofollow) {
+            if ($request->filled('admin_autofollow_accounts')) {
+                $names = [];
+                $existing = config_cache('account.autofollow_usernames');
+                if ($existing) {
+                    $names = explode(',', $existing);
+                    foreach (array_map('strtolower', $adminAutofollowAccounts) as $afc) {
+                        if (in_array(strtolower($afc), array_map('strtolower', $names))) {
+                            continue;
+                        }
+                        $names[] = $afc;
+                    }
+                } else {
+                    $names = $adminAutofollowAccounts;
+                }
+                if (! $names || count($names) == 0) {
+                    return response()->json(['message' => 'You need to assign autofollow accounts before you can enable it.'], 400);
+                }
+                if (count($names) > 5) {
+                    return response()->json(['message' => 'You can only add up to 5 accounts to be autofollowed.'.json_encode($names)], 400);
+                }
+                $autofollows = User::whereIn('username', $names)->whereNull('status')->pluck('username');
+                $adminAutofollowAccounts = $autofollows->implode(',');
+                ConfigCacheService::put('account.autofollow_usernames', $adminAutofollowAccounts);
+            } else {
+                return response()->json(['message' => 'You need to assign autofollow accounts before you can enable it.'], 400);
+            }
+        }
 
         ConfigCacheService::put('pixelfed.enforce_email_verification', $request->boolean('require_email_verification'));
         ConfigCacheService::put('pixelfed.enforce_account_limit', $request->boolean('enforce_account_limit'));
@@ -741,6 +787,7 @@ trait AdminSettingsController
             'require_email_verification' => $request->boolean('require_email_verification'),
             'enforce_account_limit' => $request->boolean('enforce_account_limit'),
             'admin_autofollow' => $request->boolean('admin_autofollow'),
+            'admin_autofollow_accounts' => $adminAutofollowAccounts,
             'max_user_blocks' => $request->input('max_user_blocks'),
             'max_user_mutes' => $request->input('max_user_mutes'),
             'max_domain_blocks' => $request->input('max_domain_blocks'),
@@ -749,6 +796,7 @@ trait AdminSettingsController
         Cache::forget('api:v1:instance-data-response-v1');
         Cache::forget('api:v2:instance-data-response-v2');
         Config::refresh();
+
         return $res;
     }
 
@@ -772,7 +820,7 @@ trait AdminSettingsController
         $res = [
             'primary_disk' => $request->input('primary_disk'),
         ];
-        if($request->has('update_disk')) {
+        if ($request->has('update_disk')) {
             $res['disk_config'] = $request->input('disk_config');
             $changes = [];
             $dkey = $request->input('disk_config.driver') === 's3' ? 'filesystems.disks.s3.' : 'filesystems.disks.spaces.';
@@ -785,33 +833,33 @@ trait AdminSettingsController
             $visibility = $request->input('disk_config.visibility');
             $url = $request->input('disk_config.url');
             $endpoint = $request->input('disk_config.endpoint');
-            if(strpos($key, '*') === false && $key != config_cache($dkey . 'key')) {
+            if (strpos($key, '*') === false && $key != config_cache($dkey.'key')) {
                 array_push($changes, 'key');
             } else {
-                $ckey = config_cache($dkey . 'key');
+                $ckey = config_cache($dkey.'key');
             }
-            if(strpos($secret, '*') === false && $secret != config_cache($dkey . 'secret')) {
+            if (strpos($secret, '*') === false && $secret != config_cache($dkey.'secret')) {
                 array_push($changes, 'secret');
             } else {
-                $csecret = config_cache($dkey . 'secret');
+                $csecret = config_cache($dkey.'secret');
             }
-            if($region != config_cache($dkey . 'region')) {
+            if ($region != config_cache($dkey.'region')) {
                 array_push($changes, 'region');
             }
-            if($bucket != config_cache($dkey . 'bucket')) {
+            if ($bucket != config_cache($dkey.'bucket')) {
                 array_push($changes, 'bucket');
             }
-            if($visibility != config_cache($dkey . 'visibility')) {
+            if ($visibility != config_cache($dkey.'visibility')) {
                 array_push($changes, 'visibility');
             }
-            if($url != config_cache($dkey . 'url')) {
+            if ($url != config_cache($dkey.'url')) {
                 array_push($changes, 'url');
             }
-            if($endpoint != config_cache($dkey . 'endpoint')) {
+            if ($endpoint != config_cache($dkey.'endpoint')) {
                 array_push($changes, 'endpoint');
             }
 
-            if($changes && count($changes)) {
+            if ($changes && count($changes)) {
                 $isValid = FilesystemService::getVerifyCredentials(
                     $ckey ?? $key,
                     $csecret ?? $secret,
@@ -819,7 +867,7 @@ trait AdminSettingsController
                     $bucket,
                     $endpoint,
                 );
-                if(!$isValid) {
+                if (! $isValid) {
                     return response()->json(['error' => true, 's3_vce' => true, 'message' => "<div class='border border-danger text-danger p-3 font-weight-bold rounded-lg'>The S3/Spaces credentials you provided are invalid, or the bucket does not have the proper permissions.</div><br/>Please check all fields and try again.<br/><br/><strong>Any cloud storage configuration changes you made have NOT been saved due to invalid credentials.</strong>"], 400);
                 }
             }
@@ -829,6 +877,7 @@ trait AdminSettingsController
         Cache::forget('api:v1:instance-data-response-v1');
         Cache::forget('api:v2:instance-data-response-v2');
         Config::refresh();
+
         return $res;
     }
 }
