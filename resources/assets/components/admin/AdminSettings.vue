@@ -928,16 +928,16 @@
                         return '0.00 MB';
                     }
 
-                    const mb = (this.users.max_account_size / 1000);
+                    const mb = (this.users.max_account_size / 1024);
 
                     if(mb > 1000000) {
                         return (mb / 1000000).toFixed(1) + 'TB';
                     }
 
                     if(mb > 1000) {
-                        return (mb / 1000).toFixed(2) + 'GB';
+                        return (mb / 1024).toFixed(2) + 'GB';
                     }
-                    return (this.users.max_account_size / 1000).toFixed(2) + ' MB';
+                    return (this.users.max_account_size / 1024).toFixed(2) + ' MB';
                 }
             },
 
@@ -1388,6 +1388,7 @@
                 axios.post('/i/admin/api/settings/update/users', {
                     require_email_verification: this.users.require_email_verification,
                     enforce_account_limit: this.users.enforce_account_limit,
+                    max_account_size: this.users.max_account_size,
                     admin_autofollow: this.users.admin_autofollow,
                     admin_autofollow_accounts: this.users.admin_autofollow_accounts,
                     max_user_blocks: this.users.max_user_blocks,

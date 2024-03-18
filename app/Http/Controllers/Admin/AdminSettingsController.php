@@ -739,6 +739,7 @@ trait AdminSettingsController
         $this->validate($request, [
             'require_email_verification' => 'required',
             'enforce_account_limit' => 'required',
+            'max_account_size' => 'required|integer|min:50000',
             'admin_autofollow' => 'required',
             'admin_autofollow_accounts' => 'sometimes',
             'max_user_blocks' => 'required',
@@ -779,6 +780,7 @@ trait AdminSettingsController
 
         ConfigCacheService::put('pixelfed.enforce_email_verification', $request->boolean('require_email_verification'));
         ConfigCacheService::put('pixelfed.enforce_account_limit', $request->boolean('enforce_account_limit'));
+        ConfigCacheService::put('pixelfed.max_account_size', $request->input('max_account_size'));
         ConfigCacheService::put('account.autofollow', $request->boolean('admin_autofollow'));
         ConfigCacheService::put('instance.user_filters.max_user_blocks', (int) $request->input('max_user_blocks'));
         ConfigCacheService::put('instance.user_filters.max_user_mutes', (int) $request->input('max_user_mutes'));
