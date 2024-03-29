@@ -56,16 +56,17 @@ class DomainBlocksController extends ApiController {
       'public_comment' => 'sometimes|string|min:1|max:1000',
       'obfuscate' => 'sometimes|required|boolean'
     ]);
-    
+
     $domain = $request->input('domain');
-    $severity = $request->input('severity');
+    $severity = $request->input('severity', 'silence');
     $private_comment = $request->input('private_comment');
 
-		abort_if(!strpos($domain, '.'), 400, 'Invalid domain');
-		abort_if(!filter_var($domain, FILTER_VALIDATE_DOMAIN), 400, 'Invalid domain');
+    abort_if(!strpos($domain, '.'), 400, 'Invalid domain');
+    abort_if(!filter_var($domain, FILTER_VALIDATE_DOMAIN), 400, 'Invalid domain');
 
+    // This is because Pixelfed can't currently support wildcard domain blocks
+    // We have to find something that could plausibly be an instance
     $parts = explode('.', $domain);
-
     if ($parts[0] == '*') {
       // If we only have two parts, e.g., "*", "example", then we want to fail:
       abort_if(count($parts) <= 2, 400, 'Invalid domain: This API does not support wildcard domain blocks yet');
@@ -108,8 +109,8 @@ class DomainBlocksController extends ApiController {
       'public_comment' => 'sometimes|string|min:1|max:1000',
       'obfuscate' => 'sometimes|required|boolean'
     ]);
-    
-    $severity = $request->input('severity');
+
+    $severity = $request->input('severity', 'silence');
     $private_comment = $request->input('private_comment');
 
     $domain_block = Instance::moderated()->find($id);
