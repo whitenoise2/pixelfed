@@ -10,6 +10,12 @@ use App\Services\InstanceService;
 use App\Http\Resources\MastoApi\Admin\DomainBlockResource;
 
 class DomainBlocksController extends ApiController {
+
+  public function __construct() {
+    $this->middleware(['auth:api', 'api.admin', 'scope:admin:read,admin:read:domain_blocks'])->only(['index', 'show']);
+    $this->middleware(['auth:api', 'api.admin', 'scope:admin:write,admin:write:domain_blocks'])->only(['create', 'update', 'delete']);
+  }
+
   public function index(Request $request) {
     $this->validate($request, [
       'limit' => 'sometimes|integer|max:100|min:1',

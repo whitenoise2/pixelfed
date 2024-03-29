@@ -37,7 +37,9 @@ class AuthServiceProvider extends ServiceProvider
                 'write' => 'Full write access to your account',
                 'follow' => 'Ability to follow other profiles',
                 'admin:read' => 'Read all data on the server',
+                'admin:read:domain_blocks' => 'Read sensitive information of all domain blocks',
                 'admin:write' => 'Modify all data on the server',
+                'admin:write:domain_blocks' => 'Perform moderation actions on domain blocks',
                 'push'  => 'Receive your push notifications'
             ]);
 
