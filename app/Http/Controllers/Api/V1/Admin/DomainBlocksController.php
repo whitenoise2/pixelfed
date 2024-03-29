@@ -73,4 +73,43 @@ class DomainBlocksController extends ApiController {
 
     return $this->json(new DomainBlockResource($domain_block));
   }
+
+  public function update(Request $request, $id) {
+    $this->validate($request, [
+      'severity' => [
+        'sometimes',
+        Rule::in(['noop', 'silence', 'suspend'])
+      ],
+      'reject_media' => 'sometimes|required|boolean',
+      'reject_reports' => 'sometimes|required|boolean',
+      'private_comment' => 'sometimes|string|min:1|max:1000',
+      'public_comment' => 'sometimes|string|min:1|max:1000',
+      'obfuscate' => 'sometimes|required|boolean'
+    ]);
+    
+    $severity = $request->input('severity');
+    $private_comment = $request->input('private_comment');
+
+    $instance = Instance::moderated()->findOrFail($id);
+
+    $instance->banned = $severity === 'suspend';
+    $instance->unlisted = $severity === 'silence';
+    $instance->notes = [$private_comment];
+    $instance->save();
+
+    InstanceService::refresh();
+
+    return $this->json(new DomainBlockResource($instance));
+  }
+
+  public function delete(Request $request, $id) {
+    $instance = Instance::moderated()->findOrFail($id);
+    $instance->banned = false;
+    $instance->unlisted = false;
+    $instance->save();
+
+    InstanceService::refresh();
+
+    return $this->json([], [], 200);
+  }
 }

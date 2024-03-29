@@ -106,6 +106,8 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::get('domain_blocks', 'Api\V1\Admin\DomainBlocksController@index')->middleware($middleware);
             Route::post('domain_blocks', 'Api\V1\Admin\DomainBlocksController@create')->middleware($middleware);
             Route::get('domain_blocks/{id}', 'Api\V1\Admin\DomainBlocksController@show')->middleware($middleware);
+            Route::put('domain_blocks/{id}', 'Api\V1\Admin\DomainBlocksController@update')->middleware($middleware);
+            Route::delete('domain_blocks/{id}', 'Api\V1\Admin\DomainBlocksController@delete')->middleware($middleware);
         })->middleware($middleware);
     });
 
