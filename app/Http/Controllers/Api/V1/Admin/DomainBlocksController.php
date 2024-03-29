@@ -28,10 +28,13 @@ class DomainBlocksController extends ApiController {
   }
 
   public function show(Request $request, $id) {
-    $res = Instance::moderated()
-      ->findOrFail($id);
+    $domain_block = Instance::moderated()->find($id);
 
-    return $this->json(new DomainBlockResource($res));
+    if (!$domain_block) {
+      return $this->json([ 'error' => 'Record not found'], [], 404);
+    }
+
+    return $this->json(new DomainBlockResource($domain_block));
   }
 
   public function create(Request $request) {
@@ -55,12 +58,12 @@ class DomainBlocksController extends ApiController {
 		abort_if(!strpos($domain, '.'), 400, 'Invalid domain');
 		abort_if(!filter_var($domain, FILTER_VALIDATE_DOMAIN), 400, 'Invalid domain');
 
-    $existing = Instance::moderated()->whereDomain($domain)->first();
+    $existing_domain_block = Instance::moderated()->whereDomain($domain)->first();
 
-    if ($existing) {
+    if ($existing_domain_block) {
       return $this->json([
         'error' => 'A domain block already exists for this domain',
-        'existing_domain_block' => new DomainBlockResource($existing)
+        'existing_domain_block' => new DomainBlockResource($existing_domain_block)
       ], [], 422);
     }
 
@@ -90,26 +93,35 @@ class DomainBlocksController extends ApiController {
     $severity = $request->input('severity');
     $private_comment = $request->input('private_comment');
 
-    $instance = Instance::moderated()->findOrFail($id);
+    $domain_block = Instance::moderated()->find($id);
 
-    $instance->banned = $severity === 'suspend';
-    $instance->unlisted = $severity === 'silence';
-    $instance->notes = [$private_comment];
-    $instance->save();
+    if (!$domain_block) {
+      return $this->json([ 'error' => 'Record not found'], [], 404);
+    }
+
+    $domain_block->banned = $severity === 'suspend';
+    $domain_block->unlisted = $severity === 'silence';
+    $domain_block->notes = [$private_comment];
+    $domain_block->save();
 
     InstanceService::refresh();
 
-    return $this->json(new DomainBlockResource($instance));
+    return $this->json(new DomainBlockResource($domain_block));
   }
 
   public function delete(Request $request, $id) {
-    $instance = Instance::moderated()->findOrFail($id);
-    $instance->banned = false;
-    $instance->unlisted = false;
-    $instance->save();
+    $domain_block = Instance::moderated()->find($id);
+
+    if (!$domain_block) {
+      return $this->json([ 'error' => 'Record not found'], [], 404);
+    }
+
+    $domain_block->banned = false;
+    $domain_block->unlisted = false;
+    $domain_block->save();
 
     InstanceService::refresh();
 
-    return $this->json([], [], 200);
+    return $this->json(null, [], 200);
   }
 }
