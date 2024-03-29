@@ -64,6 +64,19 @@ class DomainBlocksController extends ApiController {
 		abort_if(!strpos($domain, '.'), 400, 'Invalid domain');
 		abort_if(!filter_var($domain, FILTER_VALIDATE_DOMAIN), 400, 'Invalid domain');
 
+    $parts = explode('.', $domain);
+
+    if ($parts[0] == '*') {
+      // If we only have two parts, e.g., "*", "example", then we want to fail:
+      abort_if(count($parts) <= 2, 400, 'Invalid domain: This API does not support wildcard domain blocks yet');
+
+      // Otherwise we convert the *.foo.example to foo.example
+      $domain = implode('.', array_slice($parts, 1));
+    }
+
+    // Double check we definitely haven't let anything through:
+    abort_if(str_contains($domain, '*'), 400, 'Invalid domain');
+
     $existing_domain_block = Instance::moderated()->whereDomain($domain)->first();
 
     if ($existing_domain_block) {
