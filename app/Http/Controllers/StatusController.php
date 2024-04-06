@@ -78,7 +78,7 @@ class StatusController extends Controller
             ]);
         }
 
-        if ($request->wantsJson() && config_cache('federation.activitypub.enabled')) {
+        if ($request->wantsJson() && (bool) config_cache('federation.activitypub.enabled')) {
             return $this->showActivityPub($request, $status);
         }
 

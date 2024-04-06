@@ -172,6 +172,8 @@ class ProfileController extends Controller
 
         $user = $this->getCachedUser($username);
 
+        abort_if(!$user, 404);
+
         return redirect($user->url());
     }
 
@@ -371,7 +373,7 @@ class ProfileController extends Controller
 
     public function stories(Request $request, $username)
     {
-        abort_if(! config_cache('instance.stories.enabled') || ! $request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || ! $request->user(), 404);
         $profile = Profile::whereNull('domain')->whereUsername($username)->firstOrFail();
         $pid = $profile->id;
         $authed = Auth::user()->profile_id;

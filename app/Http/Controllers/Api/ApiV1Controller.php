@@ -131,7 +131,7 @@ class ApiV1Controller extends Controller
      */
     public function apps(Request $request)
     {
-        abort_if(! config_cache('pixelfed.oauth_enabled'), 404);
+        abort_if(! (bool) config_cache('pixelfed.oauth_enabled'), 404);
 
         $this->validate($request, [
             'client_name' => 'required',
@@ -1103,7 +1103,7 @@ class ApiV1Controller extends Controller
         }
 
         $count = UserFilterService::blockCount($pid);
-        $maxLimit = intval(config('instance.user_filters.max_user_blocks'));
+        $maxLimit = (int) config_cache('instance.user_filters.max_user_blocks');
         if ($count == 0) {
             $filterCount = UserFilter::whereUserId($pid)
                 ->whereFilterType('block')
@@ -1632,7 +1632,7 @@ class ApiV1Controller extends Controller
 
             return [
                 'uri' => config('pixelfed.domain.app'),
-                'title' => config('app.name'),
+                'title' => config_cache('app.name'),
                 'short_description' => config_cache('app.short_description'),
                 'description' => config_cache('app.description'),
                 'email' => config('instance.email'),
@@ -1650,11 +1650,11 @@ class ApiV1Controller extends Controller
                 'configuration' => [
                     'media_attachments' => [
                         'image_matrix_limit' => 16777216,
-                        'image_size_limit' => config('pixelfed.max_photo_size') * 1024,
-                        'supported_mime_types' => explode(',', config('pixelfed.media_types')),
+                        'image_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
+                        'supported_mime_types' => explode(',', config_cache('pixelfed.media_types')),
                         'video_frame_rate_limit' => 120,
                         'video_matrix_limit' => 2304000,
-                        'video_size_limit' => config('pixelfed.max_photo_size') * 1024,
+                        'video_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                     ],
                     'polls' => [
                         'max_characters_per_option' => 50,
@@ -1665,7 +1665,7 @@ class ApiV1Controller extends Controller
                     'statuses' => [
                         'characters_reserved_per_url' => 23,
                         'max_characters' => (int) config_cache('pixelfed.max_caption_length'),
-                        'max_media_attachments' => (int) config('pixelfed.max_album_length'),
+                        'max_media_attachments' => (int) config_cache('pixelfed.max_album_length'),
                     ],
                 ],
             ];
@@ -2145,7 +2145,7 @@ class ApiV1Controller extends Controller
         }
 
         $count = UserFilterService::muteCount($pid);
-        $maxLimit = intval(config('instance.user_filters.max_user_mutes'));
+        $maxLimit = (int) config_cache('instance.user_filters.max_user_mutes');
         if ($count == 0) {
             $filterCount = UserFilter::whereUserId($pid)
                 ->whereFilterType('mute')
@@ -3308,9 +3308,9 @@ class ApiV1Controller extends Controller
         abort_unless($request->user()->tokenCan('write'), 403);
 
         $this->validate($request, [
-            'status' => 'nullable|string|max:' . config_cache('pixelfed.max_caption_length'),
+            'status' => 'nullable|string|max:'.(int) config_cache('pixelfed.max_caption_length'),
             'in_reply_to_id' => 'nullable',
-            'media_ids' => 'sometimes|array|max:'.config_cache('pixelfed.max_album_length'),
+            'media_ids' => 'sometimes|array|max:'.(int) config_cache('pixelfed.max_album_length'),
             'sensitive' => 'nullable',
             'visibility' => 'string|in:private,unlisted,public',
             'spoiler_text' => 'sometimes|max:140',
@@ -3436,7 +3436,7 @@ class ApiV1Controller extends Controller
             $mimes = [];
 
             foreach ($ids as $k => $v) {
-                if ($k + 1 > config_cache('pixelfed.max_album_length')) {
+                if ($k + 1 > (int) config_cache('pixelfed.max_album_length')) {
                     continue;
                 }
                 $m = Media::whereUserId($user->id)->whereNull('status_id')->findOrFail($v);
