@@ -1200,8 +1200,8 @@ class ApiV1Controller extends Controller
         if ($filter) {
             $filter->delete();
             UserFilterService::unblock($pid, $profile->id);
-            RelationshipService::refresh($pid, $id);
         }
+        RelationshipService::refresh($pid, $id);
 
         $resource = new Fractal\Resource\Item($profile, new RelationshipTransformer());
         $res = $this->fractal->createData($resource)->toArray();
@@ -2207,8 +2207,9 @@ class ApiV1Controller extends Controller
         if ($filter) {
             $filter->delete();
             UserFilterService::unmute($pid, $profile->id);
-            RelationshipService::refresh($pid, $id);
         }
+
+        RelationshipService::refresh($pid, $id);
 
         $resource = new Fractal\Resource\Item($profile, new RelationshipTransformer());
         $res = $this->fractal->createData($resource)->toArray();
