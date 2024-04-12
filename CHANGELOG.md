@@ -65,6 +65,7 @@
 - Update docker env, fix config_cache. Fixes #5033 ([858fcbf6](https://github.com/pixelfed/pixelfed/commit/858fcbf6))
 - Update UnfollowPipeline, fix follower count cache bug ([6bdf73de](https://github.com/pixelfed/pixelfed/commit/6bdf73de))
 - Update VideoPresenter component, add webkit-playsinline attribute to video element to prevent the full screen video player ([ad032916](https://github.com/pixelfed/pixelfed/commit/ad032916))
+- Update VideoPlayer component, add playsinline attribute to video element ([8af23607](https://github.com/pixelfed/pixelfed/commit/8af23607))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.11.13 (2024-03-05)](https://github.com/pixelfed/pixelfed/compare/v0.11.12...v0.11.13)
