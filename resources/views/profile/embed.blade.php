@@ -73,24 +73,36 @@
             i.innerText = formatCount(i.getAttribute('data-count'));
         });
         fetch("{{config('app.url')}}/api/pixelfed/v1/accounts/{{$profile['id']}}/statuses?only_media=true&limit=24")
-            .then(res => res.json())
-            .then(res => {
-                let parent = document.querySelector('.embed-row');
+        .then(res => res.json())
+        .then(res => {
+            let parent = document.querySelector('.embed-row');
+            res.filter(post => post.pf_type == 'photo' && !post.sensitive && post.visibility === 'public')
+               .slice(0, 9)
+               .forEach((post, idx) => {
+                   let mediaUrl = post.media_attachments[0].preview_url ? post.media_attachments[0].preview_url : post.media_attachments[0].url;
+                   let html = `<div class="col-4 mt-2 px-0"><a class="card info-overlay card-md-border-0 px-1 shadow-none" href="${post.url}" target="_blank"><div class="square"><div class="square-content" style="background-image: url('${mediaUrl}')"></div></div></a></div>`;
+                   let el = document.createElement('div');
+                   el.innerHTML = html;
+                   parent.appendChild(el.firstChild);
+               });
+        })
+        window.addEventListener("message", e => {
+            const t = e.data || {};
+            if (window.parent && t.type === 'setHeight') {
+                updateHeight(t.id)
+            }
+        });
 
-                res.filter(res => res.pf_type == 'photo' && !res.sensitive && res.visibility === 'public')
-                    .slice(0, 9)
-                    .forEach(post => {
-                        let mediaUrl = post.media_attachments[0].preview_url ? post.media_attachments[0].preview_url : post.media_attachments[0].url;
-                        let el = document.createElement('template')
-                        el.innerHTML = `<div class="col-4 mt-2 px-0"><a class="card info-overlay card-md-border-0 px-1 shadow-none" href="${post.url}" target="_blank"><div class="square"><div class="square-content" style="background-image: url('${mediaUrl}')"></div></div></a></div>`;
-                        parent.append(el.content);
-                })
-            }).then(() => {
-                window.addEventListener("message",e=>{const t=e.data||{};window.parent&&"setHeight"===t.type&&window.parent.postMessage({type:"setHeight",id:t.id,height:document.getElementsByTagName("html")[0].scrollHeight},"*")});
-                setTimeout(() => {
-                    window.addEventListener("message",e=>{const t=e.data||{};window.parent&&"setHeight"===t.type&&window.parent.postMessage({type:"setHeight",id:t.id,height:document.getElementsByTagName("html")[0].scrollHeight},"*")});
-                }, 5000);
-            })
+        function updateHeight(id) {
+            setTimeout(() => {
+                window.parent.postMessage({
+                    type: 'setHeight',
+                    id: id,
+                    height: document.documentElement.scrollHeight
+                }, "*");
+            }, 2500)
+        }
+
     </script>
 </body>
 </html>
