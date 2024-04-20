@@ -68,6 +68,7 @@
 - Update VideoPlayer component, add playsinline attribute to video element ([8af23607](https://github.com/pixelfed/pixelfed/commit/8af23607))
 - Update StatusController, refactor status embeds ([9a7acc12](https://github.com/pixelfed/pixelfed/commit/9a7acc12))
 - Update ProfileController, refactor profile embeds ([8b8b1ffc](https://github.com/pixelfed/pixelfed/commit/8b8b1ffc))
+- Update profile embed view, fix height bug ([65166570](https://github.com/pixelfed/pixelfed/commit/65166570))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.11.13 (2024-03-05)](https://github.com/pixelfed/pixelfed/compare/v0.11.12...v0.11.13)
