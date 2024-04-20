@@ -86,9 +86,9 @@
                         parent.append(el.content);
                 })
             }).then(() => {
-                window.parent.postMessage({type:"setHeight",id:0,height:document.getElementsByTagName("html")[0].scrollHeight},"*");
+                window.addEventListener("message",e=>{const t=e.data||{};window.parent&&"setHeight"===t.type&&window.parent.postMessage({type:"setHeight",id:t.id,height:document.getElementsByTagName("html")[0].scrollHeight},"*")});
                 setTimeout(() => {
-                    window.parent.postMessage({type:"setHeight",id:0,height:document.getElementsByTagName("html")[0].scrollHeight},"*");
+                    window.addEventListener("message",e=>{const t=e.data||{};window.parent&&"setHeight"===t.type&&window.parent.postMessage({type:"setHeight",id:t.id,height:document.getElementsByTagName("html")[0].scrollHeight},"*")});
                 }, 5000);
             })
     </script>
