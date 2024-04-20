@@ -66,6 +66,8 @@
 - Update UnfollowPipeline, fix follower count cache bug ([6bdf73de](https://github.com/pixelfed/pixelfed/commit/6bdf73de))
 - Update VideoPresenter component, add webkit-playsinline attribute to video element to prevent the full screen video player ([ad032916](https://github.com/pixelfed/pixelfed/commit/ad032916))
 - Update VideoPlayer component, add playsinline attribute to video element ([8af23607](https://github.com/pixelfed/pixelfed/commit/8af23607))
+- Update StatusController, refactor status embeds ([9a7acc12](https://github.com/pixelfed/pixelfed/commit/9a7acc12))
+- Update ProfileController, refactor profile embeds ([8b8b1ffc](https://github.com/pixelfed/pixelfed/commit/8b8b1ffc))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.11.13 (2024-03-05)](https://github.com/pixelfed/pixelfed/compare/v0.11.12...v0.11.13)
