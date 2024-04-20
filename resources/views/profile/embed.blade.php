@@ -8,7 +8,7 @@
     <title>{{ $title ?? config_cache('app.name', 'Pixelfed') }}</title>
     <meta property="og:site_name" content="{{ config_cache('app.name', 'pixelfed') }}">
     <meta property="og:title" content="{{ $title ?? config_cache('app.name', 'pixelfed') }}">
-    <meta property="og:type" content="article">
+    <meta property="og:type" content="profile">
     <meta property="og:url" content="{{$profile['url']}}">
     <meta name="medium" content="image">
     <meta name="theme-color" content="#10c5f8">
@@ -43,7 +43,7 @@
                         <p class="mb-0 text-muted text-uppercase small font-weight-bold">Followers</p>
                     </div>
                     <div class="text-center">
-                        <p class="mb-0"><a href="/i/intent/follow?user={{$profile['username']}}" class="btn btn-primary btn-sm py-1 px-4 text-uppercase font-weight-bold" target="_blank">Follow</a></p>
+                        <p class="mb-0"><a href="{{config('app.url')}}/i/intent/follow?user={{$profile['username']}}" class="btn btn-primary btn-sm py-1 px-4 text-uppercase font-weight-bold" target="_blank">Follow</a></p>
                     </div>
                 </div>
                 <div class="row mt-4 mb-1 embed-row"></div>
