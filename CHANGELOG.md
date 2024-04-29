@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.11.13...dev)
+## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.0...dev)
+
+### Updates
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
+
+## [v0.12.0 (2024-04-29)](https://github.com/pixelfed/pixelfed/compare/v0.11.13...v0.12.0)
 
 ### Updates
 
@@ -71,7 +76,6 @@
 - Update profile embed view, fix height bug ([65166570](https://github.com/pixelfed/pixelfed/commit/65166570))
 - Update CustomEmojiService, only return local emoji ([7f8bba44](https://github.com/pixelfed/pixelfed/commit/7f8bba44))
 - Update Like model, increase max likes per day from 500 to 1500 ([4223119f](https://github.com/pixelfed/pixelfed/commit/4223119f))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.11.13 (2024-03-05)](https://github.com/pixelfed/pixelfed/compare/v0.11.12...v0.11.13)
 
