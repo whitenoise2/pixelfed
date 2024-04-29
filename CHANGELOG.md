@@ -69,6 +69,8 @@
 - Update StatusController, refactor status embeds ([9a7acc12](https://github.com/pixelfed/pixelfed/commit/9a7acc12))
 - Update ProfileController, refactor profile embeds ([8b8b1ffc](https://github.com/pixelfed/pixelfed/commit/8b8b1ffc))
 - Update profile embed view, fix height bug ([65166570](https://github.com/pixelfed/pixelfed/commit/65166570))
+- Update CustomEmojiService, only return local emoji ([7f8bba44](https://github.com/pixelfed/pixelfed/commit/7f8bba44))
+- Update Like model, increase max likes per day from 500 to 1500 ([4223119f](https://github.com/pixelfed/pixelfed/commit/4223119f))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.11.13 (2024-03-05)](https://github.com/pixelfed/pixelfed/compare/v0.11.12...v0.11.13)
