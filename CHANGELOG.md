@@ -1,7 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.0...dev)
--  ([](https://github.com/pixelfed/pixelfed/commit/))
+## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.1...dev)
+
+### Updates
+- Update DirectMessageController, add 72 hour delay for new accounts before they can send a DM ([61d105fd](https://github.com/pixelfed/pixelfed/commit/61d105fd))
+- Update AdminCuratedRegisterController, increase message length from 1000 to 3000 ([9a5e3471](https://github.com/pixelfed/pixelfed/commit/))
+-  ([](https://github.com/pixelfed/pixelfed/commit/9a5e3471))
 
 ## [v0.12.1 (2024-05-07)](https://github.com/pixelfed/pixelfed/compare/v0.12.0...v0.12.1)
 
