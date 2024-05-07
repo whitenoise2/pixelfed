@@ -3,6 +3,8 @@
 ## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.0...dev)
 
 ### Updates
+- Update ApiV1Dot1Controller, fix in app registration bug that prevents proper auth flow due to missing oauth scopes ([cbf996c9](https://github.com/pixelfed/pixelfed/commit/cbf996c9))
+- Update ConfigCacheService, fix database race condition and fallback to file config and enable by default ([60a62b59](https://github.com/pixelfed/pixelfed/commit/60a62b59))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.0 (2024-04-29)](https://github.com/pixelfed/pixelfed/compare/v0.11.13...v0.12.0)
