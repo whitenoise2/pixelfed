@@ -4,8 +4,9 @@
 
 ### Updates
 - Update DirectMessageController, add 72 hour delay for new accounts before they can send a DM ([61d105fd](https://github.com/pixelfed/pixelfed/commit/61d105fd))
-- Update AdminCuratedRegisterController, increase message length from 1000 to 3000 ([9a5e3471](https://github.com/pixelfed/pixelfed/commit/))
--  ([](https://github.com/pixelfed/pixelfed/commit/9a5e3471))
+- Update AdminCuratedRegisterController, increase message length from 1000 to 3000 ([9a5e3471](https://github.com/pixelfed/pixelfed/commit/9a5e3471))
+- Update ApiV1Controller, add pe (pixelfed entity) support to /api/v1/statuses/{id}/context endpoint ([d645d6ca](https://github.com/pixelfed/pixelfed/commit/d645d6ca))
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.1 (2024-05-07)](https://github.com/pixelfed/pixelfed/compare/v0.12.0...v0.12.1)
 
