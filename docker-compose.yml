@@ -1,7 +1,4 @@
 ---
-# Require 3.8 to ensure people use a recent version of Docker + Compose
-version: "3.8"
-
 ###############################################################
 # Please see docker/README.md for usage information
 ###############################################################
