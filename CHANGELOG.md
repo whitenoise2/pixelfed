@@ -9,6 +9,7 @@
 - Update Admin Curated Onboarding, add select-all/mass action operations ([b22cac94](https://github.com/pixelfed/pixelfed/commit/b22cac94))
 - Update AdminCuratedRegisterController, fix existing account approval ([cbb96cfd](https://github.com/pixelfed/pixelfed/commit/cbb96cfd))
 - Update ActivityPubFetchService, fix Friendica bug ([e4edc6f1](https://github.com/pixelfed/pixelfed/commit/e4edc6f1))
+- Update ProfileController, fix atom feed cache ttl. Fixes #5093 ([921e2965](https://github.com/pixelfed/pixelfed/commit/921e2965))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.1 (2024-05-07)](https://github.com/pixelfed/pixelfed/compare/v0.12.0...v0.12.1)
