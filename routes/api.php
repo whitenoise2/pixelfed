@@ -133,6 +133,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::post('update/{id}', 'CollectionController@store')->middleware($middleware);
             Route::delete('delete/{id}', 'CollectionController@delete')->middleware($middleware);
             Route::post('remove', 'CollectionController@deleteId')->middleware($middleware);
+            Route::get('self', 'CollectionController@getSelfCollections')->middleware($middleware);
         });
 
         Route::group(['prefix' => 'direct'], function () use($middleware) {
@@ -264,6 +265,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
                 Route::post('update/{id}', 'CollectionController@store')->middleware($middleware);
                 Route::delete('delete/{id}', 'CollectionController@delete')->middleware($middleware);
                 Route::post('remove', 'CollectionController@deleteId')->middleware($middleware);
+                Route::get('self', 'CollectionController@getSelfCollections')->middleware($middleware);
             });
 
             Route::group(['prefix' => 'compose'], function () use($middleware) {
