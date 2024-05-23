@@ -11,6 +11,9 @@
 - Update ActivityPubFetchService, fix Friendica bug ([e4edc6f1](https://github.com/pixelfed/pixelfed/commit/e4edc6f1))
 - Update ProfileController, fix atom feed cache ttl. Fixes #5093 ([921e2965](https://github.com/pixelfed/pixelfed/commit/921e2965))
 - Update CollectionsController, add new self route ([bc2495c6](https://github.com/pixelfed/pixelfed/commit/bc2495c6))
+- Update FederationController, add webfinger support for actor uri. Fixes #5068 ([24194f7d](https://github.com/pixelfed/pixelfed/commit/24194f7d))
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.1 (2024-05-07)](https://github.com/pixelfed/pixelfed/compare/v0.12.0...v0.12.1)
