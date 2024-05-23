@@ -72,14 +72,14 @@ class FederationController extends Controller
             return response()->json($res, 200, [], JSON_UNESCAPED_SLASHES);
         }
 
-        if(str_starts_with($resource, 'https://')) {
-            if(str_starts_with($resource, 'https://' . $domain . '/users/')) {
-                $username = str_replace('https://' . $domain . '/users/', '', $resource);
-                if(strlen($username) > 15) {
+        if (str_starts_with($resource, 'https://')) {
+            if (str_starts_with($resource, 'https://'.$domain.'/users/')) {
+                $username = str_replace('https://'.$domain.'/users/', '', $resource);
+                if (strlen($username) > 15) {
                     return response('', 400);
                 }
                 $stripped = str_replace(['_', '.', '-'], '', $username);
-                if(!ctype_alnum($stripped)) {
+                if (! ctype_alnum($stripped)) {
                     return response('', 400);
                 }
                 $key = 'federation:webfinger:sha256:url-username:'.$username;
@@ -92,6 +92,7 @@ class FederationController extends Controller
                 }
                 $webfinger = (new Webfinger($profile))->generate();
                 Cache::put($key, $webfinger, 1209600);
+
                 return response()->json($webfinger, 200, [], JSON_UNESCAPED_SLASHES)
                     ->header('Access-Control-Allow-Origin', '*');
             } else {
