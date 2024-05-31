@@ -12,7 +12,7 @@
 - Update ProfileController, fix atom feed cache ttl. Fixes #5093 ([921e2965](https://github.com/pixelfed/pixelfed/commit/921e2965))
 - Update CollectionsController, add new self route ([bc2495c6](https://github.com/pixelfed/pixelfed/commit/bc2495c6))
 - Update FederationController, add webfinger support for actor uri. Fixes #5068 ([24194f7d](https://github.com/pixelfed/pixelfed/commit/24194f7d))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
+- Update FetchNodeinfoPipeline, set last_fetched_at timestamp ([a7fce91e](https://github.com/pixelfed/pixelfed/commit/a7fce91e))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
