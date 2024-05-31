@@ -26,6 +26,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
         Route::post('apps', 'Api\ApiV1Controller@apps');
         Route::get('apps/verify_credentials', 'Api\ApiV1Controller@getApp')->middleware($middleware);
         Route::get('instance', 'Api\ApiV1Controller@instance');
+        Route::get('instance/peers', 'Api\ApiV1Controller@instancePeers');
         Route::get('bookmarks', 'Api\ApiV1Controller@bookmarks')->middleware($middleware);
 
         Route::get('accounts/verify_credentials', 'Api\ApiV1Controller@verifyCredentials')->middleware($middleware);
