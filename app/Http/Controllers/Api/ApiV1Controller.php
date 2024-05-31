@@ -4204,4 +4204,26 @@ class ApiV1Controller extends Controller
 
         return $this->json([]);
     }
+
+    /**
+     * GET /api/v1/instance/peers
+     *
+     *
+     * @return array
+     */
+    public function instancePeers(Request $request)
+    {
+        if ((bool) config('instance.show_peers') == false) {
+            return $this->json([]);
+        }
+
+        return $this->json(
+            Cache::remember(InstanceService::CACHE_KEY_API_PEERS_LIST, now()->addHours(24), function () {
+                return Instance::whereNotNull('nodeinfo_last_fetched')
+                    ->whereBanned(false)
+                    ->where('nodeinfo_last_fetched', '>', now()->subDays(8))
+                    ->pluck('domain');
+            })
+        );
+    }
 }
