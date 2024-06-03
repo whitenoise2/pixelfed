@@ -193,6 +193,22 @@ class ApiV1Controller extends Controller
             'fields' => [],
         ];
 
+        if ($request->has(self::PF_API_ENTITY_KEY)) {
+            $settings = $user->settings;
+            $other = array_merge(AccountService::defaultSettings()['other'], $settings->other ?? []);
+            $res['settings'] = [
+                'reduce_motion' => (bool) $settings->reduce_motion,
+                'high_contrast_mode' => (bool) $settings->high_contrast_mode,
+                'video_autoplay' => (bool) $settings->video_autoplay,
+                'media_descriptions' => (bool) $settings->media_descriptions,
+                'crawlable' => (bool) $settings->crawlable,
+                'show_profile_follower_count' => (bool) $settings->show_profile_follower_count,
+                'show_profile_following_count' => (bool) $settings->show_profile_following_count,
+                'public_dm' => (bool) $settings->public_dm,
+                'disable_embeds' => (bool) $other['disable_embeds'],
+            ];
+        }
+
         return $this->json($res);
     }
 
