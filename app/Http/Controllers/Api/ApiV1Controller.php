@@ -457,7 +457,14 @@ class ApiV1Controller extends Controller
             Cache::forget('profile:following_count:'.$profile->id);
             Cache::forget('profile:embed:'.$profile->id);
             Cache::forget('profile:compose:settings:'.$user->id);
-            Cache::forget('profile:view:'.$user->username);
+            Cache::forget('profile:view:'.$profile->username);
+            Cache::forget('profile:atom:enabled:'.$profile->id);
+            Cache::forget('pfc:cached-user:wt:'.strtolower($profile->username));
+            Cache::forget('pfc:cached-user:wot:'.strtolower($profile->username));
+            Cache::forget('pf:acct:settings:hidden-followers:'.$profile->id);
+            Cache::forget('pf:acct:settings:hidden-following:'.$profile->id);
+            Cache::forget('pf:acct-trans:hideFollowing:'.$profile->id);
+            Cache::forget('pf:acct-trans:hideFollowers:'.$profile->id);
             AccountService::del($user->profile_id);
         }
 

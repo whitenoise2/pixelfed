@@ -17,7 +17,10 @@
 - Update FederationController, add webfinger support for actor uri. Fixes #5068 ([24194f7d](https://github.com/pixelfed/pixelfed/commit/24194f7d))
 - Update FetchNodeinfoPipeline, set last_fetched_at timestamp ([a7fce91e](https://github.com/pixelfed/pixelfed/commit/a7fce91e))
 - Update task scheduler, add weekly instance scan to check nodeinfo for known instances ([dc6b9f46](https://github.com/pixelfed/pixelfed/commit/dc6b9f46))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
+- Update AP fetch service and domain service ([42915ff9](https://github.com/pixelfed/pixelfed/commit/42915ff9))
+- Update ApiV1Controller, add settings to verify_credentials endpoint ([3f4e0b94](https://github.com/pixelfed/pixelfed/commit/3f4e0b94))
+- Update ApiV1Controller, fix update_credentials boolean handling ([19c62aaa](https://github.com/pixelfed/pixelfed/commit/19c62aaa))
+- Update ApiV1Controller, fix cache invalidation bug in update_credentials ([d56a4108](https://github.com/pixelfed/pixelfed/commit/d56a4108))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
