@@ -342,7 +342,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('locked')) {
-            $locked = $request->input('locked') == 'true';
+            $locked = $request->boolean('locked');
             if ($profile->is_private != $locked) {
                 $profile->is_private = $locked;
                 $changes = true;
@@ -350,7 +350,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('reduce_motion')) {
-            $reduced = $request->input('reduce_motion');
+            $reduced = $request->boolean('reduce_motion');
             if ($settings->reduce_motion != $reduced) {
                 $settings->reduce_motion = $reduced;
                 $changes = true;
@@ -358,7 +358,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('high_contrast_mode')) {
-            $contrast = $request->input('high_contrast_mode');
+            $contrast = $request->boolean('high_contrast_mode');
             if ($settings->high_contrast_mode != $contrast) {
                 $settings->high_contrast_mode = $contrast;
                 $changes = true;
@@ -366,7 +366,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('video_autoplay')) {
-            $autoplay = $request->input('video_autoplay');
+            $autoplay = $request->boolean('video_autoplay');
             if ($settings->video_autoplay != $autoplay) {
                 $settings->video_autoplay = $autoplay;
                 $changes = true;
@@ -386,7 +386,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('media_descriptions')) {
-            $md = $request->input('media_descriptions') == true;
+            $md = $request->boolean('media_descriptions');
             if ($composeSettings['media_descriptions'] != $md) {
                 $composeSettings['media_descriptions'] = $md;
                 $changes = true;
@@ -394,7 +394,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('crawlable')) {
-            $crawlable = $request->input('crawlable');
+            $crawlable = $request->boolean('crawlable');
             if ($settings->crawlable != $crawlable) {
                 $settings->crawlable = $crawlable;
                 $changes = true;
@@ -402,7 +402,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('show_profile_follower_count')) {
-            $show_profile_follower_count = $request->input('show_profile_follower_count');
+            $show_profile_follower_count = $request->boolean('show_profile_follower_count');
             if ($settings->show_profile_follower_count != $show_profile_follower_count) {
                 $settings->show_profile_follower_count = $show_profile_follower_count;
                 $changes = true;
@@ -411,7 +411,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('show_profile_following_count')) {
-            $show_profile_following_count = $request->input('show_profile_following_count');
+            $show_profile_following_count = $request->boolean('show_profile_following_count');
             if ($settings->show_profile_following_count != $show_profile_following_count) {
                 $settings->show_profile_following_count = $show_profile_following_count;
                 $changes = true;
@@ -420,7 +420,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('public_dm')) {
-            $public_dm = $request->input('public_dm');
+            $public_dm = $request->boolean('public_dm');
             if ($settings->public_dm != $public_dm) {
                 $settings->public_dm = $public_dm;
                 $changes = true;
@@ -438,7 +438,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('disable_embeds')) {
-            $disabledEmbeds = $request->input('disable_embeds');
+            $disabledEmbeds = $request->boolean('disable_embeds');
             if ($other['disable_embeds'] != $disabledEmbeds) {
                 $other['disable_embeds'] = $disabledEmbeds;
                 $changes = true;
