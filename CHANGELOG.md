@@ -4,6 +4,7 @@
 
 ### Added
 - New api/v1/instance/peers API endpoint, disabled by default ([4aad1c22](https://github.com/pixelfed/pixelfed/commit/4aad1c22))
+- Added disable_embeds setting, and fix cache invalidation in other settings ([c5e7e917](https://github.com/pixelfed/pixelfed/commit/c5e7e917))
 
 ### Updates
 - Update DirectMessageController, add 72 hour delay for new accounts before they can send a DM ([61d105fd](https://github.com/pixelfed/pixelfed/commit/61d105fd))
