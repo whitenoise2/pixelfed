@@ -950,7 +950,7 @@ class ApiV1Dot1Controller extends Controller
     {
         abort_if(! $request->user() || ! $request->user()->token() || ! $username, 403);
         abort_unless($request->user()->tokenCan('read'), 403);
-
+        $username = trim($username);
         $rateLimiting = (bool) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.enabled');
         $ipRateLimiting = (bool) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.ip_enabled');
         if ($ipRateLimiting) {
@@ -996,6 +996,11 @@ class ApiV1Dot1Controller extends Controller
                 'X-Rate-Limit-Remaining' => RateLimiter::remaining($userKey, $userLimit),
                 'X-Rate-Limit-Reset' => RateLimiter::availableIn($userKey),
             ];
+        }
+        if (str_ends_with($username, config_cache('pixelfed.domain.app'))) {
+            $pre = str_starts_with($username, '@') ? substr($username, 1) : $username;
+            $parts = explode('@', $pre);
+            $username = $parts[0];
         }
         $accountId = AccountService::usernameToId($username, true);
         if (! $accountId) {
