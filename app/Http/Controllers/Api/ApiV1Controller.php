@@ -1352,7 +1352,8 @@ class ApiV1Controller extends Controller
         $user = $request->user();
         abort_if($user->has_roles && ! UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
 
-        $status = StatusService::getMastodon($id, false);
+        $napi = $request->has(self::PF_API_ENTITY_KEY);
+        $status = $napi ? StatusService::get($id, false) : StatusService::getMastodon($id, false);
 
         abort_unless($status, 404);
 
@@ -1420,34 +1421,47 @@ class ApiV1Controller extends Controller
         $user = $request->user();
         abort_if($user->has_roles && ! UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
 
+        $napi = $request->has(self::PF_API_ENTITY_KEY);
+        $status = $napi ? StatusService::get($id, false) : StatusService::getMastodon($id, false);
+
+        abort_unless($status && isset($status['account']), 404);
+
+        if ($status && isset($status['account'], $status['account']['acct']) && strpos($status['account']['acct'], '@') != -1) {
+            $domain = parse_url($status['account']['url'], PHP_URL_HOST);
+            abort_if(in_array($domain, InstanceService::getBannedDomains()), 404);
+        }
+
+        $spid = $status['account']['id'];
+
         AccountService::setLastActive($user->id);
 
-        $status = Status::findOrFail($id);
-
-        if (intval($status->profile_id) !== intval($user->profile_id)) {
-            if ($status->scope == 'private') {
-                abort_if(! $status->profile->followedBy($user->profile), 403);
+        if (intval($spid) !== intval($user->profile_id)) {
+            if ($status['visibility'] == 'private') {
+                abort_if(! FollowerService::follows($user->profile_id, $spid), 403);
             } else {
-                abort_if(! in_array($status->scope, ['public', 'unlisted']), 403);
+                abort_if(! in_array($status['visibility'], ['public', 'unlisted']), 403);
             }
         }
 
         $like = Like::whereProfileId($user->profile_id)
-            ->whereStatusId($status->id)
+            ->whereStatusId($status['id'])
             ->first();
 
         if ($like) {
             $like->forceDelete();
-            $status->likes_count = $status->likes_count > 1 ? $status->likes_count - 1 : 0;
-            $status->save();
+            $ogStatus = Status::find($status['id']);
+            if ($ogStatus) {
+                $ogStatus->likes_count = $ogStatus->likes_count > 1 ? $ogStatus->likes_count - 1 : 0;
+                $ogStatus->save();
+            }
         }
 
-        StatusService::del($status->id);
+        StatusService::del($status['id']);
 
-        $res = StatusService::getMastodon($status->id, false);
-        $res['favourited'] = false;
+        $status['favourited'] = false;
+        $status['favourites_count'] = isset($ogStatus) ? $ogStatus->likes_count : $status['favourites_count'] - 1;
 
-        return $this->json($res);
+        return $this->json($status);
     }
 
     /**
