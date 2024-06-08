@@ -997,7 +997,7 @@ class ApiV1Dot1Controller extends Controller
                 'X-Rate-Limit-Reset' => RateLimiter::availableIn($userKey),
             ];
         }
-        if(str_ends_with($username, config_cache('pixelfed.domain.app'))) {
+        if (str_ends_with($username, config_cache('pixelfed.domain.app'))) {
             $pre = str_starts_with($username, '@') ? substr($username, 1) : $username;
             $parts = explode('@', $pre);
             $username = $parts[0];
