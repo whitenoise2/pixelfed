@@ -972,10 +972,22 @@ class ApiV1Controller extends Controller
         $napi = $request->has(self::PF_API_ENTITY_KEY);
         $pid = $request->user()->profile_id ?? $request->user()->profile->id;
         $res = collect($ids)
-            ->filter(function ($id) use ($pid) {
-                return intval($id) !== intval($pid);
-            })
             ->map(function ($id) use ($pid, $napi) {
+                if (intval($id) === intval($pid)) {
+                    return [
+                        'id' => $id,
+                        'following' => false,
+                        'followed_by' => false,
+                        'blocking' => false,
+                        'muting' => false,
+                        'muting_notifications' => false,
+                        'requested' => false,
+                        'domain_blocking' => false,
+                        'showing_reblogs' => false,
+                        'endorsed' => false,
+                    ];
+                }
+
                 return $napi ?
                  RelationshipService::getWithDate($pid, $id) :
                  RelationshipService::get($pid, $id);
