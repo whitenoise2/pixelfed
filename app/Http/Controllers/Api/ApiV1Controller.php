@@ -3755,7 +3755,6 @@ class ApiV1Controller extends Controller
         }
 
         $res = StatusHashtag::whereHashtagId($tag->id)
-            ->whereIn('status_visibility', ['public', 'private', 'unlisted'])
             ->where('status_id', $dir, $id)
             ->orderBy('status_id', 'desc')
             ->limit(100)
