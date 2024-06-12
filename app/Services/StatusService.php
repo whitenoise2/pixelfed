@@ -191,4 +191,11 @@ class StatusService
             BookmarkService::get($pid, $id) :
             false;
     }
+
+    public static function totalLocalStatuses()
+    {
+        return Cache::remember(self::CACHE_KEY . 'totalpub', 14400, function() {
+            return Status::whereNull('url')->count();
+        });
+    }
 }
