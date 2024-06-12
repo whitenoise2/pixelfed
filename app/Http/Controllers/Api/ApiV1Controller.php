@@ -3403,10 +3403,9 @@ class ApiV1Controller extends Controller
         $limitKey = 'compose:rate-limit:store:'.$user->id;
         $limitTtl = now()->addMinutes(15);
         $limitReached = Cache::remember($limitKey, $limitTtl, function () use ($user) {
+            $minId = SnowflakeService::byDate(now()->subDays(1));
             $dailyLimit = Status::whereProfileId($user->profile_id)
-                ->whereNull('in_reply_to_id')
-                ->whereNull('reblog_of_id')
-                ->where('created_at', '>', now()->subDays(1))
+                ->where('id', '>', $minId)
                 ->count();
 
             return $dailyLimit >= 1000;
