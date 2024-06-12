@@ -38,13 +38,12 @@ class StatusController extends Controller
         $status = StatusService::get($id, false);
 
         abort_if(
-            !$status ||
-            !isset($status['account'], $status['account']['username']) ||
+            ! $status ||
+            ! isset($status['account'], $status['account']['username']) ||
             $status['account']['username'] != $username ||
-            isset($status['reblog'])
-        , 404);
+            isset($status['reblog']), 404);
 
-        abort_if($status['visibility'] != 'public' && !$request->user(), 403, 'Invalid permission');
+        abort_if($status['visibility'] != 'public' && ! $request->user(), 403, 'Invalid permission');
 
         if ($request->wantsJson() && (bool) config_cache('federation.activitypub.enabled')) {
             return $this->showActivityPub($request, $status);
@@ -172,7 +171,7 @@ class StatusController extends Controller
             intval($status['account']['id']) !== intval($profile['id']) ||
             $status['sensitive'] ||
             $status['visibility'] !== 'public' ||
-            !in_array($status['pf_type'], ['photo', 'photo:album'])
+            ! in_array($status['pf_type'], ['photo', 'photo:album'])
         ) {
             $content = view('status.embed-removed');
 
@@ -349,8 +348,9 @@ class StatusController extends Controller
 
     public function showActivityPub(Request $request, $status)
     {
-        $key = 'pf:status:ap:v1:sid:' . $status['id'];
-        return Cache::remember($key, 3600, function() use($status) {
+        $key = 'pf:status:ap:v1:sid:'.$status['id'];
+
+        return Cache::remember($key, 3600, function () use ($status) {
             $status = Status::findOrFail($status['id']);
             $object = $status->type == 'poll' ? new Question() : new Note();
             $fractal = new Fractal\Manager();
