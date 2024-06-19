@@ -13,6 +13,7 @@ use App\Profile;
 use App\Services\AccountService;
 use App\Services\MediaBlocklistService;
 use App\Services\MediaPathService;
+use App\Services\MediaService;
 use App\Services\StatusService;
 use App\Services\UserFilterService;
 use App\Services\UserRoleService;
@@ -456,6 +457,7 @@ class DirectMessageController extends Controller
                     'type' => $s->type,
                     'text' => $s->status->caption,
                     'media' => $s->status->firstMedia() ? $s->status->firstMedia()->url() : null,
+                    'carousel' => MediaService::get($s->status_id),
                     'created_at' => $s->created_at->format('c'),
                     'timeAgo' => $s->created_at->diffForHumans(null, null, true),
                     'seen' => $s->read_at != null,
