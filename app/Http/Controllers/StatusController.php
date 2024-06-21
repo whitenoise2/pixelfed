@@ -43,7 +43,7 @@ class StatusController extends Controller
             $status['account']['username'] != $username ||
             isset($status['reblog']), 404);
 
-        abort_if($status['visibility'] != 'public' && ! $request->user(), 403, 'Invalid permission');
+        abort_if(! in_array($status['visibility'], ['public', 'unlisted']) && ! $request->user(), 403, 'Invalid permission');
 
         if ($request->wantsJson() && (bool) config_cache('federation.activitypub.enabled')) {
             return $this->showActivityPub($request, $status);
