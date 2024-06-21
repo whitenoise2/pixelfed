@@ -31,7 +31,7 @@
 - Update DirectMessageController, add timestamps to threads ([b24d2554](https://github.com/pixelfed/pixelfed/commit/b24d2554))
 - Update DirectMessageController, add carousel entity to threads ([96f24f33](https://github.com/pixelfed/pixelfed/commit/96f24f33))
 - Update and refactor total local post count logic, cache value and schedule updates twice daily to eliminate the perf issue on larger instances ([4f2b8ed2](https://github.com/pixelfed/pixelfed/commit/4f2b8ed2))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
+- Update Media model, fix broken thumbnail/gray thumbnail bug ([e33643c2](https://github.com/pixelfed/pixelfed/commit/e33643c2))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.1 (2024-05-07)](https://github.com/pixelfed/pixelfed/compare/v0.12.0...v0.12.1)
