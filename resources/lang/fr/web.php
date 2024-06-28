@@ -18,8 +18,8 @@ return [
 		'copyLink' => 'Copier le lien',
 		'delete' => 'Supprimer',
 		'error' => 'Erreur',
-		'errorMsg' => 'Une erreur est survenue. Veuillez réessayer plus tard.',
-		'oops' => 'Zut !',
+		'errorMsg' => 'Une erreur s\'est produite; veuillez réessayer plus tard.',
+		'oops' => 'Zut!',
 		'other' => 'Autre',
 		'readMore' => 'En savoir plus',
 		'success' => 'Opération réussie',
@@ -35,27 +35,28 @@ return [
 	],
 
 	'navmenu' => [
-		'search' => 'Chercher',
-		'admin' => 'Tableau de bord d\'administration',
+		'search' => 'Rechercher',
+		'admin' => 'Administration',
 
 		// Timelines
-		'homeFeed' => 'Fil principal',
+		'homeFeed' => 'Fil personnel',
 		'localFeed' => 'Fil local',
-		'globalFeed' => 'Fil global',
+		'globalFeed' => 'Fil universel',
 
 		// Core features
-		'discover' => 'Découvrir',
-		'directMessages' => 'Messages Privés',
+		'discover' => 'Découverte',
+		'directMessages' => 'Messages privés',
 		'notifications' => 'Notifications',
 		'groups' => 'Groupes',
 		'stories' => 'Stories',
+		'uiSettings' => 'Paramètres visuels',
 
 		// Self links
-		'profile' => 'Profil',
+		'profile' => 'Mon profil',
 		'drive' => 'Médiathèque',
 		'settings' => 'Paramètres',
-		'compose' => 'Publier',
-		'logout' => 'Logout',
+		'compose' => 'Rédaction',
+		'logout' => 'Déconnexion',
 
 		// Nav footer
 		'about' => 'À propos',
@@ -63,14 +64,30 @@ return [
 		'language' => 'Langue',
 		'privacy' => 'Confidentialité',
 		'terms' => 'Conditions',
+		'poweredByPixelfed' => 'Propulsé par Pixelfed',
 
 		// Temporary links
-		'backToPreviousDesign' => 'Revenir au design précédent'
+		'backToPreviousDesign' => 'Basculer vers l\'ancienne interface'
+	],
+
+	'uiSettings' => [
+		'title' => 'Paramètres visuels',
+		'theme' => 'Jeu de couleurs',
+		'themeAutoMode' => 'Auto',
+		'themeDarkMode' => 'Sombre',
+		'themeLightMode' => 'Clair',
+		'profileLayout' => 'Mise en page du profil',
+		'layoutGrid' => 'Grille',
+		'layoutMasonry' => 'Masonry',
+		'layoutFeed' => 'Fil',
+		'compactMediaPreviews' => 'Affichage des aperçus en format compact',
+		'loadComments' => 'Chargement des commentaires',
+		'hideCountsStats' => 'Masquage des décomptes et des statistiques'
 	],
 
 	'directMessages' => [
 		'inbox' => 'Boîte de réception',
-		'sent' => 'Boîte d\'envois',
+		'sent' => 'Boîte d\'envoi',
 		'requests' => 'Demandes'
 	],
 
@@ -79,7 +96,7 @@ return [
 		'commented' => 'a commenté votre',
 		'reacted' => 'a réagi à votre',
 		'shared' => 'a partagé votre',
-		'tagged' => 'vous a tagué·e dans un',
+		'tagged' => 'vous a identifié·e dans un·e',
 
 		'updatedA' => 'mis à jour un·e',
 		'sentA' => 'a envoyé un·e',
@@ -88,9 +105,9 @@ return [
 		'mentioned' => 'a mentionné',
 		'you' => 'vous',
 
-		'yourApplication' => 'Votre candidature à rejoindre',
-		'applicationApproved' => 'a été approuvée !',
-		'applicationRejected' => 'a été rejetée. Vous pouvez refaire une demande dans 6 mois.',
+		'yourApplication' => 'Votre candidature',
+		'applicationApproved' => 'a été approuvée!',
+		'applicationRejected' => 'a été rejetée. Vous pourrez tenter à nouveau dans 6 mois.',
 
 		'dm' => 'mp',
 		'groupPost' => 'publication de groupe',
@@ -102,7 +119,7 @@ return [
 	'post' => [
 		'shareToFollowers' => 'Partager avec ses abonné·e·s',
 		'shareToOther' => 'Partager avec d\'autres',
-		'noLikes' => 'Aucun J\'aime pour le moment',
+		'noLikes' => 'Aucune mention J\'aime pour le moment',
 		'uploading' => 'Envoi en cours',
 	],
 
@@ -114,12 +131,12 @@ return [
 		'collections' => 'Collections',
 		'follow' => 'S\'abonner',
 		'unfollow' => 'Se désabonner',
-		'editProfile' => 'Modifier votre profil',
+		'editProfile' => 'Modifier mon profil',
 		'followRequested' => 'Demande d\'abonnement',
-		'joined' => 'A rejoint',
+		'joined' => 'Depuis',
 
-		'emptyCollections' => 'Aucune collection ne semble exister',
-		'emptyPosts' => 'Aucune publication ne semble exister',
+		'emptyCollections' => 'Pas de collections!',
+		'emptyPosts' => 'Pas de publications!',
 	],
 
 	'menu' => [
@@ -131,13 +148,13 @@ return [
 		'unarchive' => 'Désarchiver',
 		'embed' => 'Intégrer',
 
-		'selectOneOption' => 'Sélectionnez l\'une des options suivantes',
-		'unlistFromTimelines' => 'Retirer des flux',
-		'addCW' => 'Ajouter un avertissement de contenu',
-		'removeCW' => 'Enlever l’avertissement de contenu',
-		'markAsSpammer' => 'Marquer comme spammeur·euse',
-		'markAsSpammerText' => 'Retirer + avertissements pour les contenus existants et futurs',
-		'spam' => 'Indésirable',
+		'selectOneOption' => 'Choisir parmi les options suivantes',
+		'unlistFromTimelines' => 'Retirer des fils',
+		'addCW' => 'Ajouter un avertissement',
+		'removeCW' => 'Enlever l’avertissement',
+		'markAsSpammer' => 'Déclarer en tant que pourrielleur·euse',
+		'markAsSpammerText' => 'Déclaration de source de pourriels',
+		'spam' => 'Pourriel',
 		'sensitive' => 'Contenu sensible',
 		'abusive' => 'Abusif ou préjudiciable',
 		'underageAccount' => 'Compte d\'un·e mineur·e',
@@ -145,42 +162,42 @@ return [
 		'impersonation' => 'Usurpation d\'identité',
 		'scamOrFraud' => 'Arnaque ou fraude',
 		'confirmReport' => 'Confirmer le signalement',
-		'confirmReportText' => 'Êtes-vous sûr·e de vouloir signaler cette publication ?',
-		'reportSent' => 'Signalement envoyé !',
+		'confirmReportText' => 'Êtes-vous sûr·e de vouloir signaler cette publication?',
+		'reportSent' => 'Signalement envoyé!',
 		'reportSentText' => 'Nous avons bien reçu votre signalement.',
 		'reportSentError' => 'Une erreur s\'est produite lors du signalement de cette publication.',
 
-		'modAddCWConfirm' => 'Êtes-vous sûr·e de vouloir ajouter un avertissement de contenu à cette publication ?',
-		'modCWSuccess' => 'Avertissement de contenu ajouté avec succès',
-		'modRemoveCWConfirm' => 'Êtes-vous sûr·e de vouloir supprimer l\'avertissement de contenu sur cette publication ?',
-		'modRemoveCWSuccess' => 'Avertissement de contenu supprimé avec succès',
-		'modUnlistConfirm' => 'Êtes-vous sûr·e de vouloir retirer cette publication des flux ?',
-		'modUnlistSuccess' => 'Publication retirée des fils avec succès',
-		'modMarkAsSpammerConfirm' => 'Êtes-vous sûr·e de vouloir marquer cet utilisateur·rice comme spammeur·euse ? Toutes les publications existantes et futures seront retirées des flux et un avertissement de contenu sera appliqué.',
-		'modMarkAsSpammerSuccess' => 'Compte marqué avec succès comme spammeur',
+		'modAddCWConfirm' => 'Êtes-vous sûr·e de vouloir ajouter un avertissement de contenu à cette publication?',
+		'modCWSuccess' => 'Avertissement de contenu ajouté',
+		'modRemoveCWConfirm' => 'Êtes-vous sûr·e de vouloir supprimer l\'avertissement de contenu sur cette publication?',
+		'modRemoveCWSuccess' => 'Avertissement de contenu supprimé',
+		'modUnlistConfirm' => 'Êtes-vous sûr·e de vouloir retirer cette publication des fils?',
+		'modUnlistSuccess' => 'Publication retirée des fils',
+		'modMarkAsSpammerConfirm' => 'Êtes-vous sûr·e de vouloir marquer ce compte comme pourrielleur? Toutes ses publications existantes et futures seront retirées des fils et un avertissement sera appliqué.',
+		'modMarkAsSpammerSuccess' => 'Compte marqué comme pourrielleur',
 
 		'toFollowers' => 'aux abonné·e·s',
 
 		'showCaption' => 'Afficher la légende',
-		'showLikes' => 'Afficher les J\'aime',
-		'compactMode' => 'Mode compact',
+		'showLikes' => 'Afficher les mentions J\'aime',
+		'compactMode' => 'Affichage compact',
 		'embedConfirmText' => 'En utilisant ce module, vous acceptez nos',
 
-		'deletePostConfirm' => 'Êtes-vous sûr·e de vouloir supprimer cette publication ?',
-		'archivePostConfirm' => 'Êtes-vous sûr·e de vouloir archiver cette publication ?',
-		'unarchivePostConfirm' => 'Êtes-vous sûr·e de vouloir désarchiver cette publication ?',
+		'deletePostConfirm' => 'Êtes-vous sûr·e de vouloir supprimer cette publication?',
+		'archivePostConfirm' => 'Êtes-vous sûr·e de vouloir archiver cette publication?',
+		'unarchivePostConfirm' => 'Êtes-vous sûr·e de vouloir désarchiver cette publication?',
 	],
 
 	'story' => [
-		'add' => 'Ajouter une story'
+		'add' => 'Ajouter une Story'
 	],
 
 	'timeline' => [
-		'peopleYouMayKnow' => 'Connaissances possibles'
+		'peopleYouMayKnow' => 'Connaissances potentielles'
 	],
 
 	'hashtags' => [
-		'emptyFeed' => 'Aucune publication ne semble exister pour ce hashtag'
+		'emptyFeed' => 'Aucune publication associée à ce mot-clic!'
 	],
 
 ];

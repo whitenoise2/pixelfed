@@ -68,9 +68,25 @@ return [
 		'language' => 'Language',
 		'privacy' => 'Privacy',
 		'terms' => 'Terms',
+		'poweredByPixelfed' => 'Powered by Pixelfed',
 
 		// Temporary links
 		'backToPreviousDesign' => 'Go back to previous design'
+	],
+
+	'uiSettings' => [
+		'title' => 'UI Settings',
+		'theme' => 'Theme',
+		'themeAutoMode' => 'Auto',
+		'themeDarkMode' => 'Dark',
+		'themeLightMode' => 'Light',
+		'profileLayout' => 'Profile Layout',
+		'layoutGrid' => 'Grid',
+		'layoutMasonry' => 'Masonry',
+		'layoutFeed' => 'Feed',
+		'compactMediaPreviews' => 'Compact Media Previews',
+		'loadComments' => 'Load Comments',
+		'hideCountsStats' => 'Hide Counts & Stats'
 	],
 
 	'directMessages' => [

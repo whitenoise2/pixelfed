@@ -35,7 +35,7 @@
 											<div class="sr-account-acct" :class="{ compact: result.acct && result.acct.length > 24 }">
 												&commat;{{ result.acct }}
 												<b-button
-													v-if="result.locked"
+													v-if="result.locked"	
 													v-b-tooltip.html
 													title="Private Account"
 													variant="link"
@@ -270,7 +270,7 @@
 										<li class="nav-item">
 											<a class="nav-link" href="/i/web" @click.prevent="openUserInterfaceSettings">
 												<span class="icon text-lighter"><i class="far fa-brush"></i></span>
-												UI Settings
+												{{ $t('navmenu.uiSettings') }}
 											</a>
 										</li>
 
@@ -337,12 +337,12 @@
 			hide-footer
 			centered
 			body-class="p-0 ui-menu"
-			title="UI Settings">
-			<div class="list-group list-group-flush">
+			:title="$t('uiSettings.title')">
+			<div class="list-group list-group-flush">	
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-1">Theme</p>
+							<p class="font-weight-bold mb-1">{{ $t('uiSettings.theme') }}</p>
 							<p class="small text-muted mb-0"></p>
 						</div>
 
@@ -351,19 +351,19 @@
 								class="btn"
 								:class="[ uiColorScheme == 'system' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleUi('system')">
-								Auto
+								{{ $t('uiSettings.themeAutoMode') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ uiColorScheme == 'light' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleUi('light')">
-								Light mode
+								{{ $t('uiSettings.themeLightMode') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ uiColorScheme == 'dark' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleUi('dark')">
-								Dark mode
+								{{ $t('uiSettings.themeDarkMode') }}
 							</button>
 						</div>
 					</div>
@@ -372,7 +372,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-1">Profile Layout</p>
+							<p class="font-weight-bold mb-1">{{ $t('uiSettings.profileLayout') }}</p>
 							<p class="small text-muted mb-0"></p>
 						</div>
 
@@ -381,19 +381,19 @@
 								class="btn"
 								:class="[ profileLayout == 'grid' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleProfileLayout('grid')">
-								Grid
+								{{ $t('uiSettings.layoutGrid') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ profileLayout == 'masonry' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleProfileLayout('masonry')">
-								Masonry
+								{{ $t('uiSettings.layoutMasonry') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ profileLayout == 'feed' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleProfileLayout('feed')">
-								Feed
+								{{ $t('uiSettings.layoutFeed') }}
 							</button>
 						</div>
 					</div>
@@ -402,7 +402,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-0">Compact Media Previews</p>
+							<p class="font-weight-bold mb-0">{{ $t('uiSettings.compactMediaPreviews') }}</p>
 						</div>
 						<b-form-checkbox v-model="fixedHeight" switch size="lg" />
 					</div>
@@ -411,7 +411,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-0">Load Comments</p>
+							<p class="font-weight-bold mb-0">{{ $t('uiSettings.loadComments') }}</p>
 						</div>
 						<b-form-checkbox v-model="autoloadComments" switch size="lg" />
 					</div>
@@ -420,7 +420,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-0">Hide Counts & Stats</p>
+							<p class="font-weight-bold mb-0">{{ $t('uiSettings.hideCountsStats') }}</p>
 						</div>
 						<b-form-checkbox v-model="hideCounts" switch size="lg" />
 					</div>
