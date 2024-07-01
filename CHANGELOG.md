@@ -33,6 +33,7 @@
 - Update and refactor total local post count logic, cache value and schedule updates twice daily to eliminate the perf issue on larger instances ([4f2b8ed2](https://github.com/pixelfed/pixelfed/commit/4f2b8ed2))
 - Update Media model, fix broken thumbnail/gray thumbnail bug ([e33643c2](https://github.com/pixelfed/pixelfed/commit/e33643c2))
 - Update StatusController, fix unlisted post guest/ap access bug ([83098428](https://github.com/pixelfed/pixelfed/commit/83098428))
+- Update discover, add network trending using Beagle API ([2cae8b48](https://github.com/pixelfed/pixelfed/commit/2cae8b48))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.1 (2024-05-07)](https://github.com/pixelfed/pixelfed/compare/v0.12.0...v0.12.1)
