@@ -1,9 +1,9 @@
 # Release Notes
 
 ## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.2...dev)
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.2 (2024-07-01)](https://github.com/pixelfed/pixelfed/compare/v0.12.1...v0.12.2)
--  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ### Framework
 - Updated to Laravel 11 (requires php 8.2+)
