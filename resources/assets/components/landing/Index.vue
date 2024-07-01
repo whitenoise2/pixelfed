@@ -6,13 +6,13 @@
 					<div class="card-header bg-bluegray-800 nav-menu" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
 						<ul class="nav justify-content-around">
 						  <li class="nav-item">
-							<router-link to="/" class="nav-link">About</router-link>
+							<router-link to="/" class="nav-link">{{ $t('landing.about') }}</router-link>
 							</li>
 							<li v-if="config.show_directory" class="nav-item">
-								<router-link to="/web/directory" class="nav-link">Directory</router-link>
+								<router-link to="/web/directory" class="nav-link">{{ $t('landing.directory') }}</router-link>
 							</li>
 							<li v-if="config.show_explore_feed" class="nav-item">
-								<router-link to="/web/explore" class="nav-link">Explore</router-link>
+								<router-link to="/web/explore" class="nav-link">{{ $t('landing.explore') }}</router-link>
 							</li>
 						</ul>
 					</div>
@@ -31,7 +31,11 @@
 						<div class="server-header">
 							<p class="server-header-domain">{{ config.domain }}</p>
 							<p class="server-header-attribution">
-								Decentralized photo sharing social media powered by <a href="https://pixelfed.org" target="_blank">Pixelfed</a>
+							<i18n path="landing.header" tag="p">
+							  <template v-slot:pixelfedLink>
+									<a href="https://pixelfed.org" target="_blank">Pixelfed</a>
+								</template>
+							</i18n>	
 							</p>
 						</div>
 

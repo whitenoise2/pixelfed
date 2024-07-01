@@ -10,6 +10,7 @@
         "shared": "Partag\u00e9",
         "shares": "Partages",
         "unshare": "Ne plus partager",
+        "bookmark": "Signet",
         "cancel": "Annuler",
         "copyLink": "Copier le lien",
         "delete": "Supprimer",
@@ -19,6 +20,10 @@
         "other": "Autre",
         "readMore": "En savoir plus",
         "success": "Op\u00e9ration r\u00e9ussie",
+        "proceed": "Continuer",
+        "next": "Suivant",
+        "close": "Fermer",
+        "clickHere": "cliquez ici",
         "sensitive": "Sensible",
         "sensitiveContent": "Contenu sensible",
         "sensitiveContentWarning": "Le contenu de ce message peut \u00eatre sensible"
@@ -42,7 +47,7 @@
         "profile": "Mon profil",
         "drive": "M\u00e9diath\u00e8que",
         "settings": "Param\u00e8tres",
-        "compose": "R\u00e9daction",
+        "composePost": "R\u00e9diger",
         "logout": "D\u00e9connexion",
         "about": "\u00c0 propos",
         "help": "Aide",
@@ -51,6 +56,12 @@
         "terms": "Conditions",
         "poweredByPixelfed": "Propuls\u00e9 par Pixelfed",
         "backToPreviousDesign": "Basculer vers l'ancienne interface"
+    },
+    "landing": {
+        "about": "\u00c0 propos",
+        "directory": "Bottin",
+        "explore": "D\u00e9couverte",
+        "header": "Le partage de photos, dans un m\u00e9dia social d\u00e9centralis\u00e9, propuls\u00e9 par {pixelfedLink}"
     },
     "uiSettings": {
         "title": "Param\u00e8tres visuels",
@@ -89,7 +100,8 @@
         "groupPost": "publication de groupe",
         "modlog": "journal de mod\u00e9ration",
         "post": "publication",
-        "story": "story"
+        "story": "story",
+        "noneFound": "Aucune notification"
     },
     "post": {
         "shareToFollowers": "Partager avec ses abonn\u00e9\u00b7e\u00b7s",
@@ -99,8 +111,12 @@
     },
     "profile": {
         "posts": "Publications",
-        "followers": "Abonn\u00e9\u00b7e\u00b7s",
-        "following": "Abonnements",
+        "followers": {
+            "caption": "Abonn\u00e9\u00b7e | Abonn\u00e9\u00b7e\u00b7s"
+        },
+        "following": {
+            "caption": "Abonnement | Abonnements"
+        },
         "admin": "Administrateur\u00b7rice",
         "collections": "Collections",
         "follow": "S'abonner",
@@ -158,9 +174,27 @@
         "add": "Ajouter une Story"
     },
     "timeline": {
-        "peopleYouMayKnow": "Connaissances potentielles"
+        "peopleYouMayKnow": "Connaissances potentielles",
+        "onboarding": {
+            "welcome": "Bienvenue",
+            "thisIsYourHomeFeed": "Voici votre fil personnel, qui offre les publications de comptes suivis, en ordre chronologique.",
+            "letUsHelpYouFind": "Laissez-nous vous pr\u00e9senter des gens qui vont vous int\u00e9resser",
+            "refreshFeed": "Mise \u00e0 jour de mon fil"
+        }
     },
     "hashtags": {
         "emptyFeed": "Aucune publication associ\u00e9e \u00e0 ce mot-clic!"
+    },
+    "report": {
+        "report": "Signaler",
+        "selectReason": "Signaler en tant que",
+        "reported": "Signal\u00e9",
+        "sendingReport": "Envoi du signalement",
+        "thanksMsg": "Merci de votre signalement; vous contribuez \u00e0 la s\u00e9curit\u00e9 de notre communaut\u00e9!",
+        "contactAdminMsg": "Si vous d\u00e9sirez discuter de ce signalement avec un\u00b7e admnistrateur\u00b7trice"
+    },
+    "sidebar": {
+        "followingCount": "Abonnement|Abonnements",
+        "followersCount": "Abonn\u00e9\u00b7e|Abonn\u00e9\u00b7e\u00b7s"
     }
 }

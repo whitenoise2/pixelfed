@@ -43,10 +43,11 @@
         "notifications": "Notifications",
         "groups": "Groups",
         "stories": "Stories",
+        "uiSettings": "UI Settings",
         "profile": "Profile",
         "drive": "Drive",
         "settings": "Settings",
-        "compose": "Create New",
+        "composePost": "Create New Post",
         "logout": "Logout",
         "about": "About",
         "help": "Help",
@@ -55,6 +56,12 @@
         "terms": "Terms",
         "poweredByPixelfed": "Powered by Pixelfed",
         "backToPreviousDesign": "Go back to previous design"
+    },
+    "landing": {
+        "about": "About",
+        "directory": "Directory",
+        "explore": "Explore",
+        "header": "Decentralized photo sharing social media powered by {pixelfedLink}"
     },
     "uiSettings": {
         "title": "UI Settings",
@@ -104,8 +111,12 @@
     },
     "profile": {
         "posts": "Posts",
-        "followers": "Followers",
-        "following": "Following",
+        "followers": {
+            "caption": "Follower | Followers"
+        },
+        "following": {
+            "caption": "Following"
+        },
         "admin": "Admin",
         "collections": "Collections",
         "follow": "Follow",
@@ -181,5 +192,9 @@
         "sendingReport": "Sending report",
         "thanksMsg": "Thanks for the report, people like you help keep our community safe!",
         "contactAdminMsg": "If you'd like to contact an administrator about this post or report"
+    },
+    "sidebar": {
+        "followingCount": "Following",
+        "followersCount": "Followers"
     }
 }

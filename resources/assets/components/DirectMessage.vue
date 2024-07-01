@@ -227,7 +227,7 @@
 										v-html="conversationProfile.display_name"
 										@click="gotoProfile(conversationProfile)"
 										>
-									</p>
+										</p>
 
 									<p
 										class="username primary"

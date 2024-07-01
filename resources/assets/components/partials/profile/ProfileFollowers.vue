@@ -12,7 +12,7 @@
                     </div>
     				<div class="d-flex align-items-center justify-content-center flex-column w-100 overflow-hidden">
     					<p class="small text-muted mb-0 text-uppercase font-weight-light cursor-pointer text-truncate text-center" style="width: 70%;" @click="goBack()">&commat;{{ profile.acct }}</p>
-                        <p class="lead font-weight-bold mt-n1 mb-0">{{ $t('profile.followers') }}</p>
+                        <p class="lead font-weight-bold mt-n1 mb-0">{{ $t('profile.followers.caption') }}</p>
     				</div>
                     <div>
                         <a class="btn btn-dark rounded-pill font-weight-bold spacer-btn" href="#">Back</a>

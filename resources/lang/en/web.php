@@ -54,12 +54,13 @@ return [
 		'notifications' => 'Notifications',
 		'groups' => 'Groups',
 		'stories' => 'Stories',
+		'uiSettings' => 'UI Settings',
 
 		// Self links
 		'profile' => 'Profile',
 		'drive' => 'Drive',
 		'settings' => 'Settings',
-		'compose' => 'Create New',
+		'composePost' => 'Create New Post',
 		'logout' => 'Logout',
 
 		// Nav footer
@@ -72,6 +73,13 @@ return [
 
 		// Temporary links
 		'backToPreviousDesign' => 'Go back to previous design'
+	],
+	
+	'landing' => [
+		'about' => 'About',
+		'directory' => 'Directory',
+		'explore' => 'Explore',
+		'header' => 'Decentralized photo sharing social media powered by {pixelfedLink}',
 	],
 
 	'uiSettings' => [
@@ -130,8 +138,12 @@ return [
 
 	'profile' => [
 		'posts' => 'Posts',
-		'followers' => 'Followers',
-		'following' => 'Following',
+		'followers' => [
+			'caption' => 'Follower | Followers',
+	  ],
+		'following' => [
+			'caption' => 'Following',
+    ],
 		'admin' => 'Admin',
 		'collections' => 'Collections',
 		'follow' => 'Follow',
@@ -221,4 +233,8 @@ return [
 		'contactAdminMsg' => 'If you\'d like to contact an administrator about this post or report',
 	],
 
+	'sidebar' => [
+		'followingCount' => 'Following',
+		'followersCount' => 'Followers'
+	]
 ];

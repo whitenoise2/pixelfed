@@ -13,7 +13,7 @@ return [
 		'shared' => 'Partagé',
 		'shares' => 'Partages',
 		'unshare' => 'Ne plus partager',
-
+		'bookmark' => 'Signet',
 		'cancel' => 'Annuler',
 		'copyLink' => 'Copier le lien',
 		'delete' => 'Supprimer',
@@ -23,6 +23,10 @@ return [
 		'other' => 'Autre',
 		'readMore' => 'En savoir plus',
 		'success' => 'Opération réussie',
+		'proceed' => 'Continuer',
+		'next' => 'Suivant',
+		'close' => 'Fermer',
+		'clickHere' => 'cliquez ici',
 
 		'sensitive' => 'Sensible',
 		'sensitiveContent' => 'Contenu sensible',
@@ -55,7 +59,7 @@ return [
 		'profile' => 'Mon profil',
 		'drive' => 'Médiathèque',
 		'settings' => 'Paramètres',
-		'compose' => 'Rédaction',
+		'composePost' => 'Rédiger',
 		'logout' => 'Déconnexion',
 
 		// Nav footer
@@ -68,6 +72,13 @@ return [
 
 		// Temporary links
 		'backToPreviousDesign' => 'Basculer vers l\'ancienne interface'
+	],
+
+	'landing' => [
+		'about' => 'À propos',
+		'directory' => 'Bottin',
+		'explore' => 'Découverte',
+		'header' => 'Des images partagées de manière décentralisée grâce au média social {pixelfedLink}',
 	],
 
 	'uiSettings' => [
@@ -114,7 +125,8 @@ return [
 		'modlog' => 'journal de modération',
 		'post' => 'publication',
 		'story' => 'story',
-	],
+		'noneFound' => 'Aucune notification'	
+		],
 
 	'post' => [
 		'shareToFollowers' => 'Partager avec ses abonné·e·s',
@@ -125,8 +137,12 @@ return [
 
 	'profile' => [
 		'posts' => 'Publications',
-		'followers' => 'Abonné·e·s',
-		'following' => 'Abonnements',
+		'followers' => [
+			'caption' => 'Abonné·e | Abonné·e·s',
+	  ],
+		'following' => [
+			'caption' => 'Abonnement | Abonnements',
+    ],
 		'admin' => 'Administrateur·rice',
 		'collections' => 'Collections',
 		'follow' => 'S\'abonner',
@@ -193,11 +209,28 @@ return [
 	],
 
 	'timeline' => [
-		'peopleYouMayKnow' => 'Connaissances potentielles'
+		'peopleYouMayKnow' => 'Connaissances potentielles',
+		'onboarding' => [
+			'welcome' => 'Bienvenue',
+			'thisIsYourHomeFeed' => 'Voici votre fil personnel, qui offre les publications de comptes suivis, en ordre chronologique.',
+			'letUsHelpYouFind' => 'Laissez-nous vous présenter des gens qui vont vous intéresser',
+			'refreshFeed' => 'Mise à jour de mon fil',
+		],
 	],
 
 	'hashtags' => [
 		'emptyFeed' => 'Aucune publication associée à ce mot-clic!'
 	],
-
+	'report' => [
+		'report' => 'Signaler',
+		'selectReason' => 'Signaler en tant que',
+		'reported' => 'Signalé',
+		'sendingReport' => 'Envoi du signalement',
+		'thanksMsg' => 'Merci de votre signalement; vous contribuez à la sécurité de notre communauté!', 
+		'contactAdminMsg' => 'Si vous désirez discuter de ce signalement avec un·e admnistrateur·trice',
+	],
+	'sidebar' => [
+		'followingCount' => 'Abonnement|Abonnements',
+		'followersCount' => 'Abonné·e|Abonné·e·s'
+	]
 ];

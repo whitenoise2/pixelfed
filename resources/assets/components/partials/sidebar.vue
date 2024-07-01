@@ -16,10 +16,10 @@
 						<p class="username primary">&commat;{{ user.username }}</p>
 						<p class="stats">
 							<span class="stats-following">
-								<span class="following-count">{{ formatCount(user.following_count) }}</span> Following
+								<span class="following-count">{{ formatCount(user.following_count) }}</span>&nbsp;{{ $tc('sidebar.followingCount', user.following_count) }}
 							</span>
 							<span class="stats-followers">
-								<span class="followers-count">{{ formatCount(user.followers_count) }}</span> Followers
+								<span class="followers-count">{{ formatCount(user.followers_count) }}</span>&nbsp;{{ $tc('sidebar.followersCount', user.followers_count) }}
 							</span>
 						</p>
 					</div>
@@ -29,10 +29,10 @@
 
 		<div class="btn-group btn-group-lg btn-block mb-4">
 			<!-- <button type="button" class="btn btn-outline-primary btn-block font-weight-bold" style="border-top-left-radius: 18px;border-bottom-left-radius:18px;font-size:18px;font-weight:300!important" @click="createNewPost()">
-				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.compose') }} Post
+				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.composePost') }}
 			</button> -->
 			<router-link to="/i/web/compose" class="btn btn-primary btn-block font-weight-bold">
-				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.compose') }} Post
+				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.composePost') }}
 			</router-link>
 			<button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
 				<span class="sr-only">Toggle Dropdown</span>

@@ -72,7 +72,7 @@
 
 			<p class="stats">
 				<span class="stats-following">
-					<span class="following-count">{{ formatCount(profile.following_count) }}</span> Following
+					<span class="following-count">{{ formatCount(profile.following_count) }}</span> {{ $t('profile.following.caption', profile.following_count) }}
 				</span>
 				<span class="stats-followers">
 					<span class="followers-count">{{ formatCount(profile.followers_count) }}</span> Followers
