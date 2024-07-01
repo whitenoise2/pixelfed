@@ -16,6 +16,8 @@ class BeagleService
 
     const DISCOVER_CACHE_KEY = 'pf:services:beagle:discover:v1';
 
+    const DISCOVER_POSTS_CACHE_KEY = 'pf:services:beagle:discover-posts:v1';
+
     public static function getDefaultRules()
     {
         return Cache::remember(self::DEFAULT_RULES_CACHE_KEY, now()->addDays(7), function () {
@@ -82,27 +84,36 @@ class BeagleService
 
     public static function getDiscoverPosts()
     {
-        $posts = collect(self::getDiscover())
-            ->filter(function ($post) {
-                $bannedInstances = InstanceService::getBannedDomains();
-                $domain = parse_url($post['id'], PHP_URL_HOST);
+        return Cache::remember(self::DISCOVER_POSTS_CACHE_KEY, now()->addHours(1), function () {
+            $posts = collect(self::getDiscover())
+                ->filter(function ($post) {
+                    $bannedInstances = InstanceService::getBannedDomains();
+                    $domain = parse_url($post['id'], PHP_URL_HOST);
 
-                return ! in_array($domain, $bannedInstances);
-            })
-            ->map(function ($post) {
-                $domain = parse_url($post['id'], PHP_URL_HOST);
-                if ($domain === config_cache('pixelfed.domain.app')) {
-                    $parts = explode('/', $post['id']);
-                    $id = array_last($parts);
+                    return ! in_array($domain, $bannedInstances);
+                })
+                ->map(function ($post) {
+                    $domain = parse_url($post['id'], PHP_URL_HOST);
+                    if ($domain === config_cache('pixelfed.domain.app')) {
+                        $parts = explode('/', $post['id']);
+                        $id = array_last($parts);
+
+                        return StatusService::get($id);
+                    }
+
+                    $post = Helpers::statusFetch($post['id']);
+                    if (! $post) {
+                        return;
+                    }
+                    $id = $post->id;
 
                     return StatusService::get($id);
-                }
+                })
+                ->filter()
+                ->values()
+                ->toArray();
 
-                return Helpers::statusFetch($post['id']);
-            })
-            ->values()
-            ->toArray();
-
-        return $posts;
+            return $posts;
+        });
     }
 }
