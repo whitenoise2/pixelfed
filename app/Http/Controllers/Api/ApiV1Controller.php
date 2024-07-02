@@ -211,6 +211,7 @@ class ApiV1Controller extends Controller
         abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('read'), 403);
 
+        $withInstanceMeta = $request->has('_wim');
         $res = $request->has(self::PF_API_ENTITY_KEY) ? AccountService::get($id, true) : AccountService::getMastodon($id, true);
         if (! $res) {
             return response()->json(['error' => 'Record not found'], 404);
@@ -752,7 +753,15 @@ class ApiV1Controller extends Controller
 
         $dir = $min_id ? '>' : '<';
         $id = $min_id ?? $max_id;
-        $res = Status::whereProfileId($profile['id'])
+        $res = Status::select(
+            'profile_id',
+            'in_reply_to_id',
+            'reblog_of_id',
+            'type',
+            'id',
+            'scope'
+        )
+            ->whereProfileId($profile['id'])
             ->whereNull('in_reply_to_id')
             ->whereNull('reblog_of_id')
             ->whereIn('type', $scope)
@@ -2272,14 +2281,17 @@ class ApiV1Controller extends Controller
             'max_id' => 'nullable|integer|min:1|max:'.PHP_INT_MAX,
             'since_id' => 'nullable|integer|min:1|max:'.PHP_INT_MAX,
             'types[]' => 'sometimes|array',
+            'types[].*' => 'string|in:mention,reblog,follow,favourite',
             'type' => 'sometimes|string|in:mention,reblog,follow,favourite',
             '_pe' => 'sometimes',
         ]);
 
         $pid = $request->user()->profile_id;
         $limit = $request->input('limit', 20);
+        $ogLimit = $request->input('limit', 20);
         if ($limit > 40) {
             $limit = 40;
+            $ogLimit = 40;
         }
 
         $since = $request->input('since_id');
@@ -2296,6 +2308,10 @@ class ApiV1Controller extends Controller
         }
 
         $types = $request->input('types');
+
+        if ($request->has('types')) {
+            $limit = 150;
+        }
 
         $maxId = null;
         $minId = null;
@@ -2361,7 +2377,16 @@ class ApiV1Controller extends Controller
                 }
 
                 return true;
-            })->values();
+            })
+            ->filter(function ($n) use ($types) {
+                if (! $types) {
+                    return true;
+                }
+
+                return in_array($n['type'], $types);
+            })
+            ->take($ogLimit)
+            ->values();
 
         if ($maxId) {
             $link = '<'.$baseUrl.'max_id='.$minId.'>; rel="next"';
