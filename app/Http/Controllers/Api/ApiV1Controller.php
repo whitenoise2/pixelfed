@@ -2335,7 +2335,12 @@ class ApiV1Controller extends Controller
             }
         }
 
-        $baseUrl = config('app.url').'/api/v1/notifications?limit='.$ogLimit.'&';
+        if ($request->has('types')) {
+            $typesParams = collect($types)->implode('&types[]=');
+            $baseUrl = config('app.url').'/api/v1/notifications?types[]='.$typesParams.'&limit='.$ogLimit.'&';
+        } else {
+            $baseUrl = config('app.url').'/api/v1/notifications?limit='.$ogLimit.'&';
+        }
 
         if ($minId == $maxId) {
             $minId = null;
