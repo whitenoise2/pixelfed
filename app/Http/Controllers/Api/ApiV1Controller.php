@@ -2335,7 +2335,7 @@ class ApiV1Controller extends Controller
             }
         }
 
-        $baseUrl = config('app.url').'/api/v1/notifications?limit='.$limit.'&';
+        $baseUrl = config('app.url').'/api/v1/notifications?limit='.$ogLimit.'&';
 
         if ($minId == $maxId) {
             $minId = null;
