@@ -487,8 +487,7 @@ class ApiV1Dot1Controller extends Controller
             abort_if(BouncerService::checkIp($request->ip()), 404);
         }
 
-        $rl = RateLimiter::attempt('pf:apiv1.1:iar:'.$request->ip(), config('pixelfed.app_registration_rate_limit_attempts', 3), function () {
-        }, config('pixelfed.app_registration_rate_limit_decay', 1800));
+        $rl = RateLimiter::attempt('pf:apiv1.1:iar:'.$request->ip(), config('pixelfed.app_registration_rate_limit_attempts', 3), function () {}, config('pixelfed.app_registration_rate_limit_decay', 1800));
         abort_if(! $rl, 400, 'Too many requests');
 
         $this->validate($request, [
@@ -618,8 +617,7 @@ class ApiV1Dot1Controller extends Controller
             abort_if(BouncerService::checkIp($request->ip()), 404);
         }
 
-        $rl = RateLimiter::attempt('pf:apiv1.1:iarc:'.$request->ip(), config('pixelfed.app_registration_confirm_rate_limit_attempts', 20), function () {
-        }, config('pixelfed.app_registration_confirm_rate_limit_decay', 1800));
+        $rl = RateLimiter::attempt('pf:apiv1.1:iarc:'.$request->ip(), config('pixelfed.app_registration_confirm_rate_limit_attempts', 20), function () {}, config('pixelfed.app_registration_confirm_rate_limit_decay', 1800));
         abort_if(! $rl, 429, 'Too many requests');
 
         $request->validate([
@@ -929,7 +927,7 @@ class ApiV1Dot1Controller extends Controller
     public function getMutualAccounts(Request $request, $id)
     {
         abort_if(! $request->user() || ! $request->user()->token(), 403);
-        abort_unless($request->user()->tokenCan('follows'), 403);
+        abort_unless($request->user()->tokenCan('follow'), 403);
 
         $account = AccountService::get($id, true);
         if (! $account || ! isset($account['id'])) {
