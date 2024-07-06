@@ -88,13 +88,13 @@
 				<div v-if="loaded && !loggedIn" class="collapse navbar-collapse">
 					<ul class="navbar-nav ml-auto">
 						<li>
-							<a class="nav-link font-weight-bold text-primary" href="/login" title="Login">
-								Login
+							<a class="nav-link font-weight-bold text-primary" href="/login" title="{{ $t('navmenu.login') }}">
+								{{ $t('navmenu.login') }}
 							</a>
 						</li>
 						<li v-if="config.open_registration">
-							<a class="nav-link font-weight-bold" href="/register" title="Register">
-								Register
+							<a class="nav-link font-weight-bold" href="/register" title="{{ $t('navmenu.register') }}">
+								{{ $t('navmenu.register') }}
 							</a>
 						</li>
 					</ul>

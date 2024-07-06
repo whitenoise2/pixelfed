@@ -33,6 +33,10 @@ return [
 		'sensitiveContentWarning' => 'Le contenu de ce message peut être sensible',
 	],
 
+	'login' => [
+		'header' => 'Connexion'
+	],
+
 	'site' => [
 		'terms' => 'Conditions d\'utilisation',
 		'privacy' => 'Politique de confidentialité',
@@ -60,7 +64,9 @@ return [
 		'drive' => 'Médiathèque',
 		'settings' => 'Paramètres',
 		'composePost' => 'Rédiger',
+		'login' => 'Connexion',
 		'logout' => 'Déconnexion',
+		'register' => 'Inscription',
 
 		// Nav footer
 		'about' => 'À propos',
@@ -75,10 +81,62 @@ return [
 	],
 
 	'landing' => [
-		'about' => 'À propos',
-		'directory' => 'Bottin',
-		'explore' => 'Découverte',
-		'header' => 'Des images partagées de manière décentralisée grâce au média social {pixelfedLink}',
+		'auth' => [
+			'login' => 'Connexion',
+			'signup' => 'Inscription',
+		],
+		'navmenu' => [
+			'about' => 'À propos',
+			'directory' => 'Bottin',
+			'explore' => 'Découverte',
+		],
+		'about' => [
+			'header' => 'Le partage de photos dans un média social décentralisé, propulsé par {pixelfedLink}',
+			'stats' => [
+				'posts' => 'publications',
+				'activeUsers' => 'membre actif|membres actifs',
+				'totalUsers' => 'membre au total|membres au total',
+			],
+			'details' => [
+				'about' => 'À propos de ce site',
+				'serverRules' => 'Règlements',
+				'supportedFeatures' => 'Fonctionnalités offertes'
+			],
+			'features' => [
+				'photoPosts' => 'Publication de photos',
+				'photoAlbums' => 'Albums photos',
+				'photoFilters' => 'Filtres de traitement photo',
+				'collections' => 'Collections',
+				'comments' => 'Commentaires',
+				'hashtags' => 'Mots-clés',
+				'likes' => 'Mentions J\'aime',
+				'notifications' => 'Notifications',
+				'shares' => 'Partages',
+				'federation' => 'Fédération',
+				'mobileAppSupport' => 'Application mobile',
+				'stories' => 'Story',
+				'videos' => 'Contenu vidéo',
+			],
+		],
+		'discover' => [
+			'tagline' => 'À la découverte de gens et d\'histoires',
+			'empty' => 'Rien de neuf, mais revenez jeter un coup d\'oeil plus tard!',
+		],
+		'explore' => [
+			'tagline' => 'Des publications qui font du bruit',
+		],
+		'notfound' => [
+			'header' => 'C\'est vide!',
+			'description' => 'Désolé, pas de contenu à cette addresse.',
+			'goback' => 'Retour à l\'accueil'
+		],
+		'footer' => [
+			'help' => 'Aide',
+			'terms' => 'Conditions',
+			'privacy' => 'Confidentialité',
+			'mobileApps' => 'Applications mobiles',
+			'poweredByPixelfed' => 'Propulsé par Pixelfed',
+		]
 	],
 
 	'uiSettings' => [
@@ -221,6 +279,7 @@ return [
 	'hashtags' => [
 		'emptyFeed' => 'Aucune publication associée à ce mot-clic!'
 	],
+
 	'report' => [
 		'report' => 'Signaler',
 		'selectReason' => 'Signaler en tant que',
@@ -229,8 +288,9 @@ return [
 		'thanksMsg' => 'Merci de votre signalement; vous contribuez à la sécurité de notre communauté!', 
 		'contactAdminMsg' => 'Si vous désirez discuter de ce signalement avec un·e admnistrateur·trice',
 	],
+
 	'sidebar' => [
 		'followingCount' => 'Abonnement|Abonnements',
-		'followersCount' => 'Abonné·e|Abonné·e·s'
+		'followersCount' => 'Abonné·e|Abonné·e·s',
 	]
 ];

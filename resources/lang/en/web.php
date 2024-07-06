@@ -34,6 +34,10 @@ return [
 		'sensitiveContentWarning' => 'This post may contain sensitive content',
 	],
 
+	'login' => [
+		'header' => 'Account Login'
+	],
+
 	'site' => [
 		'terms' => 'Terms of Use',
 		'privacy' => 'Privacy Policy',
@@ -61,6 +65,8 @@ return [
 		'drive' => 'Drive',
 		'settings' => 'Settings',
 		'composePost' => 'Create New Post',
+		'login' => 'Login',
+		'register' => 'Register',
 		'logout' => 'Logout',
 
 		// Nav footer
@@ -76,10 +82,62 @@ return [
 	],
 	
 	'landing' => [
-		'about' => 'About',
-		'directory' => 'Directory',
-		'explore' => 'Explore',
-		'header' => 'Decentralized photo sharing social media powered by {pixelfedLink}',
+		'auth' => [
+			'login' => 'Login',
+			'signup' => 'Signup',
+		],
+		'navmenu' => [
+			'about' => 'About',
+			'directory' => 'Directory',
+			'explore' => 'Explore',
+		],
+		'about' => [
+			'header' => 'Decentralized photo sharing social media powered by {pixelfedLink}',
+			'stats' => [
+				'posts' => 'Posts',
+				'activeUsers' => 'Active Users',
+				'totalUsers' => 'Total Users',
+			],
+			'details' => [
+				'about' => 'About',
+				'serverRules' => 'Server Rules',
+				'supportedFeatures' => 'Supported Features'
+			],
+			'features' => [
+				'photoPosts' => 'Photo Posts',
+				'photoAlbums' => 'Photo Albums',
+				'photoFilters' => 'Photo Filters',
+				'collections' => 'Collections',
+				'comments' => 'Comments',
+				'hashtags' => 'Hashtags',
+				'likes' => 'Likes',
+				'notifications' => 'Notifications',
+				'shares' => 'Shares',
+				'federation' => 'Federation',
+				'mobileAppSupport' => 'Mobile App Support',
+				'stories' => 'Stories',
+				'videos' => 'Videos'
+			],
+		],
+		'discover' => [
+			'tagline' => 'Discover accounts and people',
+			'empty' => 'Nothing to show yet! Check back later.',
+		],
+		'explore' => [
+			'tagline' => 'Explore trending posts',
+		],
+		'notfound' => [
+			'header' => '404 - Not Found',
+			'description' => 'The page you are looking for does not exist',
+			'goback' => 'Go back home'
+		],
+		'footer' => [
+			'help' => 'Help',
+			'terms' => 'Terms',
+			'privacy' => 'Privacy',
+			'mobileApps' => 'Applications mobiles',
+			'poweredByPixelfed' => 'Powered by Pixelfed'
+		]
 	],
 
 	'uiSettings' => [

@@ -4,10 +4,10 @@
 			<div class="d-flex flex-column align-items-center gap-3">
 				<i class="fal fa-exclamation-triangle fa-5x text-bluegray-500"></i>
 				<div class="text-center">
-					<h2>404 - Not Found</h2>
-					<p class="lead">The page you are looking for does not exist.</p>
+					<h2>{{ $t('landing.notfound.header') }}</h2>
+					<p class="lead">{{ $t('landing.notfound.description') }}</p>
 				</div>
-				<a class="btn btn-outline-light btn-lg rounded-pill px-4" href="/">Go back home</a>
+				<a class="btn btn-outline-light btn-lg rounded-pill px-4" href="/">{{ $t('landing.notfound.goback') }}</a>
 			</div>
 		</section>
 	</div>

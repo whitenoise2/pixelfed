@@ -6,13 +6,13 @@
 					<div class="card-header bg-bluegray-800 nav-menu" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
 						<ul class="nav justify-content-around">
 						  <li class="nav-item">
-							<router-link to="/" class="nav-link">{{ $t('landing.about') }}</router-link>
+							<router-link to="/" class="nav-link">{{ $t('landing.navmenu.about') }}</router-link>
 							</li>
 							<li v-if="config.show_directory" class="nav-item">
-								<router-link to="/web/directory" class="nav-link">{{ $t('landing.directory') }}</router-link>
+								<router-link to="/web/directory" class="nav-link">{{ $t('landing.navmenu.directory') }}</router-link>
 							</li>
 							<li v-if="config.show_explore_feed" class="nav-item">
-								<router-link to="/web/explore" class="nav-link">{{ $t('landing.explore') }}</router-link>
+								<router-link to="/web/explore" class="nav-link">{{ $t('landing.navmenu.explore') }}</router-link>
 							</li>
 						</ul>
 					</div>
@@ -31,7 +31,7 @@
 						<div class="server-header">
 							<p class="server-header-domain">{{ config.domain }}</p>
 							<p class="server-header-attribution">
-							<i18n path="landing.header" tag="p">
+							<i18n path="landing.about.header" tag="p">
 							  <template v-slot:pixelfedLink>
 									<a href="https://pixelfed.org" target="_blank">Pixelfed</a>
 								</template>
@@ -43,15 +43,15 @@
 							<div class="list-group">
 								<div class="list-group-item bg-transparent">
 									<p class="stat-value">{{ formatCount(config.stats.posts_count) }}</p>
-									<p class="stat-label">Posts</p>
+									<p class="stat-label">{{ $tc('landing.about.stats.posts', config.stats.posts_count) }}</p>
 								</div>
 								<div class="list-group-item bg-transparent">
 									<p class="stat-value">{{ formatCount(config.stats.active_users) }}</p>
-									<p class="stat-label">Active Users</p>
+									<p class="stat-label">{{ $tc('landing.about.stats.activeUsers', config.stats.active_users) }}</p>
 								</div>
 								<div class="list-group-item bg-transparent">
 									<p class="stat-value">{{ formatCount(config.stats.total_users) }}</p>
-									<p class="stat-label">Total Users</p>
+									<p class="stat-label">{{ $tc('landing.about.stats.totalUsers', config.stats.total_users) }}</p>
 								</div>
 							</div>
 						</div>
@@ -93,7 +93,7 @@
 						        <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne" @click="toggleAccordion(0)">
 						        	<span class="text-white h5">
 							        	<i class="far fa-info-circle mr-2 text-muted"></i>
-							          	About
+							          	{{ $t('landing.about.details.about') }}
 						        	</span>
 						        	<i class="far" :class="[ accordionTab === 0 ? 'fa-chevron-left text-primary': 'fa-chevron-down']"></i>
 						        </button>
@@ -113,7 +113,7 @@
 						        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" @click="toggleAccordion(1)">
 						        	<span class="text-white h5">
 							        	<i class="far fa-list mr-2 text-muted"></i>
-						          		Server Rules
+						          		{{ $t('landing.about.details.serverRules') }}
 						          	</span>
 						        	<i class="far" :class="[ accordionTab === 1 ? 'fa-chevron-left text-primary': 'fa-chevron-down']"></i>
 						        </button>
@@ -137,7 +137,7 @@
 						        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" @click="toggleAccordion(2)">
 						        	<span class="text-white h5">
 							        	<i class="far fa-sparkles mr-2 text-muted"></i>
-						          		Supported Features
+						          		{{ $t('landing.about.details.supportedFeatures') }}
 						          	</span>
 						        	<i class="far" :class="[ accordionTab === 2 ? 'fa-chevron-left text-primary': 'fa-chevron-down']"></i>
 						        </button>
@@ -146,15 +146,15 @@
 						    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
 						      <div class="card-body card-features">
 						      	<div class="card-features-cloud">
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Photo Posts</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Photo Albums</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Photo Filters</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Collections</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Comments</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Hashtags</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Likes</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Notifications</div>
-						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> Shares</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.photoPosts' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.photoAlbums' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.photoFilters' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.collections' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.comments' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.hashtags' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.likes' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.notifications' ) }}</div>
+						      		<div class="badge badge-success"><i class="far fa-check-circle"></i> {{ $t('landing.about.features.shares' ) }}</div>
 						      	</div>
 
 						      	<div class="py-3">
@@ -168,22 +168,22 @@
 
 						        <div class="list-group list-group-features">
 						        	<div class="list-group-item bg-bluegray-900">
-						        		<div class="feature-label">Federation</div>
+						        		<div class="feature-label">{{ $t('landing.about.features.federation') }}</div>
 						        		<i class="far fa-lg" :class="[config.features.federation ? 'fa-check-circle' : 'fa-times-circle' ]"></i>
 						        	</div>
 
 						        	<div class="list-group-item bg-bluegray-900">
-						        		<div class="feature-label">Mobile App Support</div>
+						        		<div class="feature-label">{{ $t('landing.about.features.mobileAppSupport') }}</div>
 						        		<i class="far fa-lg" :class="[config.features.mobile_apis ? 'fa-check-circle' : 'fa-times-circle' ]"></i>
 						        	</div>
 
 						        	<div class="list-group-item bg-bluegray-900">
-						        		<div class="feature-label">Stories</div>
+						        		<div class="feature-label">{{ $t('landing.about.features.stories') }}</div>
 						        		<i class="far fa-lg" :class="[config.features.stories ? 'fa-check-circle' : 'fa-times-circle' ]"></i>
 						        	</div>
 
 						        	<div class="list-group-item bg-bluegray-900">
-						        		<div class="feature-label">Videos</div>
+						        		<div class="feature-label">{{ $t('landing.about.features.videos') }}</div>
 						        		<i class="far fa-lg" :class="[config.features.video ? 'fa-check-circle' : 'fa-times-circle' ]"></i>
 						        	</div>
 						        </div>
