@@ -28,6 +28,9 @@
         "sensitiveContent": "Sensitive Content",
         "sensitiveContentWarning": "This post may contain sensitive content"
     },
+    "login": {
+        "header": "Account Login"
+    },
     "site": {
         "terms": "Terms of Use",
         "privacy": "Privacy Policy"
@@ -47,7 +50,9 @@
         "profile": "Profile",
         "drive": "Drive",
         "settings": "Settings",
-        "composePost": "Create New Post",
+        "compose": "Create New Post",
+        "login": "Login",
+        "register": "Register",
         "logout": "Logout",
         "about": "About",
         "help": "Help",
@@ -58,10 +63,65 @@
         "backToPreviousDesign": "Go back to previous design"
     },
     "landing": {
-        "about": "About",
-        "directory": "Directory",
-        "explore": "Explore",
-        "header": "Decentralized photo sharing social media powered by {pixelfedLink}"
+        "auth": {
+            "login": "Login",
+            "signup": "Signup"
+        },
+        "navmenu": {
+            "about": "About",
+            "directory": "Directory",
+            "explore": "Explore"
+        },
+        "serverbanner": {
+            "alt": "Server banner images"
+        },
+        "about": {
+            "header": "Decentralized photo sharing social media powered by {pixelfedLink}",
+            "stats": {
+                "posts": "Posts",
+                "activeUsers": "Active Users",
+                "totalUsers": "Total Users"
+            },
+            "details": {
+                "about": "About",
+                "serverRules": "Server Rules",
+                "supportedFeatures": "Supported Features"
+            },
+            "features": {
+                "photoPosts": "Photo Posts",
+                "photoAlbums": "Photo Albums",
+                "photoFilters": "Photo Filters",
+                "collections": "Collections",
+                "comments": "Comments",
+                "hashtags": "Hashtags",
+                "likes": "Likes",
+                "notifications": "Notifications",
+                "shares": "Shares",
+                "federation": "Federation",
+                "mobileAppSupport": "Mobile App Support",
+                "stories": "Stories",
+                "videos": "Videos"
+            }
+        },
+        "discover": {
+            "tagline": "Discover accounts and people",
+            "empty": "Nothing to show yet! Check back later."
+        },
+        "explore": {
+            "tagline": "Explore trending posts"
+        },
+        "notfound": {
+            "header": "404 - Not Found",
+            "description": "The page you are looking for does not exist",
+            "goback": "Go back home"
+        },
+        "footer": {
+            "help": "Help",
+            "terms": "Terms",
+            "privacy": "Privacy",
+            "mobileApps": "Applications mobiles",
+            "poweredByPixelfed": "Powered by Pixelfed"
+        }
     },
     "uiSettings": {
         "title": "UI Settings",
@@ -110,19 +170,21 @@
         "uploading": "Uploading"
     },
     "profile": {
+        "actions": {
+            "requestFollow": "Follow",
+            "unfollow": "Unfollow",
+            "editProfile": "Edit Profile"
+        },
+        "relationship": {
+            "followerCount": "Follower | Followers",
+            "followingCount": "Following",
+            "following": "Following",
+            "followRequested": "Follow Requested",
+            "followsYou": "Follows You"
+        },
         "posts": "Posts",
-        "followers": {
-            "caption": "Follower | Followers"
-        },
-        "following": {
-            "caption": "Following"
-        },
         "admin": "Admin",
         "collections": "Collections",
-        "follow": "Follow",
-        "unfollow": "Unfollow",
-        "editProfile": "Edit Profile",
-        "followRequested": "Follow Requested",
         "joined": "Joined",
         "emptyCollections": "We can't seem to find any collections",
         "emptyPosts": "We can't seem to find any posts"
@@ -195,6 +257,12 @@
     },
     "sidebar": {
         "followingCount": "Following",
-        "followersCount": "Followers"
+        "followersCount": "Followers",
+        "compose": "Compose New Post",
+        "createdrop": {
+            "collection": "Create Collection",
+            "story": "Create Story",
+            "accountSettings": "Account Settings"
+        }
     }
 }

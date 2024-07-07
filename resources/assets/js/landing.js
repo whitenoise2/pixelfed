@@ -261,6 +261,7 @@ let i18nMessages = {
 	es: require('./i18n/es.json'),
 	eu: require('./i18n/eu.json'),
 	fr: require('./i18n/fr.json'),
+	'fr_CA': require('./i18n/fr_CA.json'),
 	he: require('./i18n/he.json'),
 	gd: require('./i18n/gd.json'),
 	gl: require('./i18n/gl.json'),

@@ -64,7 +64,7 @@ return [
 		'profile' => 'Profile',
 		'drive' => 'Drive',
 		'settings' => 'Settings',
-		'composePost' => 'Create New Post',
+		'compose' => 'Create New Post',
 		'login' => 'Login',
 		'register' => 'Register',
 		'logout' => 'Logout',
@@ -80,7 +80,7 @@ return [
 		// Temporary links
 		'backToPreviousDesign' => 'Go back to previous design'
 	],
-	
+
 	'landing' => [
 		'auth' => [
 			'login' => 'Login',
@@ -90,6 +90,9 @@ return [
 			'about' => 'About',
 			'directory' => 'Directory',
 			'explore' => 'Explore',
+		],
+		'serverbanner' => [
+			'alt' => 'Server banner images',
 		],
 		'about' => [
 			'header' => 'Decentralized photo sharing social media powered by {pixelfedLink}',
@@ -195,21 +198,22 @@ return [
 	],
 
 	'profile' => [
+		'actions' => [
+			'requestFollow' => 'Follow',
+			'unfollow' => 'Unfollow',
+			'editProfile' => 'Edit Profile',
+		],
+		'relationship' => [
+			'followerCount' => 'Follower | Followers',
+			'followingCount' => 'Following',
+			'following' => 'Following',
+			'followRequested' => 'Follow Requested',
+			'followsYou' => 'Follows You'
+		],
 		'posts' => 'Posts',
-		'followers' => [
-			'caption' => 'Follower | Followers',
-	  ],
-		'following' => [
-			'caption' => 'Following',
-    ],
 		'admin' => 'Admin',
 		'collections' => 'Collections',
-		'follow' => 'Follow',
-		'unfollow' => 'Unfollow',
-		'editProfile' => 'Edit Profile',
-		'followRequested' => 'Follow Requested',
 		'joined' => 'Joined',
-
 		'emptyCollections' => 'We can\'t seem to find any collections',
 		'emptyPosts' => 'We can\'t seem to find any posts',
 	],
@@ -293,6 +297,13 @@ return [
 
 	'sidebar' => [
 		'followingCount' => 'Following',
-		'followersCount' => 'Followers'
-	]
+		'followersCount' => 'Followers',
+		'compose' => 'Compose New Post',
+
+		'createdrop' => [
+			'collection' => 'Create Collection',
+			'story' => 'Create Story',
+			'accountSettings' => 'Account Settings',
+		],
+	],
 ];

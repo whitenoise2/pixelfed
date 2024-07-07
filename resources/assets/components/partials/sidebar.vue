@@ -28,20 +28,17 @@
 		</div>
 
 		<div class="btn-group btn-group-lg btn-block mb-4">
-			<!-- <button type="button" class="btn btn-outline-primary btn-block font-weight-bold" style="border-top-left-radius: 18px;border-bottom-left-radius:18px;font-size:18px;font-weight:300!important" @click="createNewPost()">
-				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.composePost') }}
-			</button> -->
 			<router-link to="/i/web/compose" class="btn btn-primary btn-block font-weight-bold">
-				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.composePost') }}
+				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('sidebar.compose') }}
 			</router-link>
 			<button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
 				<span class="sr-only">Toggle Dropdown</span>
 			</button>
 			<div class="dropdown-menu dropdown-menu-right">
-				<a class="dropdown-item font-weight-bold" href="/i/collections/create">Create Collection</a>
-				<a v-if="hasStories" class="dropdown-item font-weight-bold" href="/i/stories/new">Create Story</a>
+				<a class="dropdown-item font-weight-bold" href="/i/collections/create">{{ $t('sidebar.createdrop.collection') }}</a>
+				<a v-if="hasStories" class="dropdown-item font-weight-bold" href="/i/stories/c">{{ $t('sidebar.createdrop.story') }}</a>
 				<div class="dropdown-divider"></div>
-				<a class="dropdown-item font-weight-bold" href="/settings/home">Account Settings</a>
+				<a class="dropdown-item font-weight-bold" href="/settings/home">{{ $t('sidebar.createdrop.accountSettings') }}</a>
 			</div>
 		</div>
 
