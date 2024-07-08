@@ -1334,12 +1334,17 @@ class ApiV1Controller extends Controller
         if ($res->count()) {
             $ids = $res->map(function ($status) {
                 return $status['like_id'];
-            });
-            $max = $ids->max();
-            $min = $ids->min();
+            })->filter();
+
+            $max = $ids->min() - 1;
+            $min = $ids->max();
 
             $baseUrl = config('app.url').'/api/v1/favourites?limit='.$limit.'&';
-            $link = '<'.$baseUrl.'max_id='.$max.'>; rel="next",<'.$baseUrl.'min_id='.$min.'>; rel="prev"';
+            if ($maxId) {
+                $link = '<'.$baseUrl.'max_id='.$max.'>; rel="next",<'.$baseUrl.'min_id='.$min.'>; rel="prev"';
+            } else {
+                $link = '<'.$baseUrl.'max_id='.$max.'>; rel="next"';
+            }
 
             return $this->json($res, 200, ['Link' => $link]);
         } else {
