@@ -132,12 +132,12 @@
 					</router-link>
 				</li>
 
-				<!-- <li class="nav-item">
-					<router-link class="nav-link" to="/i/web/groups">
+				<li class="nav-item">
+					<router-link class="nav-link" to="/groups/feed">
 						<span class="icon text-lighter"><i class="far fa-layer-group"></i></span>
 						{{ $t('navmenu.groups') }}
 					</router-link>
-				</li> -->
+				</li>
 
 				<li v-if="hasLiveStreams" class="nav-item">
 					<router-link class="nav-link d-flex justify-content-between align-items-center" to="/i/web/livestreams">
