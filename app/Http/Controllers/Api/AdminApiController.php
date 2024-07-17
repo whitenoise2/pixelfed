@@ -277,13 +277,16 @@ class AdminApiController extends Controller
 
                     $r['status'] = $status;
 
-                    if($status['in_reply_to_id']) {
+                    if(isset($status['in_reply_to_id'])) {
                         $r['parent'] = StatusService::get($status['in_reply_to_id'], false);
                     }
                 }
 
                 if($report->object_type === 'App\\Profile') {
-                    $r['account'] = AccountService::get($report->object_id, false);
+                    $acct = AccountService::get($report->object_id, false);
+                    if($acct) {
+                        $r['account'] = $acct;
+                    }
                 }
                 return $r;
             })
