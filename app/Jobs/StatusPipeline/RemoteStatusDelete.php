@@ -109,7 +109,7 @@ class RemoteStatusDelete implements ShouldQueue, ShouldBeUniqueUntilProcessing
         }
 
         StatusService::del($status->id, true);
-        AccountStatService::decrementPostCount($status->profile_id);
+        // AccountStatService::decrementPostCount($status->profile_id);
         return $this->unlinkRemoveMedia($status);
     }
 
