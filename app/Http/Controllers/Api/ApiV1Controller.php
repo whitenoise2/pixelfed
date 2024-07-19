@@ -3805,11 +3805,11 @@ class ApiV1Controller extends Controller
                         return false;
                     }
                 }
-                if ($i['visibility'] === 'private') {
-                    if ((int) $i['account']['id'] !== $pid) {
-                        return FollowerService::follows($pid, $i['account']['id'], true);
-                    }
-                }
+                // if ($i['visibility'] === 'private') {
+                //     if ((int) $i['account']['id'] !== $pid) {
+                //         return FollowerService::follows($pid, $i['account']['id'], true);
+                //     }
+                // }
                 if ($onlyMedia == true) {
                     if (! isset($i['media_attachments']) || ! count($i['media_attachments'])) {
                         return false;
