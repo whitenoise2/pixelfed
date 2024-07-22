@@ -194,6 +194,12 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::post('invite/admin/uc', 'AdminInviteController@apiUsernameCheck')->middleware('throttle:20,120');
             Route::post('invite/admin/ec', 'AdminInviteController@apiEmailCheck')->middleware('throttle:10,1440');
         });
+
+        Route::group(['prefix' => 'expo'], function() use($middleware) {
+            Route::get('push-notifications', 'Api\ApiV1Dot1Controller@getExpoPushNotifications')->middleware($middleware);
+            Route::post('push-notifications/update', 'Api\ApiV1Dot1Controller@updateExpoPushNotifications')->middleware($middleware);
+            Route::post('push-notifications/disable', 'Api\ApiV1Dot1Controller@disableExpoPushNotifications')->middleware($middleware);
+        });
     });
 
     Route::group(['prefix' => 'live'], function() use($middleware) {
