@@ -1014,7 +1014,7 @@ class ApiV1Dot1Controller extends Controller
     {
         abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('push'), 403);
-
+        abort_unless(config('services.expo.access_token') && strlen(config('services.expo.access_token')) > 10, 404, 'Push notifications are not supported on this server.');
         $user = $request->user();
         $res = [
             'expo_token' => (bool) $user->expo_token,
