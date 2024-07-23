@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Util\RateLimit\User as UserRateLimit;
 use App\Services\AvatarService;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use NotificationChannels\WebPush\HasPushSubscriptions;
+use NotificationChannels\Expo\ExpoPushToken;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes, HasApiTokens, UserRateLimit;
+    use Notifiable, SoftDeletes, HasApiTokens, UserRateLimit, HasFactory, HasPushSubscriptions;
 
     /**
      * The attributes that should be mutated to dates.
@@ -23,6 +26,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         '2fa_setup_at' => 'datetime',
         'last_active_at' => 'datetime',
+        'expo_token' => ExpoPushToken::class
     ];
 
     /**
@@ -115,4 +119,8 @@ class User extends Authenticatable
         return AvatarService::get($this->profile_id);
     }
 
+    public function routeNotificationForExpo(): ?ExpoPushToken
+    {
+        return $this->expo_token;
+    }
 }

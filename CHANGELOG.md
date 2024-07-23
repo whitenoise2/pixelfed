@@ -6,6 +6,9 @@
 - Update ApiV1Controller, add support for notification filter types ([f61159a1](https://github.com/pixelfed/pixelfed/commit/f61159a1))
 - Update ApiV1Dot1Controller, fix mutual api ([a8bb97b2](https://github.com/pixelfed/pixelfed/commit/a8bb97b2))
 - Update ApiV1Controller, fix /api/v1/favourits pagination ([72f68160](https://github.com/pixelfed/pixelfed/commit/72f68160))
+- Update RegisterController, update username constraints, require atleast one alpha char ([dd6e3cc2](https://github.com/pixelfed/pixelfed/commit/dd6e3cc2))
+- Update AdminUser, fix entity casting ([cb5620d4](https://github.com/pixelfed/pixelfed/commit/cb5620d4))
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.3 (2024-07-01)](https://github.com/pixelfed/pixelfed/compare/v0.12.2...v0.12.3)
