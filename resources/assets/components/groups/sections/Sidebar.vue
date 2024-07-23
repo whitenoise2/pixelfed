@@ -146,15 +146,6 @@
                 this.searchQuery = input;
                 // this.tab = 'searchresults';
 
-                if(input.startsWith('http')) {
-                    let url = new URL(input);
-                    if(url.hostname == location.hostname) {
-                        location.href = input;
-                        return [];
-                    }
-                    return [];
-                }
-
                 if(input.startsWith('#')) {
                     this.$bvToast.toast(input, {
                         title: 'Hashtag detected',
