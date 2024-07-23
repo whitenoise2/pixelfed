@@ -2,697 +2,670 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use App\Instance;
 use App\Models\Group;
-use App\Models\GroupActivityGraph;
 use App\Models\GroupBlock;
 use App\Models\GroupCategory;
-use App\Models\GroupComment;
-use App\Models\GroupEvent;
-use App\Models\GroupInteraction;
 use App\Models\GroupInvitation;
-use App\Models\GroupLimit;
 use App\Models\GroupLike;
+use App\Models\GroupLimit;
 use App\Models\GroupMember;
 use App\Models\GroupPost;
-use App\Models\GroupPostHashtag;
 use App\Models\GroupReport;
-use App\Models\GroupRole;
-use App\Models\GroupStore;
-use App\Models\Poll;
-use App\Follower;
-use App\Instance;
-use App\Hashtag;
-use App\StatusHashtag;
-use App\Like;
-use App\Media;
-use App\Notification;
 use App\Profile;
+use App\Services\AccountService;
+use App\Services\GroupService;
+use App\Services\HashidService;
+use App\Services\StatusService;
 use App\Status;
 use App\User;
-use App\Util\Lexer\Autolink;
-use App\Services\AccountService;
-use App\Services\FollowerService;
-use App\Services\HashidService;
-use App\Services\LikeService;
-use App\Services\Groups\GroupCommentService;
-use App\Services\Groups\GroupsLikeService;
-use App\Services\HashtagService;
-use App\Services\GroupService;
-use App\Services\GroupFeedService;
-use App\Services\GroupPostService;
-use App\Services\PollService;
-use App\Services\RelationshipService;
-use App\Services\StatusService;
-use App\Services\UserFilterService;
-use Cache;
+use Illuminate\Http\Request;
 use Storage;
-use Purify;
-use App\Jobs\GroupPipeline\LikePipeline;
-use App\Jobs\GroupPipeline\UnlikePipeline;
-use App\Jobs\ImageOptimizePipeline\ImageOptimize;
-use App\Jobs\VideoPipeline\VideoThumbnail;
-use App\Jobs\StatusPipeline\StatusDelete;
-use App\Jobs\GroupPipeline\GroupCommentPipeline;
-use App\Jobs\GroupPipeline\GroupMemberInvite;
-use App\Jobs\GroupPipeline\NewStatusPipeline;
-use App\Jobs\GroupPipeline\JoinApproved;
-use App\Jobs\GroupPipeline\JoinRejected;
-use Illuminate\Support\Facades\RateLimiter;
 
 class GroupController extends GroupFederationController
 {
-	public function __construct()
-	{
-		// $this->middleware('auth');
-	}
+    public function __construct()
+    {
+        $this->middleware('auth');
+        abort_unless(config('groups.enabled'), 404);
+    }
 
-	public function index(Request $request)
-	{
-		abort_if(!$request->user(), 404);
-		return view('layouts.spa');
-	}
+    public function index(Request $request)
+    {
+        abort_if(! $request->user(), 404);
 
-	public function home(Request $request)
-	{
-		abort_if(!$request->user(), 404);
-		return view('layouts.spa');
-	}
+        return view('layouts.spa');
+    }
 
-	public function show(Request $request, $id, $path = false)
-	{
-		$group = Group::find($id);
+    public function home(Request $request)
+    {
+        abort_if(! $request->user(), 404);
 
-		if(!$group || $group->status) {
-			return response()->view('groups.unavailable')->setStatusCode(404);
-		}
+        return view('layouts.spa');
+    }
 
-		if($request->wantsJson()) {
-			return $this->showGroupObject($group);
-		}
-		return view('layouts.spa', compact('id', 'path'));
-	}
+    public function show(Request $request, $id, $path = false)
+    {
+        $group = Group::find($id);
 
-	public function showStatus(Request $request, $gid, $sid)
-	{
-		$group = Group::find($gid);
-		$pid = optional($request->user())->profile_id ?? false;
-
-		if(!$group || $group->status) {
-			return response()->view('groups.unavailable')->setStatusCode(404);
-		}
-
-		if($group->is_private) {
-			abort_if(!$request->user(), 404);
-			abort_if(!$group->isMember($pid), 404);
-		}
-
-		$gp = GroupPost::whereGroupId($gid)
-			->findOrFail($sid);
-		return view('layouts.spa', compact('group', 'gp'));
-	}
-
-	public function getGroup(Request $request, $id)
-	{
-		$group = Group::whereNull('status')->findOrFail($id);
-		$pid = optional($request->user())->profile_id ?? false;
-
-		$group = $this->toJson($group, $pid);
-
-		return response()->json($group, 200, [], JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
-	}
-
-
-	public function showStatusLikes(Request $request, $id, $sid)
-	{
-		$group = Group::findOrFail($id);
-		$user = $request->user();
-		$pid = $user->profile_id;
-		abort_if(!$group->isMember($pid), 404);
-		$status = GroupPost::whereGroupId($id)->findOrFail($sid);
-		$likes = GroupLike::whereStatusId($sid)
-			->cursorPaginate(10)
-			->map(function($l) use($group) {
-				$account = AccountService::get($l->profile_id);
-				$account['url'] = "/groups/{$group->id}/user/{$account['id']}";
-				return $account;
-			})
-			->filter(function($l) {
-				return $l && isset($l['id']);
-			})
-			->values();
-		return $likes;
-	}
-
-	public function groupSettings(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$group = Group::findOrFail($id);
-		$pid = $request->user()->profile_id;
-		abort_if(!$group->isMember($pid), 404);
-		abort_if(!in_array($group->selfRole($pid), ['founder', 'admin']), 404);
-
-		return view('groups.settings', compact('group'));
-	}
-
-	public function joinGroup(Request $request, $id)
-	{
-		$group = Group::findOrFail($id);
-		$pid = $request->user()->profile_id;
-		abort_if($group->isMember($pid), 404);
-
-        if(!$request->user()->is_admin) {
-		  abort_if(GroupService::getRejoinTimeout($group->id, $pid), 422, 'Cannot re-join this group for 24 hours after leaving or cancelling a request to join');
+        if (! $group || $group->status) {
+            return response()->view('groups.unavailable')->setStatusCode(404);
         }
 
-		$member = new GroupMember;
-		$member->group_id = $group->id;
-		$member->profile_id = $pid;
-		$member->role = 'member';
-		$member->local_group = true;
-		$member->local_profile = true;
-		$member->join_request = $group->is_private;
-		$member->save();
+        if ($request->wantsJson()) {
+            return $this->showGroupObject($group);
+        }
 
-		GroupService::delSelf($group->id, $pid);
-		GroupService::log(
-			$group->id,
-			$pid,
-			'group:joined',
-			null,
-			GroupMember::class,
-			$member->id
-		);
+        return view('layouts.spa', compact('id', 'path'));
+    }
 
-		$group = $this->toJson($group, $pid);
+    public function showStatus(Request $request, $gid, $sid)
+    {
+        $group = Group::find($gid);
+        $pid = optional($request->user())->profile_id ?? false;
 
-		return $group;
-	}
+        if (! $group || $group->status) {
+            return response()->view('groups.unavailable')->setStatusCode(404);
+        }
 
-	public function updateGroup(Request $request, $id)
-	{
-		$this->validate($request, [
-			'description' => 'nullable|max:500',
-			'membership' => 'required|in:all,local,private',
-			'avatar' => 'nullable',
-			'header' => 'nullable',
-			'discoverable' => 'required',
-			'activitypub' => 'required',
-			'is_nsfw' => 'required',
-			'category' => 'required|string|in:' . implode(',',GroupService::categories())
-		]);
+        if ($group->is_private) {
+            abort_if(! $request->user(), 404);
+            abort_if(! $group->isMember($pid), 404);
+        }
 
-		$pid = $request->user()->profile_id;
-		$group = Group::whereProfileId($pid)->findOrFail($id);
-		$member = GroupMember::whereGroupId($group->id)->whereProfileId($pid)->firstOrFail();
+        $gp = GroupPost::whereGroupId($gid)
+            ->findOrFail($sid);
 
-		abort_if($member->role != 'founder', 403, 'Invalid group permission');
+        return view('layouts.spa', compact('group', 'gp'));
+    }
 
-		$metadata = $group->metadata;
-		$len = $group->is_private ? 12 : 4;
+    public function getGroup(Request $request, $id)
+    {
+        $group = Group::whereNull('status')->findOrFail($id);
+        $pid = optional($request->user())->profile_id ?? false;
 
-		if($request->hasFile('avatar')) {
-			$avatar = $request->file('avatar');
+        $group = $this->toJson($group, $pid);
 
-			if($avatar) {
-				if( isset($metadata['avatar']) &&
-					isset($metadata['avatar']['path']) &&
-					Storage::exists($metadata['avatar']['path'])
-				) {
-					Storage::delete($metadata['avatar']['path']);
-				}
+        return response()->json($group, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
 
-				$fileName = 'avatar_' . strtolower(str_random($len)) . '.' . $avatar->extension();
-				$path = $avatar->storePubliclyAs('public/g/'.$group->id.'/meta', $fileName);
-				$url = url(Storage::url($path));
-				$metadata['avatar'] = [
-					'path' => $path,
-					'url' => $url,
-					'updated_at' => now()
-				];
-			}
-		}
+    public function showStatusLikes(Request $request, $id, $sid)
+    {
+        $group = Group::findOrFail($id);
+        $user = $request->user();
+        $pid = $user->profile_id;
+        abort_if(! $group->isMember($pid), 404);
+        $status = GroupPost::whereGroupId($id)->findOrFail($sid);
+        $likes = GroupLike::whereStatusId($sid)
+            ->cursorPaginate(10)
+            ->map(function ($l) use ($group) {
+                $account = AccountService::get($l->profile_id);
+                $account['url'] = "/groups/{$group->id}/user/{$account['id']}";
 
-		if($request->hasFile('header')) {
-			$header = $request->file('header');
+                return $account;
+            })
+            ->filter(function ($l) {
+                return $l && isset($l['id']);
+            })
+            ->values();
 
-			if($header) {
-				if( isset($metadata['header']) &&
-					isset($metadata['header']['path']) &&
-					Storage::exists($metadata['header']['path'])
-				) {
-					Storage::delete($metadata['header']['path']);
-				}
+        return $likes;
+    }
 
-				$fileName = 'header_' . strtolower(str_random($len)) . '.' . $header->extension();
-				$path = $header->storePubliclyAs('public/g/'.$group->id.'/meta', $fileName);
-				$url = url(Storage::url($path));
-				$metadata['header'] = [
-					'path' => $path,
-					'url' => $url,
-					'updated_at' => now()
-				];
-			}
-		}
+    public function groupSettings(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $group = Group::findOrFail($id);
+        $pid = $request->user()->profile_id;
+        abort_if(! $group->isMember($pid), 404);
+        abort_if(! in_array($group->selfRole($pid), ['founder', 'admin']), 404);
 
-		$cat = GroupService::categoryById($group->category_id);
-		if($request->category !== $cat['name']) {
-			$group->category_id = GroupCategory::whereName($request->category)->first()->id;
-		}
+        return view('groups.settings', compact('group'));
+    }
 
-		$changes = null;
-		$group->description = e($request->input('description', null));
-		$group->is_private = $request->input('membership') == 'private';
-		$group->local_only = $request->input('membership') == 'local';
-		$group->activitypub = $request->input('activitypub') == "true";
-		$group->discoverable = $request->input('discoverable') == "true";
-		$group->is_nsfw = $request->input('is_nsfw') == "true";
-		$group->metadata = $metadata;
-		if($group->isDirty()) {
-			$changes = $group->getDirty();
-		}
-		$group->save();
+    public function joinGroup(Request $request, $id)
+    {
+        $group = Group::findOrFail($id);
+        $pid = $request->user()->profile_id;
+        abort_if($group->isMember($pid), 404);
 
-		GroupService::log(
-			$group->id,
-			$pid,
-			'group:settings:updated',
-			$changes
-		);
+        if (! $request->user()->is_admin) {
+            abort_if(GroupService::getRejoinTimeout($group->id, $pid), 422, 'Cannot re-join this group for 24 hours after leaving or cancelling a request to join');
+        }
 
-		GroupService::del($group->id);
+        $member = new GroupMember;
+        $member->group_id = $group->id;
+        $member->profile_id = $pid;
+        $member->role = 'member';
+        $member->local_group = true;
+        $member->local_profile = true;
+        $member->join_request = $group->is_private;
+        $member->save();
 
-		$res = $this->toJson($group, $pid);
-		return $res;
-	}
+        GroupService::delSelf($group->id, $pid);
+        GroupService::log(
+            $group->id,
+            $pid,
+            'group:joined',
+            null,
+            GroupMember::class,
+            $member->id
+        );
 
-	protected function toJson($group, $pid = false)
-	{
-		return GroupService::get($group->id, $pid);
-	}
+        $group = $this->toJson($group, $pid);
 
-	public function groupLeave(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
+        return $group;
+    }
 
-		$pid = $request->user()->profile_id;
-		$group = Group::findOrFail($id);
+    public function updateGroup(Request $request, $id)
+    {
+        $this->validate($request, [
+            'description' => 'nullable|max:500',
+            'membership' => 'required|in:all,local,private',
+            'avatar' => 'nullable',
+            'header' => 'nullable',
+            'discoverable' => 'required',
+            'activitypub' => 'required',
+            'is_nsfw' => 'required',
+            'category' => 'required|string|in:'.implode(',', GroupService::categories()),
+        ]);
 
-		abort_if($pid == $group->profile_id, 422, 'Cannot leave a group you created');
+        $pid = $request->user()->profile_id;
+        $group = Group::whereProfileId($pid)->findOrFail($id);
+        $member = GroupMember::whereGroupId($group->id)->whereProfileId($pid)->firstOrFail();
 
-		abort_if(!$group->isMember($pid), 403, 'Not a member of group.');
+        abort_if($member->role != 'founder', 403, 'Invalid group permission');
 
-		GroupMember::whereGroupId($group->id)->whereProfileId($pid)->delete();
-		GroupService::del($group->id);
-		GroupService::delSelf($group->id, $pid);
-		GroupService::setRejoinTimeout($group->id, $pid);
+        $metadata = $group->metadata;
+        $len = $group->is_private ? 12 : 4;
 
-		return [200];
-	}
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
 
-	public function cancelJoinRequest(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
+            if ($avatar) {
+                if (isset($metadata['avatar']) &&
+                    isset($metadata['avatar']['path']) &&
+                    Storage::exists($metadata['avatar']['path'])
+                ) {
+                    Storage::delete($metadata['avatar']['path']);
+                }
 
-		$pid = $request->user()->profile_id;
-		$group = Group::findOrFail($id);
+                $fileName = 'avatar_'.strtolower(str_random($len)).'.'.$avatar->extension();
+                $path = $avatar->storePubliclyAs('public/g/'.$group->id.'/meta', $fileName);
+                $url = url(Storage::url($path));
+                $metadata['avatar'] = [
+                    'path' => $path,
+                    'url' => $url,
+                    'updated_at' => now(),
+                ];
+            }
+        }
 
-		abort_if($pid == $group->profile_id, 422, 'Cannot leave a group you created');
-		abort_if($group->isMember($pid), 422, 'Cannot cancel approved join request, please leave group instead.');
+        if ($request->hasFile('header')) {
+            $header = $request->file('header');
 
-		GroupMember::whereGroupId($group->id)->whereProfileId($pid)->delete();
-		GroupService::del($group->id);
-		GroupService::delSelf($group->id, $pid);
-		GroupService::setRejoinTimeout($group->id, $pid);
+            if ($header) {
+                if (isset($metadata['header']) &&
+                    isset($metadata['header']['path']) &&
+                    Storage::exists($metadata['header']['path'])
+                ) {
+                    Storage::delete($metadata['header']['path']);
+                }
 
-		return [200];
-	}
+                $fileName = 'header_'.strtolower(str_random($len)).'.'.$header->extension();
+                $path = $header->storePubliclyAs('public/g/'.$group->id.'/meta', $fileName);
+                $url = url(Storage::url($path));
+                $metadata['header'] = [
+                    'path' => $path,
+                    'url' => $url,
+                    'updated_at' => now(),
+                ];
+            }
+        }
 
-	public function metaBlockSearch(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$group = Group::findOrFail($id);
-		$pid = $request->user()->profile_id;
-		abort_if(!$group->isMember($pid), 404);
-		abort_if(!in_array($group->selfRole($pid), ['founder', 'admin']), 404);
+        $cat = GroupService::categoryById($group->category_id);
+        if ($request->category !== $cat['name']) {
+            $group->category_id = GroupCategory::whereName($request->category)->first()->id;
+        }
 
-		$type = $request->input('type');
-		$item = $request->input('item');
+        $changes = null;
+        $group->description = e($request->input('description', null));
+        $group->is_private = $request->input('membership') == 'private';
+        $group->local_only = $request->input('membership') == 'local';
+        $group->activitypub = $request->input('activitypub') == 'true';
+        $group->discoverable = $request->input('discoverable') == 'true';
+        $group->is_nsfw = $request->input('is_nsfw') == 'true';
+        $group->metadata = $metadata;
+        if ($group->isDirty()) {
+            $changes = $group->getDirty();
+        }
+        $group->save();
 
-		switch($type) {
-			case 'instance':
-				$res = Instance::whereDomain($item)->first();
-				if($res) {
-					abort_if(GroupBlock::whereGroupId($group->id)->whereInstanceId($res->id)->exists(), 400);
-				}
-			break;
+        GroupService::log(
+            $group->id,
+            $pid,
+            'group:settings:updated',
+            $changes
+        );
 
-			case 'user':
-				$res = Profile::whereUsername($item)->first();
-				if($res) {
-					abort_if(GroupBlock::whereGroupId($group->id)->whereProfileId($res->id)->exists(), 400);
-				}
-				if($res->user_id != null) {
-					abort_if(User::whereIsAdmin(true)->whereId($res->user_id)->exists(), 400);
-				}
-			break;
-		}
+        GroupService::del($group->id);
 
-		return response()->json((bool) $res, ($res ? 200 : 404));
-	}
+        $res = $this->toJson($group, $pid);
 
-	public function reportCreate(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$group = Group::findOrFail($id);
-		$pid = $request->user()->profile_id;
-		abort_if(!$group->isMember($pid), 404);
+        return $res;
+    }
 
-		$id = $request->input('id');
-		$type = $request->input('type');
-		$types = [
-			// original 3
-			'spam',
-			'sensitive',
-			'abusive',
+    protected function toJson($group, $pid = false)
+    {
+        return GroupService::get($group->id, $pid);
+    }
 
-			// new
-			'underage',
+    public function groupLeave(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+
+        $pid = $request->user()->profile_id;
+        $group = Group::findOrFail($id);
+
+        abort_if($pid == $group->profile_id, 422, 'Cannot leave a group you created');
+
+        abort_if(! $group->isMember($pid), 403, 'Not a member of group.');
+
+        GroupMember::whereGroupId($group->id)->whereProfileId($pid)->delete();
+        GroupService::del($group->id);
+        GroupService::delSelf($group->id, $pid);
+        GroupService::setRejoinTimeout($group->id, $pid);
+
+        return [200];
+    }
+
+    public function cancelJoinRequest(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+
+        $pid = $request->user()->profile_id;
+        $group = Group::findOrFail($id);
+
+        abort_if($pid == $group->profile_id, 422, 'Cannot leave a group you created');
+        abort_if($group->isMember($pid), 422, 'Cannot cancel approved join request, please leave group instead.');
+
+        GroupMember::whereGroupId($group->id)->whereProfileId($pid)->delete();
+        GroupService::del($group->id);
+        GroupService::delSelf($group->id, $pid);
+        GroupService::setRejoinTimeout($group->id, $pid);
+
+        return [200];
+    }
+
+    public function metaBlockSearch(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $group = Group::findOrFail($id);
+        $pid = $request->user()->profile_id;
+        abort_if(! $group->isMember($pid), 404);
+        abort_if(! in_array($group->selfRole($pid), ['founder', 'admin']), 404);
+
+        $type = $request->input('type');
+        $item = $request->input('item');
+
+        switch ($type) {
+            case 'instance':
+                $res = Instance::whereDomain($item)->first();
+                if ($res) {
+                    abort_if(GroupBlock::whereGroupId($group->id)->whereInstanceId($res->id)->exists(), 400);
+                }
+                break;
+
+            case 'user':
+                $res = Profile::whereUsername($item)->first();
+                if ($res) {
+                    abort_if(GroupBlock::whereGroupId($group->id)->whereProfileId($res->id)->exists(), 400);
+                }
+                if ($res->user_id != null) {
+                    abort_if(User::whereIsAdmin(true)->whereId($res->user_id)->exists(), 400);
+                }
+                break;
+        }
+
+        return response()->json((bool) $res, ($res ? 200 : 404));
+    }
+
+    public function reportCreate(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $group = Group::findOrFail($id);
+        $pid = $request->user()->profile_id;
+        abort_if(! $group->isMember($pid), 404);
+
+        $id = $request->input('id');
+        $type = $request->input('type');
+        $types = [
+            // original 3
+            'spam',
+            'sensitive',
+            'abusive',
+
+            // new
+            'underage',
             'violence',
-			'copyright',
-			'impersonation',
-			'scam',
-			'terrorism'
-		];
+            'copyright',
+            'impersonation',
+            'scam',
+            'terrorism',
+        ];
 
-		$gp = GroupPost::whereGroupId($group->id)->find($id);
-		abort_if(!$gp, 422, 'Cannot report an invalid or deleted post');
-		abort_if(!in_array($type, $types), 422, 'Invalid report type');
-		abort_if($gp->profile_id === $pid, 422, 'Cannot report your own post');
-		abort_if(
-			GroupReport::whereGroupId($group->id)
-				->whereProfileId($pid)
-				->whereItemType(GroupPost::class)
-				->whereItemId($id)
-				->exists(),
-			422,
-			'You already reported this'
-		);
+        $gp = GroupPost::whereGroupId($group->id)->find($id);
+        abort_if(! $gp, 422, 'Cannot report an invalid or deleted post');
+        abort_if(! in_array($type, $types), 422, 'Invalid report type');
+        abort_if($gp->profile_id === $pid, 422, 'Cannot report your own post');
+        abort_if(
+            GroupReport::whereGroupId($group->id)
+                ->whereProfileId($pid)
+                ->whereItemType(GroupPost::class)
+                ->whereItemId($id)
+                ->exists(),
+            422,
+            'You already reported this'
+        );
 
-		$report = new GroupReport();
-		$report->group_id = $group->id;
-		$report->profile_id = $pid;
-		$report->type = $type;
-		$report->item_type = GroupPost::class;
-		$report->item_id = $id;
-		$report->open = true;
-		$report->save();
+        $report = new GroupReport();
+        $report->group_id = $group->id;
+        $report->profile_id = $pid;
+        $report->type = $type;
+        $report->item_type = GroupPost::class;
+        $report->item_id = $id;
+        $report->open = true;
+        $report->save();
 
-		GroupService::log(
-			$group->id,
-			$pid,
-			'group:report:create',
-			[
-				'type' => $type,
-				'report_id' => $report->id,
-				'status_id' => $gp->status_id,
-				'profile_id' => $gp->profile_id,
-				'username' => optional(AccountService::get($gp->profile_id))['acct'],
-				'gpid' => $gp->id,
-				'url' => $gp->url()
-			],
-			GroupReport::class,
-			$report->id
-		);
+        GroupService::log(
+            $group->id,
+            $pid,
+            'group:report:create',
+            [
+                'type' => $type,
+                'report_id' => $report->id,
+                'status_id' => $gp->status_id,
+                'profile_id' => $gp->profile_id,
+                'username' => optional(AccountService::get($gp->profile_id))['acct'],
+                'gpid' => $gp->id,
+                'url' => $gp->url(),
+            ],
+            GroupReport::class,
+            $report->id
+        );
 
-		return response([200]);
-	}
+        return response([200]);
+    }
 
-	public function reportAction(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$group = Group::findOrFail($id);
-		$pid = $request->user()->profile_id;
-		abort_if(!$group->isMember($pid), 404);
-		abort_if(!in_array($group->selfRole($pid), ['founder', 'admin']), 404);
+    public function reportAction(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $group = Group::findOrFail($id);
+        $pid = $request->user()->profile_id;
+        abort_if(! $group->isMember($pid), 404);
+        abort_if(! in_array($group->selfRole($pid), ['founder', 'admin']), 404);
 
-		$this->validate($request, [
-			'action' => 'required|in:cw,delete,ignore',
-			'id' => 'required|string'
-		]);
+        $this->validate($request, [
+            'action' => 'required|in:cw,delete,ignore',
+            'id' => 'required|string',
+        ]);
 
-		$action = $request->input('action');
-		$id = $request->input('id');
+        $action = $request->input('action');
+        $id = $request->input('id');
 
-		$report = GroupReport::whereGroupId($group->id)
-			->findOrFail($id);
-		$status = Status::findOrFail($report->item_id);
-		$gp = GroupPost::whereGroupId($group->id)
-			->whereStatusId($status->id)
-			->firstOrFail();
+        $report = GroupReport::whereGroupId($group->id)
+            ->findOrFail($id);
+        $status = Status::findOrFail($report->item_id);
+        $gp = GroupPost::whereGroupId($group->id)
+            ->whereStatusId($status->id)
+            ->firstOrFail();
 
-		switch ($action) {
-			case 'cw':
-				$status->is_nsfw = true;
-				$status->save();
-				StatusService::del($status->id);
+        switch ($action) {
+            case 'cw':
+                $status->is_nsfw = true;
+                $status->save();
+                StatusService::del($status->id);
 
-				GroupReport::whereGroupId($group->id)
-					->whereItemType($report->item_type)
-					->whereItemId($report->item_id)
-					->update(['open' => false]);
+                GroupReport::whereGroupId($group->id)
+                    ->whereItemType($report->item_type)
+                    ->whereItemId($report->item_id)
+                    ->update(['open' => false]);
 
-				GroupService::log(
-					$group->id,
-					$pid,
-					'group:moderation:action',
-					[
-						'type' => 'cw',
-						'report_id' => $report->id,
-						'status_id' => $status->id,
-						'profile_id' => $status->profile_id,
-						'status_url' => $gp->url()
-					],
-					GroupReport::class,
-					$report->id
-				);
-				return response()->json([200]);
-			break;
+                GroupService::log(
+                    $group->id,
+                    $pid,
+                    'group:moderation:action',
+                    [
+                        'type' => 'cw',
+                        'report_id' => $report->id,
+                        'status_id' => $status->id,
+                        'profile_id' => $status->profile_id,
+                        'status_url' => $gp->url(),
+                    ],
+                    GroupReport::class,
+                    $report->id
+                );
 
-			case 'ignore':
-				GroupReport::whereGroupId($group->id)
-					->whereItemType($report->item_type)
-					->whereItemId($report->item_id)
-					->update(['open' => false]);
+                return response()->json([200]);
+                break;
 
-				GroupService::log(
-					$group->id,
-					$pid,
-					'group:moderation:action',
-					[
-						'type' => 'ignore',
-						'report_id' => $report->id,
-						'status_id' => $status->id,
-						'profile_id' => $status->profile_id,
-						'status_url' => $gp->url()
-					],
-					GroupReport::class,
-					$report->id
-				);
-				return response()->json([200]);
-			break;
-		}
-	}
+            case 'ignore':
+                GroupReport::whereGroupId($group->id)
+                    ->whereItemType($report->item_type)
+                    ->whereItemId($report->item_id)
+                    ->update(['open' => false]);
 
-	public function getMemberInteractionLimits(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$group = Group::findOrFail($id);
-		$pid = $request->user()->profile_id;
-		abort_if(!$group->isMember($pid), 404);
-		abort_if(!in_array($group->selfRole($pid), ['founder', 'admin']), 404);
+                GroupService::log(
+                    $group->id,
+                    $pid,
+                    'group:moderation:action',
+                    [
+                        'type' => 'ignore',
+                        'report_id' => $report->id,
+                        'status_id' => $status->id,
+                        'profile_id' => $status->profile_id,
+                        'status_url' => $gp->url(),
+                    ],
+                    GroupReport::class,
+                    $report->id
+                );
 
-		$profile_id = $request->input('profile_id');
-		abort_if(!$group->isMember($profile_id), 404);
-		$limits = GroupService::getInteractionLimits($group->id, $profile_id);
-		return response()->json($limits);
-	}
+                return response()->json([200]);
+                break;
+        }
+    }
 
-	public function updateMemberInteractionLimits(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$group = Group::findOrFail($id);
-		$pid = $request->user()->profile_id;
-		abort_if(!$group->isMember($pid), 404);
-		abort_if(!in_array($group->selfRole($pid), ['founder', 'admin']), 404);
+    public function getMemberInteractionLimits(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $group = Group::findOrFail($id);
+        $pid = $request->user()->profile_id;
+        abort_if(! $group->isMember($pid), 404);
+        abort_if(! in_array($group->selfRole($pid), ['founder', 'admin']), 404);
 
-		$this->validate($request, [
-			'profile_id' => 'required|exists:profiles,id',
-			'can_post' => 'required',
-			'can_comment' => 'required',
-			'can_like' => 'required'
-		]);
+        $profile_id = $request->input('profile_id');
+        abort_if(! $group->isMember($profile_id), 404);
+        $limits = GroupService::getInteractionLimits($group->id, $profile_id);
 
-		$member = $request->input('profile_id');
-		$can_post = $request->input('can_post');
-		$can_comment = $request->input('can_comment');
-		$can_like = $request->input('can_like');
-		$account = AccountService::get($member);
+        return response()->json($limits);
+    }
 
-		abort_if(!$account, 422, 'Invalid profile');
-		abort_if(!$group->isMember($member), 422, 'Invalid profile');
+    public function updateMemberInteractionLimits(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $group = Group::findOrFail($id);
+        $pid = $request->user()->profile_id;
+        abort_if(! $group->isMember($pid), 404);
+        abort_if(! in_array($group->selfRole($pid), ['founder', 'admin']), 404);
 
-		$limit = GroupLimit::firstOrCreate([
-			'profile_id' => $member,
-			'group_id' => $group->id
-		]);
+        $this->validate($request, [
+            'profile_id' => 'required|exists:profiles,id',
+            'can_post' => 'required',
+            'can_comment' => 'required',
+            'can_like' => 'required',
+        ]);
 
-		if($limit->wasRecentlyCreated) {
-			abort_if(GroupLimit::whereGroupId($group->id)->count() >= 25, 422, 'limit_reached');
-		}
+        $member = $request->input('profile_id');
+        $can_post = $request->input('can_post');
+        $can_comment = $request->input('can_comment');
+        $can_like = $request->input('can_like');
+        $account = AccountService::get($member);
 
-		$previousLimits = $limit->limits;
+        abort_if(! $account, 422, 'Invalid profile');
+        abort_if(! $group->isMember($member), 422, 'Invalid profile');
 
-		$limit->limits = [
-			'can_post' => $can_post,
-			'can_comment' => $can_comment,
-			'can_like' => $can_like
-		];
-		$limit->save();
+        $limit = GroupLimit::firstOrCreate([
+            'profile_id' => $member,
+            'group_id' => $group->id,
+        ]);
 
-		GroupService::clearInteractionLimits($group->id, $member);
+        if ($limit->wasRecentlyCreated) {
+            abort_if(GroupLimit::whereGroupId($group->id)->count() >= 25, 422, 'limit_reached');
+        }
 
-		GroupService::log(
-			$group->id,
-			$pid,
-			'group:member-limits:updated',
-			[
-				'profile_id' => $account['id'],
-				'username' => $account['username'],
-				'previousLimits' => $previousLimits,
-				'newLimits' => $limit->limits
-			],
-			GroupLimit::class,
-			$limit->id
-		);
+        $previousLimits = $limit->limits;
 
-		return $request->all();
-	}
+        $limit->limits = [
+            'can_post' => $can_post,
+            'can_comment' => $can_comment,
+            'can_like' => $can_like,
+        ];
+        $limit->save();
 
+        GroupService::clearInteractionLimits($group->id, $member);
 
-	public function showProfile(Request $request, $id, $pid)
-	{
-		$group = Group::find($id);
+        GroupService::log(
+            $group->id,
+            $pid,
+            'group:member-limits:updated',
+            [
+                'profile_id' => $account['id'],
+                'username' => $account['username'],
+                'previousLimits' => $previousLimits,
+                'newLimits' => $limit->limits,
+            ],
+            GroupLimit::class,
+            $limit->id
+        );
 
-		if(!$group || $group->status) {
-			return response()->view('groups.unavailable')->setStatusCode(404);
-		}
+        return $request->all();
+    }
 
-		return view('layouts.spa');
-	}
+    public function showProfile(Request $request, $id, $pid)
+    {
+        $group = Group::find($id);
 
-	public function showProfileByUsername(Request $request, $id, $pid)
-	{
-		abort_if(!$request->user(), 404);
-		if(!$request->user()) {
-			return redirect("/{$pid}");
-		}
+        if (! $group || $group->status) {
+            return response()->view('groups.unavailable')->setStatusCode(404);
+        }
 
-		$group = Group::find($id);
-		$cid = $request->user()->profile_id;
+        return view('layouts.spa');
+    }
 
-		if(!$group || $group->status) {
-			return response()->view('groups.unavailable')->setStatusCode(404);
-		}
+    public function showProfileByUsername(Request $request, $id, $pid)
+    {
+        abort_if(! $request->user(), 404);
+        if (! $request->user()) {
+            return redirect("/{$pid}");
+        }
 
-		if(!$group->isMember($cid)) {
-			return redirect("/{$pid}");
-		}
+        $group = Group::find($id);
+        $cid = $request->user()->profile_id;
 
-		$profile = Profile::whereUsername($pid)->first();
+        if (! $group || $group->status) {
+            return response()->view('groups.unavailable')->setStatusCode(404);
+        }
 
-		if(!$group->isMember($profile->id)) {
-			return redirect("/{$pid}");
-		}
+        if (! $group->isMember($cid)) {
+            return redirect("/{$pid}");
+        }
 
-		if($profile) {
-			$url = url("/groups/{$id}/user/{$profile->id}");
-			return redirect($url);
-		}
+        $profile = Profile::whereUsername($pid)->first();
 
-		abort(404, 'Invalid username');
-	}
+        if (! $group->isMember($profile->id)) {
+            return redirect("/{$pid}");
+        }
 
+        if ($profile) {
+            $url = url("/groups/{$id}/user/{$profile->id}");
 
-	public function groupInviteLanding(Request $request, $id)
-	{
-		abort(404, 'Not yet implemented');
-		$group = Group::findOrFail($id);
-		return view('groups.invite', compact('group'));
-	}
+            return redirect($url);
+        }
 
-	public function groupShortLinkRedirect(Request $request, $hid)
-	{
-		$gid = HashidService::decode($hid);
-		$group = Group::findOrFail($gid);
-		return redirect($group->url());
-	}
+        abort(404, 'Invalid username');
+    }
 
-	public function groupInviteClaim(Request $request, $id)
-	{
-		$group = GroupService::get($id);
-		abort_if(!$group || empty($group), 404);
-		return view('groups.invite-claim', compact('group'));
-	}
+    public function groupInviteLanding(Request $request, $id)
+    {
+        abort(404, 'Not yet implemented');
+        $group = Group::findOrFail($id);
 
-	public function groupMemberInviteCheck(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$pid = $request->user()->profile_id;
-		$group = Group::findOrFail($id);
-		abort_if($group->isMember($pid), 422, 'Already a member');
+        return view('groups.invite', compact('group'));
+    }
 
-		$exists = GroupInvitation::whereGroupId($id)->whereToProfileId($pid)->exists();
+    public function groupShortLinkRedirect(Request $request, $hid)
+    {
+        $gid = HashidService::decode($hid);
+        $group = Group::findOrFail($gid);
 
-		return response()->json([
-			'gid' => $id,
-			'can_join' => (bool) $exists
-		]);
-	}
+        return redirect($group->url());
+    }
 
-	public function groupMemberInviteAccept(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$pid = $request->user()->profile_id;
-		$group = Group::findOrFail($id);
-		abort_if($group->isMember($pid), 422, 'Already a member');
+    public function groupInviteClaim(Request $request, $id)
+    {
+        $group = GroupService::get($id);
+        abort_if(! $group || empty($group), 404);
 
-		abort_if(!GroupInvitation::whereGroupId($id)->whereToProfileId($pid)->exists(), 422);
+        return view('groups.invite-claim', compact('group'));
+    }
 
-		$gm = new GroupMember;
-		$gm->group_id = $id;
-		$gm->profile_id = $pid;
-		$gm->role = 'member';
-		$gm->local_group = $group->local;
-		$gm->local_profile = true;
-		$gm->join_request = false;
-		$gm->save();
+    public function groupMemberInviteCheck(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $pid = $request->user()->profile_id;
+        $group = Group::findOrFail($id);
+        abort_if($group->isMember($pid), 422, 'Already a member');
 
-		GroupInvitation::whereGroupId($id)->whereToProfileId($pid)->delete();
-		GroupService::del($id);
-		GroupService::delSelf($id, $pid);
+        $exists = GroupInvitation::whereGroupId($id)->whereToProfileId($pid)->exists();
 
-		return ['next_url' => $group->url()];
-	}
+        return response()->json([
+            'gid' => $id,
+            'can_join' => (bool) $exists,
+        ]);
+    }
 
-	public function groupMemberInviteDecline(Request $request, $id)
-	{
-		abort_if(!$request->user(), 404);
-		$pid = $request->user()->profile_id;
-		$group = Group::findOrFail($id);
-		abort_if($group->isMember($pid), 422, 'Already a member');
-		return ['next_url' => '/'];
-	}
+    public function groupMemberInviteAccept(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $pid = $request->user()->profile_id;
+        $group = Group::findOrFail($id);
+        abort_if($group->isMember($pid), 422, 'Already a member');
+
+        abort_if(! GroupInvitation::whereGroupId($id)->whereToProfileId($pid)->exists(), 422);
+
+        $gm = new GroupMember;
+        $gm->group_id = $id;
+        $gm->profile_id = $pid;
+        $gm->role = 'member';
+        $gm->local_group = $group->local;
+        $gm->local_profile = true;
+        $gm->join_request = false;
+        $gm->save();
+
+        GroupInvitation::whereGroupId($id)->whereToProfileId($pid)->delete();
+        GroupService::del($id);
+        GroupService::delSelf($id, $pid);
+
+        return ['next_url' => $group->url()];
+    }
+
+    public function groupMemberInviteDecline(Request $request, $id)
+    {
+        abort_if(! $request->user(), 404);
+        $pid = $request->user()->profile_id;
+        $group = Group::findOrFail($id);
+        abort_if($group->isMember($pid), 422, 'Already a member');
+
+        return ['next_url' => '/'];
+    }
 }
