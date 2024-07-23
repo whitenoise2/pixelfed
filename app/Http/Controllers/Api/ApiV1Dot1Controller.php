@@ -37,6 +37,7 @@ use Jenssegers\Agent\Agent;
 use League\Fractal;
 use League\Fractal\Serializer\ArraySerializer;
 use Mail;
+use NotificationChannels\Expo\ExpoPushToken;
 
 class ApiV1Dot1Controller extends Controller
 {
@@ -1007,5 +1008,66 @@ class ApiV1Dot1Controller extends Controller
         $account = AccountService::get($accountId);
 
         return $this->json($account, 200, $rateLimiting ? $limits : []);
+    }
+
+    public function getExpoPushNotifications(Request $request)
+    {
+        abort_if(! $request->user() || ! $request->user()->token(), 403);
+        abort_unless($request->user()->tokenCan('push'), 403);
+        abort_unless(config('services.expo.access_token') && strlen(config('services.expo.access_token')) > 10, 404, 'Push notifications are not supported on this server.');
+        $user = $request->user();
+        $res = [
+            'expo_token' => (bool) $user->expo_token,
+            'notify_like' => (bool) $user->notify_like,
+            'notify_follow' => (bool) $user->notify_follow,
+            'notify_mention' => (bool) $user->notify_mention,
+            'notify_comment' => (bool) $user->notify_comment,
+        ];
+
+        return $this->json($res);
+    }
+
+    public function disableExpoPushNotifications(Request $request)
+    {
+        abort_if(! $request->user() || ! $request->user()->token(), 403);
+        abort_unless($request->user()->tokenCan('push'), 403);
+        abort_unless(config('services.expo.access_token') && strlen(config('services.expo.access_token')) > 10, 404, 'Push notifications are not supported on this server.');
+        $request->user()->update([
+            'expo_token' => null,
+        ]);
+
+        return $this->json(['expo_token' => null]);
+    }
+
+    public function updateExpoPushNotifications(Request $request)
+    {
+        abort_if(! $request->user() || ! $request->user()->token(), 403);
+        abort_unless($request->user()->tokenCan('push'), 403);
+        abort_unless(config('services.expo.access_token') && strlen(config('services.expo.access_token')) > 10, 404, 'Push notifications are not supported on this server.');
+        $this->validate($request, [
+            'expo_token' => ['required', ExpoPushToken::rule()],
+            'notify_like' => 'sometimes',
+            'notify_follow' => 'sometimes',
+            'notify_mention' => 'sometimes',
+            'notify_comment' => 'sometimes',
+        ]);
+
+        $user = $request->user()->update([
+            'expo_token' => $request->input('expo_token'),
+            'notify_like' => $request->has('notify_like') && $request->boolean('notify_like'),
+            'notify_follow' => $request->has('notify_follow') && $request->boolean('notify_follow'),
+            'notify_mention' => $request->has('notify_mention') && $request->boolean('notify_mention'),
+            'notify_comment' => $request->has('notify_comment') && $request->boolean('notify_comment'),
+        ]);
+
+        $res = [
+            'expo_token' => (bool) $request->user()->expo_token,
+            'notify_like' => (bool) $request->user()->notify_like,
+            'notify_follow' => (bool) $request->user()->notify_follow,
+            'notify_mention' => (bool) $request->user()->notify_mention,
+            'notify_comment' => (bool) $request->user()->notify_comment,
+        ];
+
+        return $this->json($res);
     }
 }
