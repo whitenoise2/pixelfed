@@ -13,6 +13,8 @@ use App\Profile;
 use App\Models\Group;
 use App\Models\GroupMember;
 use App\Models\GroupInvitation;
+use App\Util\ActivityPub\Helpers;
+use App\Services\Groups\GroupActivityPubService;
 
 class GroupsSearchController extends Controller
 {
@@ -118,32 +120,34 @@ class GroupsSearchController extends Controller
     {
         abort_if(!$request->user(), 404);
         $this->validate($request, [
-            'q' => 'required|min:2|max:40',
+            'q' => 'required|min:2|max:140',
             'v' => 'required|in:0.2'
         ]);
         $q = $request->input('q');
-        $key = 'groups:search:global:by_name:' . hash('sha256', $q);
 
-        if(RateLimiter::tooManyAttempts('groups:search:global:'.$request->user()->id, 25) ) {
-            return response()->json([
-                'error' => [
-                    'message' => 'Too many attempts, please try again later'
-                ]
-            ], 422);
+        if(str_starts_with($q, 'https://')) {
+            $res = Helpers::getSignedFetch($q);
+            if($res && $res = json_decode($res, true)) {
+
+            }
+            if($res && isset($res['type']) && in_array($res['type'], ['Group', 'Note', 'Page'])) {
+                if($res['type'] === 'Group') {
+                    return GroupActivityPubService::fetchGroup($q, true);
+                }
+                $resp = GroupActivityPubService::fetchGroupPost($q, true);
+                $resp['name'] = 'Group Post';
+                $resp['url'] = '/groups/' . $resp['group_id'] . '/p/' . $resp['id'];
+                return [$resp];
+            }
         }
-
-        RateLimiter::hit('groups:search:global:'.$request->user()->id);
-
-        return Cache::remember($key, 3600, function() use($q) {
-            return Group::whereNull('status')
-                ->where('name', 'like', '%' . $q . '%')
-                ->orderBy('id')
-                ->take(10)
-                ->pluck('id')
-                ->map(function($group) {
-                    return GroupService::get($group);
-                });
-        });
+        return Group::whereNull('status')
+            ->where('name', 'like', '%' . $q . '%')
+            ->orderBy('id')
+            ->take(10)
+            ->pluck('id')
+            ->map(function($group) {
+                return GroupService::get($group);
+            });
     }
 
     public function searchLocalAutocomplete(Request $request)
