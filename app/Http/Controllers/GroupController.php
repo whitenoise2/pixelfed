@@ -293,67 +293,6 @@ class GroupController extends GroupFederationController
 		return GroupService::get($group->id, $pid);
 	}
 
-	// public function likePost(Request $request)
-	// {
-	// 	$this->validate($request, [
-	// 		'gid' => 'required|exists:groups,id',
-	// 		'sid' => 'required|exists:group_posts,id'
-	// 	]);
-
-	// 	$pid = $request->user()->profile_id;
-	// 	$gid = $request->input('gid');
-	// 	$sid = $request->input('sid');
-
-	// 	$group = Group::findOrFail($gid);
-	// 	abort_if(!GroupService::canLike($gid, $pid), 422, 'You cannot interact with this content at this time');
-	// 	abort_if(!$group->isMember($pid), 403, 'Not a member of group.');
-	// 	$gp = GroupPost::whereGroupId($group->id)->findOrFail($sid);
-	// 	$action = false;
-
-	// 	if (GroupLike::whereGroupId($gid)->whereStatusId($sid)->whereProfileId($pid)->exists()) {
-	// 		$like = GroupLike::whereProfileId($pid)->whereStatusId($sid)->firstOrFail();
-	// 		// UnlikePipeline::dispatch($like);
-	// 		$count = $gp->likes_count - 1;
-	// 		$action = 'group:unlike';
-	// 	} else {
-	// 		$count = $gp->likes_count;
-	// 		$like = GroupLike::firstOrCreate([
-    //             'group_id' => $gid,
-	// 			'profile_id' => $pid,
-	// 			'status_id' => $sid
-	// 		]);
-	// 		if($like->wasRecentlyCreated == true) {
-	// 			$count++;
-	// 			$gp->likes_count = $count;
-	// 			$like->save();
-	// 			$gp->save();
-	// 			// LikePipeline::dispatch($like);
-	// 			$action = 'group:like';
-	// 		}
-	// 	}
-
-	// 	if($action) {
-	// 		GroupService::log(
-	// 			$group->id,
-	// 			$pid,
-	// 			$action,
-	// 			[
-	// 				'type' => $gp->type,
-	// 				'status_id' => $gp->id
-	// 			],
-	// 			GroupPost::class,
-	// 			$gp->id
-	// 		);
-	// 	}
-
-	// 	// Cache::forget('status:'.$status->id.':likedby:userid:'.$request->user()->id);
-	// 	// StatusService::del($status->id);
-
-	// 	$response = ['code' => 200, 'msg' => 'Like saved', 'count' => $count];
-
-	// 	return $response;
-	// }
-
 	public function groupLeave(Request $request, $id)
 	{
 		abort_if(!$request->user(), 404);
@@ -651,24 +590,12 @@ class GroupController extends GroupFederationController
 			return response()->view('groups.unavailable')->setStatusCode(404);
 		}
 
-		// $gm = GroupMember::whereGroupId($id)
-		// 	->whereProfileId($pid)
-		// 	->firstOrFail();
-
-		// $group = json_encode(GroupService::get($id));
-		// $profile = AccountService::get($pid);
-		// $profile['group'] = [
-		// 	'joined' => $gm->created_at->format('M d, Y'),
-		// 	'role' => $gm->role
-		// ];
-		// $profile['relationship'] = RelationshipService::get($cid, $pid);
-		// $profile = json_encode($profile);
 		return view('layouts.spa');
 	}
 
 	public function showProfileByUsername(Request $request, $id, $pid)
 	{
-		// abort_if(!$request->user(), 404);
+		abort_if(!$request->user(), 404);
 		if(!$request->user()) {
 			return redirect("/{$pid}");
 		}
