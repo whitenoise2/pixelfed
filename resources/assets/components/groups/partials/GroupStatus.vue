@@ -593,6 +593,9 @@
                 get() {
                     if(this.prestatus) {
                         const gid = this.prestatus.gid;
+                        if(this.prestatus.content == null) {
+                            return ""
+                        }
                         return autoLink(
                             this.prestatus.content,
                             {
