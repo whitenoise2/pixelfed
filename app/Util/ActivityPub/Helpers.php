@@ -858,6 +858,11 @@ class Helpers
         return self::profileFirstOrNew($url);
     }
 
+    public static function getSignedFetch($url)
+    {
+        return ActivityPubFetchService::get($url);
+    }
+
     public static function sendSignedObject($profile, $url, $body)
     {
         if (app()->environment() !== 'production') {
