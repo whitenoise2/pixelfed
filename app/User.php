@@ -28,7 +28,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             '2fa_setup_at' => 'datetime',
             'last_active_at' => 'datetime',
-            'expo_token' => ExpoPushToken::class,
         ];
     }
 
@@ -127,7 +126,7 @@ class User extends Authenticatable
         return AvatarService::get($this->profile_id);
     }
 
-    public function routeNotificationForExpo(): ?ExpoPushToken
+    public function routeNotificationForExpo()
     {
         return $this->expo_token;
     }
