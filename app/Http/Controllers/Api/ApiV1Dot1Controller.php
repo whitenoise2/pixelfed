@@ -1128,15 +1128,6 @@ class ApiV1Dot1Controller extends Controller
         }
         $user = $request->user();
 
-        $limitKey = 'compose:rate-limit:media-upload:'.$user->id;
-        $limitTtl = now()->addMinutes(15);
-        $limitReached = Cache::remember($limitKey, $limitTtl, function () use ($user) {
-            $dailyLimit = Media::whereUserId($user->id)->where('created_at', '>', now()->subDays(1))->count();
-
-            return $dailyLimit >= 1250;
-        });
-        abort_if($limitReached == true, 429);
-
         if ($user->has_roles) {
             abort_if(! UserRoleService::can('can-post', $user->id), 403, 'Invalid permissions for this action');
         }
@@ -1152,9 +1143,7 @@ class ApiV1Dot1Controller extends Controller
                 abort(403, 'Account size limit reached.');
             }
         }
-
-        abort_if($limitReached == true, 429);
-
+        $limitKey = 'compose:rate-limit:media-upload:'.$user->id;
         $photo = $request->file('file');
 
         $mimes = explode(',', config_cache('pixelfed.media_types'));
