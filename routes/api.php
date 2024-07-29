@@ -267,6 +267,8 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::post('push-notifications/update', 'Api\ApiV1Dot1Controller@updateExpoPushNotifications')->middleware($middleware);
             Route::post('push-notifications/disable', 'Api\ApiV1Dot1Controller@disableExpoPushNotifications')->middleware($middleware);
         });
+
+        Route::post('status/create', 'Api\ApiV1Dot1Controller@statusCreate')->middleware($middleware);
     });
 
     Route::group(['prefix' => 'live'], function() use($middleware) {

@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\AccountLog;
 use App\EmailVerification;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\StatusController;
 use App\Http\Resources\StatusStateless;
+use App\Jobs\ImageOptimizePipeline\ImageOptimize;
 use App\Jobs\ReportPipeline\ReportNotifyAdminViaEmail;
+use App\Jobs\StatusPipeline\NewStatusPipeline;
 use App\Jobs\StatusPipeline\RemoteStatusDelete;
 use App\Jobs\StatusPipeline\StatusDelete;
+use App\Jobs\VideoPipeline\VideoThumbnail;
 use App\Mail\ConfirmAppEmail;
 use App\Mail\PasswordChange;
+use App\Media;
 use App\Place;
 use App\Profile;
 use App\Report;
@@ -18,6 +23,8 @@ use App\Services\AccountService;
 use App\Services\BouncerService;
 use App\Services\EmailService;
 use App\Services\FollowerService;
+use App\Services\MediaBlocklistService;
+use App\Services\MediaPathService;
 use App\Services\NetworkTimelineService;
 use App\Services\ProfileStatusService;
 use App\Services\PublicTimelineService;
@@ -26,6 +33,7 @@ use App\Status;
 use App\StatusArchived;
 use App\User;
 use App\UserSetting;
+use App\Util\Lexer\Autolink;
 use App\Util\Lexer\RestrictedNames;
 use Cache;
 use DB;
@@ -1067,6 +1075,183 @@ class ApiV1Dot1Controller extends Controller
             'notify_mention' => (bool) $request->user()->notify_mention,
             'notify_comment' => (bool) $request->user()->notify_comment,
         ];
+
+        return $this->json($res);
+    }
+
+    /**
+     * POST /api/v1.1/status/create
+     *
+     *
+     * @return StatusTransformer
+     */
+    public function statusCreate(Request $request)
+    {
+        abort_if(! $request->user() || ! $request->user()->token(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
+
+        $this->validate($request, [
+            'status' => 'nullable|string|max:'.(int) config_cache('pixelfed.max_caption_length'),
+            'file' => [
+                'required',
+                'file',
+                'mimetypes:'.config_cache('pixelfed.media_types'),
+                'max:'.config_cache('pixelfed.max_photo_size'),
+                function ($attribute, $value, $fail) {
+                    if (is_array($value) && count($value) > 1) {
+                        $fail('Only one file can be uploaded at a time.');
+                    }
+                },
+            ],
+            'sensitive' => 'nullable',
+            'visibility' => 'string|in:private,unlisted,public',
+            'spoiler_text' => 'sometimes|max:140',
+        ]);
+
+        if ($request->hasHeader('idempotency-key')) {
+            $key = 'pf:api:v1:status:idempotency-key:'.$request->user()->id.':'.hash('sha1', $request->header('idempotency-key'));
+            $exists = Cache::has($key);
+            abort_if($exists, 400, 'Duplicate idempotency key.');
+            Cache::put($key, 1, 3600);
+        }
+
+        if (config('costar.enabled') == true) {
+            $blockedKeywords = config('costar.keyword.block');
+            if ($blockedKeywords !== null && $request->status) {
+                $keywords = config('costar.keyword.block');
+                foreach ($keywords as $kw) {
+                    if (Str::contains($request->status, $kw) == true) {
+                        abort(400, 'Invalid object. Contains banned keyword.');
+                    }
+                }
+            }
+        }
+        $user = $request->user();
+
+        $limitKey = 'compose:rate-limit:media-upload:'.$user->id;
+        $limitTtl = now()->addMinutes(15);
+        $limitReached = Cache::remember($limitKey, $limitTtl, function () use ($user) {
+            $dailyLimit = Media::whereUserId($user->id)->where('created_at', '>', now()->subDays(1))->count();
+
+            return $dailyLimit >= 1250;
+        });
+        abort_if($limitReached == true, 429);
+
+        if ($user->has_roles) {
+            abort_if(! UserRoleService::can('can-post', $user->id), 403, 'Invalid permissions for this action');
+        }
+
+        $profile = $user->profile;
+
+        if (config_cache('pixelfed.enforce_account_limit') == true) {
+            $size = Cache::remember($user->storageUsedKey(), now()->addDays(3), function () use ($user) {
+                return Media::whereUserId($user->id)->sum('size') / 1000;
+            });
+            $limit = (int) config_cache('pixelfed.max_account_size');
+            if ($size >= $limit) {
+                abort(403, 'Account size limit reached.');
+            }
+        }
+
+        abort_if($limitReached == true, 429);
+
+        $photo = $request->file('file');
+
+        $mimes = explode(',', config_cache('pixelfed.media_types'));
+        if (in_array($photo->getMimeType(), $mimes) == false) {
+            abort(403, 'Invalid or unsupported mime type.');
+        }
+
+        $storagePath = MediaPathService::get($user, 2);
+        $path = $photo->storePublicly($storagePath);
+        $hash = \hash_file('sha256', $photo);
+        $license = null;
+        $mime = $photo->getMimeType();
+
+        $settings = UserSetting::whereUserId($user->id)->first();
+
+        if ($settings && ! empty($settings->compose_settings)) {
+            $compose = $settings->compose_settings;
+
+            if (isset($compose['default_license']) && $compose['default_license'] != 1) {
+                $license = $compose['default_license'];
+            }
+        }
+
+        abort_if(MediaBlocklistService::exists($hash) == true, 451);
+
+        $visibility = $profile->is_private ? 'private' : (
+            $profile->unlisted == true &&
+            $request->input('visibility', 'public') == 'public' ?
+            'unlisted' :
+            $request->input('visibility', 'public'));
+
+        if ($user->last_active_at == null) {
+            return [];
+        }
+
+        $content = strip_tags($request->input('status'));
+        $rendered = Autolink::create()->autolink($content);
+        $cw = $user->profile->cw == true ? true : $request->boolean('sensitive', false);
+        $spoilerText = $cw && $request->filled('spoiler_text') ? $request->input('spoiler_text') : null;
+
+        $status = new Status;
+        $status->caption = $content;
+        $status->rendered = $rendered;
+        $status->profile_id = $user->profile_id;
+        $status->is_nsfw = $cw;
+        $status->cw_summary = $spoilerText;
+        $status->scope = $visibility;
+        $status->visibility = $visibility;
+        $status->type = StatusController::mimeTypeCheck([$mime]);
+        $status->save();
+
+        if (! $status) {
+            abort(500, 'An error occured.');
+        }
+
+        $media = new Media();
+        $media->status_id = $status->id;
+        $media->profile_id = $profile->id;
+        $media->user_id = $user->id;
+        $media->media_path = $path;
+        $media->original_sha256 = $hash;
+        $media->size = $photo->getSize();
+        $media->mime = $mime;
+        $media->order = 1;
+        $media->caption = $request->input('description');
+        if ($license) {
+            $media->license = $license;
+        }
+        $media->save();
+
+        switch ($media->mime) {
+            case 'image/jpeg':
+            case 'image/png':
+                ImageOptimize::dispatch($media)->onQueue('mmo');
+                break;
+
+            case 'video/mp4':
+                VideoThumbnail::dispatch($media)->onQueue('mmo');
+                $preview_url = '/storage/no-preview.png';
+                $url = '/storage/no-preview.png';
+                break;
+        }
+
+        NewStatusPipeline::dispatch($status);
+
+        Cache::forget('user:account:id:'.$user->id);
+        Cache::forget('_api:statuses:recent_9:'.$user->profile_id);
+        Cache::forget('profile:status_count:'.$user->profile_id);
+        Cache::forget($user->storageUsedKey());
+        Cache::forget('profile:embed:'.$status->profile_id);
+        Cache::forget($limitKey);
+
+        $res = StatusService::getMastodon($status->id, false);
+        $res['favourited'] = false;
+        $res['language'] = 'en';
+        $res['bookmarked'] = false;
+        $res['card'] = null;
 
         return $this->json($res);
     }
