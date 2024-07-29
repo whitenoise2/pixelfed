@@ -29,6 +29,7 @@ use App\Services\NetworkTimelineService;
 use App\Services\ProfileStatusService;
 use App\Services\PublicTimelineService;
 use App\Services\StatusService;
+use App\Services\UserStorageService;
 use App\Status;
 use App\StatusArchived;
 use App\User;
@@ -1134,17 +1135,20 @@ class ApiV1Dot1Controller extends Controller
 
         $profile = $user->profile;
 
-        if (config_cache('pixelfed.enforce_account_limit') == true) {
-            $size = Cache::remember($user->storageUsedKey(), now()->addDays(3), function () use ($user) {
-                return Media::whereUserId($user->id)->sum('size') / 1000;
-            });
+        $limitKey = 'compose:rate-limit:media-upload:'.$user->id;
+        $photo = $request->file('file');
+        $fileSize = $photo->getSize();
+        $sizeInKbs = (int) ceil($fileSize / 1000);
+        $accountSize = UserStorageService::get($user->id);
+        abort_if($accountSize === -1, 403, 'Invalid request.');
+        $updatedAccountSize = (int) $accountSize + (int) $sizeInKbs;
+
+        if ((bool) config_cache('pixelfed.enforce_account_limit') == true) {
             $limit = (int) config_cache('pixelfed.max_account_size');
-            if ($size >= $limit) {
+            if ($updatedAccountSize >= $limit) {
                 abort(403, 'Account size limit reached.');
             }
         }
-        $limitKey = 'compose:rate-limit:media-upload:'.$user->id;
-        $photo = $request->file('file');
 
         $mimes = explode(',', config_cache('pixelfed.media_types'));
         if (in_array($photo->getMimeType(), $mimes) == false) {
@@ -1226,6 +1230,10 @@ class ApiV1Dot1Controller extends Controller
                 $url = '/storage/no-preview.png';
                 break;
         }
+
+        $user->storage_used = (int) $updatedAccountSize;
+        $user->storage_used_updated_at = now();
+        $user->save();
 
         NewStatusPipeline::dispatch($status);
 
