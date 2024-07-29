@@ -60,6 +60,7 @@ use App\Services\SnowflakeService;
 use App\Services\StatusService;
 use App\Services\UserFilterService;
 use App\Services\UserRoleService;
+use App\Services\UserStorageService;
 use App\Status;
 use App\StatusHashtag;
 use App\Transformer\Api\Mastodon\v1\AccountTransformer;
@@ -1806,20 +1807,22 @@ class ApiV1Controller extends Controller
 
         $profile = $user->profile;
 
-        if (config_cache('pixelfed.enforce_account_limit') == true) {
-            $size = Cache::remember($user->storageUsedKey(), now()->addDays(3), function () use ($user) {
-                return Media::whereUserId($user->id)->sum('size') / 1000;
-            });
+        $accountSize = UserStorageService::get($user->id);
+        abort_if($accountSize === -1, 403, 'Invalid request.');
+        $photo = $request->file('file');
+        $fileSize = $photo->getSize();
+        $sizeInKbs = (int) ceil($fileSize / 1000);
+        $updatedAccountSize = (int) $accountSize + (int) $sizeInKbs;
+
+        if ((bool) config_cache('pixelfed.enforce_account_limit') == true) {
             $limit = (int) config_cache('pixelfed.max_account_size');
-            if ($size >= $limit) {
+            if ($updatedAccountSize >= $limit) {
                 abort(403, 'Account size limit reached.');
             }
         }
 
         $filterClass = in_array($request->input('filter_class'), Filter::classes()) ? $request->input('filter_class') : null;
         $filterName = in_array($request->input('filter_name'), Filter::names()) ? $request->input('filter_name') : null;
-
-        $photo = $request->file('file');
 
         $mimes = explode(',', config_cache('pixelfed.media_types'));
         if (in_array($photo->getMimeType(), $mimes) == false) {
@@ -1882,6 +1885,10 @@ class ApiV1Controller extends Controller
                 $url = '/storage/no-preview.png';
                 break;
         }
+
+        $user->storage_used = (int) $updatedAccountSize;
+        $user->storage_used_updated_at = now();
+        $user->save();
 
         Cache::forget($limitKey);
         $resource = new Fractal\Resource\Item($media, new MediaTransformer());
@@ -2023,20 +2030,22 @@ class ApiV1Controller extends Controller
 
         $profile = $user->profile;
 
-        if (config_cache('pixelfed.enforce_account_limit') == true) {
-            $size = Cache::remember($user->storageUsedKey(), now()->addDays(3), function () use ($user) {
-                return Media::whereUserId($user->id)->sum('size') / 1000;
-            });
+        $accountSize = UserStorageService::get($user->id);
+        abort_if($accountSize === -1, 403, 'Invalid request.');
+        $photo = $request->file('file');
+        $fileSize = $photo->getSize();
+        $sizeInKbs = (int) ceil($fileSize / 1000);
+        $updatedAccountSize = (int) $accountSize + (int) $sizeInKbs;
+
+        if ((bool) config_cache('pixelfed.enforce_account_limit') == true) {
             $limit = (int) config_cache('pixelfed.max_account_size');
-            if ($size >= $limit) {
+            if ($updatedAccountSize >= $limit) {
                 abort(403, 'Account size limit reached.');
             }
         }
 
         $filterClass = in_array($request->input('filter_class'), Filter::classes()) ? $request->input('filter_class') : null;
         $filterName = in_array($request->input('filter_name'), Filter::names()) ? $request->input('filter_name') : null;
-
-        $photo = $request->file('file');
 
         $mimes = explode(',', config_cache('pixelfed.media_types'));
         if (in_array($photo->getMimeType(), $mimes) == false) {
@@ -2104,6 +2113,10 @@ class ApiV1Controller extends Controller
                 $url = '/storage/no-preview.png';
                 break;
         }
+
+        $user->storage_used = (int) $updatedAccountSize;
+        $user->storage_used_updated_at = now();
+        $user->save();
 
         Cache::forget($limitKey);
         $resource = new Fractal\Resource\Item($media, new MediaTransformer());
