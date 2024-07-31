@@ -2,12 +2,17 @@
 
 ## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.3...dev)
 
+### Added
+- Implement Admin Domain Blocks API (Mastodon API Compatible) [ThisIsMissEm](https://github.com/ThisIsMissEm) ([#5021](https://github.com/pixelfed/pixelfed/pull/5021))
+
 ### Updates
 - Update ApiV1Controller, add support for notification filter types ([f61159a1](https://github.com/pixelfed/pixelfed/commit/f61159a1))
 - Update ApiV1Dot1Controller, fix mutual api ([a8bb97b2](https://github.com/pixelfed/pixelfed/commit/a8bb97b2))
 - Update ApiV1Controller, fix /api/v1/favourits pagination ([72f68160](https://github.com/pixelfed/pixelfed/commit/72f68160))
 - Update RegisterController, update username constraints, require atleast one alpha char ([dd6e3cc2](https://github.com/pixelfed/pixelfed/commit/dd6e3cc2))
 - Update AdminUser, fix entity casting ([cb5620d4](https://github.com/pixelfed/pixelfed/commit/cb5620d4))
+- Update instance config, update network cache feed max_hours_old falloff to 90 days instead of 6 hours to allow for less active instances to have more results ([c042d135](https://github.com/pixelfed/pixelfed/commit/c042d135))
+- Update ApiV1Dot1Controller, add new single media status create endpoint ([b03f5cec](https://github.com/pixelfed/pixelfed/commit/b03f5cec))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
