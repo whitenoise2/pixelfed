@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
-use Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
             Passport::tokensExpireIn(now()->addDays(config('instance.oauth.token_expiration', 356)));
             Passport::refreshTokensExpireIn(now()->addDays(config('instance.oauth.refresh_expiration', 400)));
             Passport::enableImplicitGrant();
-            if(config('instance.oauth.pat.enabled')) {
+            if (config('instance.oauth.pat.enabled')) {
                 Passport::personalAccessClientId(config('instance.oauth.pat.id'));
             }
 

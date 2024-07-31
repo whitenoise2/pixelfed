@@ -8,6 +8,7 @@ use App\Jobs\SharePipeline\UndoSharePipeline;
 use App\Jobs\StatusPipeline\RemoteStatusDelete;
 use App\Jobs\StatusPipeline\StatusDelete;
 use App\Profile;
+use App\Services\AccountService;
 use App\Services\HashidService;
 use App\Services\ReblogService;
 use App\Services\StatusService;
@@ -34,8 +35,21 @@ class StatusController extends Controller
             }
         }
 
-        $user = Profile::whereNull('domain')->whereUsername($username)->firstOrFail();
+        $status = StatusService::get($id, false);
 
+        abort_if(
+            ! $status ||
+            ! isset($status['account'], $status['account']['username']) ||
+            $status['account']['username'] != $username ||
+            isset($status['reblog']), 404);
+
+        abort_if(! in_array($status['visibility'], ['public', 'unlisted']) && ! $request->user(), 403, 'Invalid permission');
+
+        if ($request->wantsJson() && (bool) config_cache('federation.activitypub.enabled')) {
+            return $this->showActivityPub($request, $status);
+        }
+
+        $user = Profile::whereNull('domain')->whereUsername($username)->firstOrFail();
         if ($user->status != null) {
             return ProfileController::accountCheck($user);
         }
@@ -70,18 +84,6 @@ class StatusController extends Controller
             }
         }
 
-        if ($request->user() && $request->user()->profile_id != $status->profile_id) {
-            StatusView::firstOrCreate([
-                'status_id' => $status->id,
-                'status_profile_id' => $status->profile_id,
-                'profile_id' => $request->user()->profile_id,
-            ]);
-        }
-
-        if ($request->wantsJson() && config_cache('federation.activitypub.enabled')) {
-            return $this->showActivityPub($request, $status);
-        }
-
         $template = $status->in_reply_to_id ? 'status.reply' : 'status.show';
 
         return view($template, compact('user', 'status'));
@@ -113,19 +115,41 @@ class StatusController extends Controller
             return response($res)->withHeaders(['X-Frame-Options' => 'ALLOWALL']);
         }
 
-        $profile = Profile::whereNull(['domain', 'status'])
-            ->whereIsPrivate(false)
-            ->whereUsername($username)
-            ->first();
+        $status = StatusService::get($id);
 
-        if (! $profile) {
+        if (
+            ! $status ||
+            ! isset($status['account'], $status['account']['id'], $status['local']) ||
+            ! $status['local'] ||
+            strtolower($status['account']['username']) !== strtolower($username)
+        ) {
+            $content = view('status.embed-removed');
+
+            return response($content, 404)->header('X-Frame-Options', 'ALLOWALL');
+        }
+
+        $profile = AccountService::get($status['account']['id'], true);
+
+        if (! $profile || $profile['locked'] || ! $profile['local']) {
             $content = view('status.embed-removed');
 
             return response($content)->header('X-Frame-Options', 'ALLOWALL');
         }
 
-        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile->id, 86400, function () use ($profile) {
-            $exists = AccountInterstitial::whereUserId($profile->user_id)->where('is_spam', 1)->count();
+        $embedCheck = AccountService::canEmbed($profile['id']);
+
+        if (! $embedCheck) {
+            $content = view('status.embed-removed');
+
+            return response($content)->header('X-Frame-Options', 'ALLOWALL');
+        }
+
+        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile['id'], 3600, function () use ($profile) {
+            $user = Profile::find($profile['id']);
+            if (! $user) {
+                return true;
+            }
+            $exists = AccountInterstitial::whereUserId($user->user_id)->where('is_spam', 1)->count();
             if ($exists) {
                 return true;
             }
@@ -138,17 +162,22 @@ class StatusController extends Controller
 
             return response($res)->withHeaders(['X-Frame-Options' => 'ALLOWALL']);
         }
-        $status = Status::whereProfileId($profile->id)
-            ->whereNull('uri')
-            ->whereScope('public')
-            ->whereIsNsfw(false)
-            ->whereIn('type', ['photo', 'video', 'photo:album'])
-            ->find($id);
-        if (! $status) {
+
+        $status = StatusService::get($id);
+
+        if (
+            ! $status ||
+            ! isset($status['account'], $status['account']['id']) ||
+            intval($status['account']['id']) !== intval($profile['id']) ||
+            $status['sensitive'] ||
+            $status['visibility'] !== 'public' ||
+            ! in_array($status['pf_type'], ['photo', 'photo:album'])
+        ) {
             $content = view('status.embed-removed');
 
             return response($content)->header('X-Frame-Options', 'ALLOWALL');
         }
+
         $showLikes = $request->filled('likes') && $request->likes == true;
         $showCaption = $request->filled('caption') && $request->caption !== false;
         $layout = $request->filled('layout') && $request->layout == 'compact' ? 'compact' : 'full';
@@ -319,12 +348,17 @@ class StatusController extends Controller
 
     public function showActivityPub(Request $request, $status)
     {
-        $object = $status->type == 'poll' ? new Question() : new Note();
-        $fractal = new Fractal\Manager();
-        $resource = new Fractal\Resource\Item($status, $object);
-        $res = $fractal->createData($resource)->toArray();
+        $key = 'pf:status:ap:v1:sid:'.$status['id'];
 
-        return response()->json($res['data'], 200, ['Content-Type' => 'application/activity+json'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return Cache::remember($key, 3600, function () use ($status) {
+            $status = Status::findOrFail($status['id']);
+            $object = $status->type == 'poll' ? new Question() : new Note();
+            $fractal = new Fractal\Manager();
+            $resource = new Fractal\Resource\Item($status, $object);
+            $res = $fractal->createData($resource)->toArray();
+
+            return response()->json($res['data'], 200, ['Content-Type' => 'application/activity+json'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        });
     }
 
     public function edit(Request $request, $username, $id)

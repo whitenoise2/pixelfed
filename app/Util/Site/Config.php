@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Config
 {
-    const CACHE_KEY = 'api:site:configuration:_v0.8';
+    const CACHE_KEY = 'api:site:configuration:_v0.9';
 
     public static function get()
     {
@@ -36,10 +36,10 @@ class Config
                     'album_limit' => (int) config_cache('pixelfed.max_album_length'),
                     'image_quality' => (int) config_cache('pixelfed.image_quality'),
 
-                    'max_collection_length' => (int) config('pixelfed.max_collection_length', 18),
+                    'max_collection_length' => (int) config_cache('pixelfed.max_collection_length', 18),
 
-                    'optimize_image' => (bool) config('pixelfed.optimize_image'),
-                    'optimize_video' => (bool) config('pixelfed.optimize_video'),
+                    'optimize_image' => (bool) config_cache('pixelfed.optimize_image'),
+                    'optimize_video' => (bool) config_cache('pixelfed.optimize_video'),
 
                     'media_types' => config_cache('pixelfed.media_types'),
                     'mime_types' => config_cache('pixelfed.media_types') ? explode(',', config_cache('pixelfed.media_types')) : [],
@@ -97,6 +97,7 @@ class Config
                         ],
                     ],
                     'hls' => $hls,
+                    'groups' => (bool) config('groups.enabled'),
                 ],
             ];
         });

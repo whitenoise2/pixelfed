@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Status;
 use App\User;
 use App\Util\Site\Nodeinfo;
 use Illuminate\Support\Facades\Cache;
@@ -18,9 +17,7 @@ class LandingService
             return User::count();
         });
 
-        $postCount = Cache::remember('api:nodeinfo:statuses', 21600, function () {
-            return Status::whereLocal(true)->count();
-        });
+        $postCount = InstanceService::totalLocalStatuses();
 
         $contactAccount = Cache::remember('api:v1:instance-data:contact', 604800, function () {
             if (config_cache('instance.admin.pid')) {
@@ -53,8 +50,8 @@ class LandingService
             'name' => config_cache('app.name'),
             'url' => config_cache('app.url'),
             'domain' => config('pixelfed.domain.app'),
-            'show_directory' => config_cache('instance.landing.show_directory'),
-            'show_explore_feed' => config_cache('instance.landing.show_explore'),
+            'show_directory' => (bool) config_cache('instance.landing.show_directory'),
+            'show_explore_feed' => (bool) config_cache('instance.landing.show_explore'),
             'open_registration' => (bool) $openReg,
             'curated_onboarding' => (bool) config_cache('instance.curated_registration.enabled'),
             'version' => config('pixelfed.version'),
@@ -85,7 +82,7 @@ class LandingService
                 'media_types' => config_cache('pixelfed.media_types'),
             ],
             'features' => [
-                'federation' => config_cache('federation.activitypub.enabled'),
+                'federation' => (bool) config_cache('federation.activitypub.enabled'),
                 'timelines' => [
                     'local' => true,
                     'network' => (bool) config_cache('federation.network_timeline'),

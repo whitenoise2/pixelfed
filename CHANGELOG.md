@@ -1,6 +1,66 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.11.13...dev)
+## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.3...dev)
+
+### Updates
+- Update ApiV1Controller, add support for notification filter types ([f61159a1](https://github.com/pixelfed/pixelfed/commit/f61159a1))
+- Update ApiV1Dot1Controller, fix mutual api ([a8bb97b2](https://github.com/pixelfed/pixelfed/commit/a8bb97b2))
+- Update ApiV1Controller, fix /api/v1/favourits pagination ([72f68160](https://github.com/pixelfed/pixelfed/commit/72f68160))
+- Update RegisterController, update username constraints, require atleast one alpha char ([dd6e3cc2](https://github.com/pixelfed/pixelfed/commit/dd6e3cc2))
+- Update AdminUser, fix entity casting ([cb5620d4](https://github.com/pixelfed/pixelfed/commit/cb5620d4))
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
+
+## [v0.12.3 (2024-07-01)](https://github.com/pixelfed/pixelfed/compare/v0.12.2...v0.12.3)
+
+### Updates
+- Fix migrations bug ([4d1180b1](https://github.com/pixelfed/pixelfed/commit/4d1180b1))
+
+## [v0.12.2 (2024-07-01)](https://github.com/pixelfed/pixelfed/compare/v0.12.1...v0.12.2)
+
+### Framework
+- Updated to Laravel 11 (requires php 8.2+)
+
+### Added
+- New api/v1/instance/peers API endpoint, disabled by default ([4aad1c22](https://github.com/pixelfed/pixelfed/commit/4aad1c22))
+- Added disable_embeds setting, and fix cache invalidation in other settings ([c5e7e917](https://github.com/pixelfed/pixelfed/commit/c5e7e917))
+
+### Updates
+- Update DirectMessageController, add 72 hour delay for new accounts before they can send a DM ([61d105fd](https://github.com/pixelfed/pixelfed/commit/61d105fd))
+- Update AdminCuratedRegisterController, increase message length from 1000 to 3000 ([9a5e3471](https://github.com/pixelfed/pixelfed/commit/9a5e3471))
+- Update ApiV1Controller, add pe (pixelfed entity) support to /api/v1/statuses/{id}/context endpoint ([d645d6ca](https://github.com/pixelfed/pixelfed/commit/d645d6ca))
+- Update Admin Curated Onboarding, add select-all/mass action operations ([b22cac94](https://github.com/pixelfed/pixelfed/commit/b22cac94))
+- Update AdminCuratedRegisterController, fix existing account approval ([cbb96cfd](https://github.com/pixelfed/pixelfed/commit/cbb96cfd))
+- Update ActivityPubFetchService, fix Friendica bug ([e4edc6f1](https://github.com/pixelfed/pixelfed/commit/e4edc6f1))
+- Update ProfileController, fix atom feed cache ttl. Fixes #5093 ([921e2965](https://github.com/pixelfed/pixelfed/commit/921e2965))
+- Update CollectionsController, add new self route ([bc2495c6](https://github.com/pixelfed/pixelfed/commit/bc2495c6))
+- Update FederationController, add webfinger support for actor uri. Fixes #5068 ([24194f7d](https://github.com/pixelfed/pixelfed/commit/24194f7d))
+- Update FetchNodeinfoPipeline, set last_fetched_at timestamp ([a7fce91e](https://github.com/pixelfed/pixelfed/commit/a7fce91e))
+- Update task scheduler, add weekly instance scan to check nodeinfo for known instances ([dc6b9f46](https://github.com/pixelfed/pixelfed/commit/dc6b9f46))
+- Update AP fetch service and domain service ([42915ff9](https://github.com/pixelfed/pixelfed/commit/42915ff9))
+- Update ApiV1Controller, add settings to verify_credentials endpoint ([3f4e0b94](https://github.com/pixelfed/pixelfed/commit/3f4e0b94))
+- Update ApiV1Controller, fix update_credentials boolean handling ([19c62aaa](https://github.com/pixelfed/pixelfed/commit/19c62aaa))
+- Update ApiV1Controller, fix cache invalidation bug in update_credentials ([d56a4108](https://github.com/pixelfed/pixelfed/commit/d56a4108))
+- Update ApiV1Controller, fix self relationship response ([28bc7aa4](https://github.com/pixelfed/pixelfed/commit/28bc7aa4))
+- Update ApiController, add pe support to like/unlike endpoints ([679ef677](https://github.com/pixelfed/pixelfed/commit/679ef677))
+- Update ApiV1Dot1Controller, fix username to id endpoint ([4d6cea9a](https://github.com/pixelfed/pixelfed/commit/4d6cea9a))
+- Update StatusController, cache AP object ([a75b89b2](https://github.com/pixelfed/pixelfed/commit/a75b89b2))
+- Update status embed, add support for album carousels ([f4898db9](https://github.com/pixelfed/pixelfed/commit/f4898db9))
+- Update profile embeds, add support for albums ([4fd156c4](https://github.com/pixelfed/pixelfed/commit/4fd156c4))
+- Update DirectMessageController, add timestamps to threads ([b24d2554](https://github.com/pixelfed/pixelfed/commit/b24d2554))
+- Update DirectMessageController, add carousel entity to threads ([96f24f33](https://github.com/pixelfed/pixelfed/commit/96f24f33))
+- Update and refactor total local post count logic, cache value and schedule updates twice daily to eliminate the perf issue on larger instances ([4f2b8ed2](https://github.com/pixelfed/pixelfed/commit/4f2b8ed2))
+- Update Media model, fix broken thumbnail/gray thumbnail bug ([e33643c2](https://github.com/pixelfed/pixelfed/commit/e33643c2))
+- Update StatusController, fix unlisted post guest/ap access bug ([83098428](https://github.com/pixelfed/pixelfed/commit/83098428))
+- Update discover, add network trending using Beagle API ([2cae8b48](https://github.com/pixelfed/pixelfed/commit/2cae8b48))
+
+## [v0.12.1 (2024-05-07)](https://github.com/pixelfed/pixelfed/compare/v0.12.0...v0.12.1)
+
+### Updates
+- Update ApiV1Dot1Controller, fix in app registration bug that prevents proper auth flow due to missing oauth scopes ([cbf996c9](https://github.com/pixelfed/pixelfed/commit/cbf996c9))
+- Update ConfigCacheService, fix database race condition and fallback to file config and enable by default ([60a62b59](https://github.com/pixelfed/pixelfed/commit/60a62b59))
+
+## [v0.12.0 (2024-04-29)](https://github.com/pixelfed/pixelfed/compare/v0.11.13...v0.12.0)
 
 ### Updates
 
@@ -19,7 +79,58 @@
 - Update SiteController, add curatedOnboarding method that gracefully falls back to open registration when applicable ([95199843](https://github.com/pixelfed/pixelfed/commit/95199843))
 - Update AP transformers, add DeleteActor activity ([bcce1df6](https://github.com/pixelfed/pixelfed/commit/bcce1df6))
 - Update commands, add user account delete cli command to federate account deletion ([4aa0e25f](https://github.com/pixelfed/pixelfed/commit/4aa0e25f))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
+- Update web-api popular accounts route to its own method to remove the breaking oauth scope bug ([a4bc5ce3](https://github.com/pixelfed/pixelfed/commit/a4bc5ce3))
+- Update config cache ([5e4d4eff](https://github.com/pixelfed/pixelfed/commit/5e4d4eff))
+- Update Config, use config_cache ([7785a2da](https://github.com/pixelfed/pixelfed/commit/7785a2da))
+- Update ApiV1Dot1Controller, use config_cache for in-app registration ([b0cb4456](https://github.com/pixelfed/pixelfed/commit/b0cb4456))
+- Update captcha, use config_cache helper ([8a89e3c9](https://github.com/pixelfed/pixelfed/commit/8a89e3c9))
+- Update custom emoji, add config_cache support ([481314cd](https://github.com/pixelfed/pixelfed/commit/481314cd))
+- Update ProfileController, fix permalink redirect bug ([75081e60](https://github.com/pixelfed/pixelfed/commit/75081e60))
+- Update admin css, use font-display:swap for nucleo icons ([8a0c456e](https://github.com/pixelfed/pixelfed/commit/8a0c456e))
+- Update PixelfedDirectoryController, fix boolean cast bug ([f08aab22](https://github.com/pixelfed/pixelfed/commit/f08aab22))
+- Update PixelfedDirectoryController, use cached stats ([f2f2a809](https://github.com/pixelfed/pixelfed/commit/f2f2a809))
+- Update AdminDirectoryController, fix type casting ([ad506e90](https://github.com/pixelfed/pixelfed/commit/ad506e90))
+- Update image pipeline, use config_cache ([a72188a7](https://github.com/pixelfed/pixelfed/commit/a72188a7))
+- Update cloud storage, use config_cache ([665581d8](https://github.com/pixelfed/pixelfed/commit/665581d8))
+- Update pixelfed.max_album_length, use config_cache ([fecbe189](https://github.com/pixelfed/pixelfed/commit/fecbe189))
+- Update media_types, use config_cache ([d670de17](https://github.com/pixelfed/pixelfed/commit/d670de17))
+- Update landing settings, use config_cache ([40478f25](https://github.com/pixelfed/pixelfed/commit/40478f25))
+- Update activitypub setting, use config_cache ([5071aaf4](https://github.com/pixelfed/pixelfed/commit/5071aaf4))
+- Update oauth setting, use config_cache ([ce228f7f](https://github.com/pixelfed/pixelfed/commit/ce228f7f))
+- Update stories config, use config_cache ([d1adb109](https://github.com/pixelfed/pixelfed/commit/d1adb109))
+- Update ig import, use config_cache ([da0e0ffa](https://github.com/pixelfed/pixelfed/commit/da0e0ffa))
+- Update autospam config, use config_cache ([a76cb5f4](https://github.com/pixelfed/pixelfed/commit/a76cb5f4))
+- Update app.name config, use config_cache ([911446c0](https://github.com/pixelfed/pixelfed/commit/911446c0))
+- Update UserObserver, fix type casting ([949e9979](https://github.com/pixelfed/pixelfed/commit/949e9979))
+- Update user_filters, use config_cache ([6ce513f8](https://github.com/pixelfed/pixelfed/commit/6ce513f8))
+- Update filesystems config, add to config_cache ([087b2791](https://github.com/pixelfed/pixelfed/commit/087b2791))
+- Update web-admin routes, add setting api routes ([828a456f](https://github.com/pixelfed/pixelfed/commit/828a456f))
+- Update hashtag component ([cee979ed](https://github.com/pixelfed/pixelfed/commit/cee979ed))
+- Update AdminReadMore component, add .prevent to click action ([704e7b12](https://github.com/pixelfed/pixelfed/commit/704e7b12))
+- Update admin dashboard, add admin settings partials ([eb487123](https://github.com/pixelfed/pixelfed/commit/eb487123))
+- Update admin settings, refactor to vue component ([674e560f](https://github.com/pixelfed/pixelfed/commit/674e560f))
+- Update ConfigCacheService, encrypt keys at rest ([3628b462](https://github.com/pixelfed/pixelfed/commit/3628b462))
+- Update RemoteFollowImportRecent, use MediaPathService ([5162c070](https://github.com/pixelfed/pixelfed/commit/5162c070))
+- Update AdminSettingsController, add user filter max limit settings ([ac1f0748](https://github.com/pixelfed/pixelfed/commit/ac1f0748))
+- Update AdminSettingsController, add AdminSettingsService ([dcc5f416](https://github.com/pixelfed/pixelfed/commit/dcc5f416))
+- Update AdminSettings component, fix user settings ([aba1e13d](https://github.com/pixelfed/pixelfed/commit/aba1e13d))
+- Update AdminInstances component ([ec2fdd61](https://github.com/pixelfed/pixelfed/commit/ec2fdd61))
+- Update AdminSettings, add max_account_size support ([2dcbc1d5](https://github.com/pixelfed/pixelfed/commit/2dcbc1d5))
+- Update AdminSettings, use better validation for user integer settings ([d946afcc](https://github.com/pixelfed/pixelfed/commit/d946afcc))
+- Update spa sass, fix timestamp dark mode bug ([4147f7c5](https://github.com/pixelfed/pixelfed/commit/4147f7c5))
+- Update relationships view, fix unfollow hashtag bug. Fixes #5008 ([8c693640](https://github.com/pixelfed/pixelfed/commit/8c693640))
+- Update PrivacySettings controller, refresh RelationshipService when unmute/unblocking ([b7322b68](https://github.com/pixelfed/pixelfed/commit/b7322b68))
+- Update ApiV1Controller, improve refresh relations logic when (un)muting or (un)blocking ([b8e96a5f](https://github.com/pixelfed/pixelfed/commit/b8e96a5f))
+- Update context menu, add mute/block/unfollow actions and update relationship store accordingly ([81d1e0fd](https://github.com/pixelfed/pixelfed/commit/81d1e0fd))
+- Update docker env, fix config_cache. Fixes #5033 ([858fcbf6](https://github.com/pixelfed/pixelfed/commit/858fcbf6))
+- Update UnfollowPipeline, fix follower count cache bug ([6bdf73de](https://github.com/pixelfed/pixelfed/commit/6bdf73de))
+- Update VideoPresenter component, add webkit-playsinline attribute to video element to prevent the full screen video player ([ad032916](https://github.com/pixelfed/pixelfed/commit/ad032916))
+- Update VideoPlayer component, add playsinline attribute to video element ([8af23607](https://github.com/pixelfed/pixelfed/commit/8af23607))
+- Update StatusController, refactor status embeds ([9a7acc12](https://github.com/pixelfed/pixelfed/commit/9a7acc12))
+- Update ProfileController, refactor profile embeds ([8b8b1ffc](https://github.com/pixelfed/pixelfed/commit/8b8b1ffc))
+- Update profile embed view, fix height bug ([65166570](https://github.com/pixelfed/pixelfed/commit/65166570))
+- Update CustomEmojiService, only return local emoji ([7f8bba44](https://github.com/pixelfed/pixelfed/commit/7f8bba44))
+- Update Like model, increase max likes per day from 500 to 1500 ([4223119f](https://github.com/pixelfed/pixelfed/commit/4223119f))
 
 ## [v0.11.13 (2024-03-05)](https://github.com/pixelfed/pixelfed/compare/v0.11.12...v0.11.13)
 

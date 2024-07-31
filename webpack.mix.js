@@ -1,8 +1,10 @@
 let mix = require('laravel-mix');
 const fs = require("fs");
+const path = require("path");
 
 mix.before(() => {
-	fs.rmSync('public/js', { recursive: true, force: true });
+    fs.rmSync('public/css', { recursive: true, force: true });
+    fs.rmSync('public/js', { recursive: true, force: true });
 });
 
 
@@ -38,6 +40,9 @@ mix.js('resources/assets/js/app.js', 'public/js')
 .js('resources/assets/js/admin_invite.js', 'public/js')
 .js('resources/assets/js/landing.js', 'public/js')
 .js('resources/assets/js/remote_auth.js', 'public/js')
+.js('resources/assets/js/groups.js', 'public/js')
+.js('resources/assets/js/group-status.js', 'public/js')
+.js('resources/assets/js/group-topic-feed.js', 'public/js')
 .vue({ version: 2 });
 
 mix.extract();
@@ -46,31 +51,35 @@ mix.version();
 const TerserPlugin = require('terser-webpack-plugin');
 
 mix.options({
-	processCssUrls: false,
-	terser: {
-		parallel: true,
-		terserOptions: {
-			compress: true,
-			output: {
-				comments: false
-			}
-		}
-	}
+    processCssUrls: false,
+    terser: {
+        parallel: true,
+        terserOptions: {
+            compress: true,
+            output: {
+                comments: false
+            }
+        }
+    }
 })
+mix.alias({
+    '@': path.join(__dirname, 'resources/assets/components'),
+    '~': path.join(__dirname, 'resources/assets/js/components'),
+});
 mix.webpackConfig({
-	optimization: {
-		providedExports: false,
-		sideEffects: false,
-		usedExports: false,
-		minimize: true,
-		minimizer: [ new TerserPlugin({
-			extractComments: false,
-		})]
-	},
-	output: {
-		chunkFilename: 'js/[name].[chunkhash].js',
-	}
+    optimization: {
+        providedExports: false,
+        sideEffects: false,
+        usedExports: false,
+        minimize: true,
+        minimizer: [ new TerserPlugin({
+            extractComments: false,
+        })]
+    },
+    output: {
+        chunkFilename: 'js/[name].[chunkhash].js',
+    }
 });
 mix.autoload({
-	jquery: ['$', 'jQuery', 'window.jQuery']
+    jquery: ['$', 'jQuery', 'window.jQuery']
 });
