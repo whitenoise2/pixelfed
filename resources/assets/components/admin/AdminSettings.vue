@@ -64,6 +64,13 @@
                                         />
 
                                         <checkbox
+                                            name="Authorized Fetch Mode"
+                                            :value="features.authorized_fetch"
+                                            description="Strictly enforce domain restrictions by enabling Authorized Fetch mode."
+                                            @change="handleChange($event, 'features', 'authorized_fetch')"
+                                        />
+
+                                        <checkbox
                                             name="Account Migration"
                                             :value="features.account_migration"
                                             description="Allow local accounts to migrate to other local or remote accounts."
@@ -92,6 +99,13 @@
                                             description="Enable users to use the <span class='font-weight-bold'>experimental</span> Instagram Import support."
                                             @change="handleChange($event, 'features', 'instagram_import')"
                                         />
+
+                                        <!-- <checkbox
+                                            name="Allowlist Mode"
+                                            :value="features.activitypub_enabled"
+                                            description="Permit interactions only with instances you specifically authorize, both for sending and receiving."
+                                            @change="handleChange($event, 'features', 'activitypub_enabled')"
+                                        /> -->
 
                                         <checkbox
                                             name="Spam detection"
@@ -1268,6 +1282,7 @@
                     stories: this.features.stories,
                     instagram_import: this.features.instagram_import,
                     autospam_enabled: this.features.autospam_enabled,
+                    authorized_fetch: this.features.authorized_fetch,
                 }).then(res => {
                     this.isSubmitting = false;
                     this.isSubmittingTimeout = true;
