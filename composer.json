@@ -29,6 +29,7 @@
 		"laravel/ui": "^4.2",
 		"league/flysystem-aws-s3-v3": "^3.0",
 		"league/iso3166": "^2.1|^4.0",
+		"league/uri": "^7.4",
 		"pbmedia/laravel-ffmpeg": "^8.0",
 		"phpseclib/phpseclib": "~2.0",
 		"pixelfed/fractal": "^0.18.0",
