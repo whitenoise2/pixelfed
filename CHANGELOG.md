@@ -13,6 +13,7 @@
 - Update AdminUser, fix entity casting ([cb5620d4](https://github.com/pixelfed/pixelfed/commit/cb5620d4))
 - Update instance config, update network cache feed max_hours_old falloff to 90 days instead of 6 hours to allow for less active instances to have more results ([c042d135](https://github.com/pixelfed/pixelfed/commit/c042d135))
 - Update ApiV1Dot1Controller, add new single media status create endpoint ([b03f5cec](https://github.com/pixelfed/pixelfed/commit/b03f5cec))
+- Update AdminSettings component, add link to Custom CSS settings ([958daac4](https://github.com/pixelfed/pixelfed/commit/958daac4))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
