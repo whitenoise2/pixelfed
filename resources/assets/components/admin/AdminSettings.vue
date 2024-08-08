@@ -168,9 +168,7 @@
                                                 The instance name used in titles, metadata and apis.
                                             </p>
                                         </div>
-                                    </div>
 
-                                    <div class="col-12 col-md-8">
                                         <div class="card shadow-none border card-body">
                                             <div class="form-group mb-1">
                                                 <label for="form-summary" class="font-weight-bold">Short Description</label>
@@ -198,6 +196,11 @@
                                                 Longer description of instance used on about page.
                                             </p>
                                         </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <p>
+                                            <a class="btn btn-dark btn-block" href="/i/admin/settings/custom-css">Edit Custom CSS</a>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
