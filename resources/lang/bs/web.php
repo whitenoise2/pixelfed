@@ -13,6 +13,7 @@ return [
 		'shared' => 'Shared',
 		'shares' => 'Shares',
 		'unshare' => 'Unshare',
+		'bookmark' => 'Bookmark',
 
 		'cancel' => 'Cancel',
 		'copyLink' => 'Copy Link',
@@ -23,10 +24,18 @@ return [
 		'other' => 'Other',
 		'readMore' => 'Read more',
 		'success' => 'Success',
+		'proceed' => 'Proceed',
+		'next' => 'Next',
+		'close' => 'Close',
+		'clickHere' => 'click here',
 
 		'sensitive' => 'Sensitive',
 		'sensitiveContent' => 'Sensitive Content',
 		'sensitiveContentWarning' => 'This post may contain sensitive content',
+	],
+
+	'login' => [
+		'header' => 'Account Login'
 	],
 
 	'site' => [
@@ -49,12 +58,15 @@ return [
 		'notifications' => 'Notifications',
 		'groups' => 'Groups',
 		'stories' => 'Stories',
+		'uiSettings' => 'UI Settings',
 
 		// Self links
 		'profile' => 'Profile',
 		'drive' => 'Drive',
 		'settings' => 'Settings',
-		'compose' => 'Create New',
+		'compose' => 'Create New Post',
+		'login' => 'Login',
+		'register' => 'Register',
 		'logout' => 'Logout',
 
 		// Nav footer
@@ -63,9 +75,87 @@ return [
 		'language' => 'Language',
 		'privacy' => 'Privacy',
 		'terms' => 'Terms',
+		'poweredByPixelfed' => 'Powered by Pixelfed',
 
 		// Temporary links
 		'backToPreviousDesign' => 'Go back to previous design'
+	],
+
+	'landing' => [
+		'auth' => [
+			'login' => 'Login',
+			'signup' => 'Signup',
+		],
+		'navmenu' => [
+			'about' => 'About',
+			'directory' => 'Directory',
+			'explore' => 'Explore',
+		],
+		'serverbanner' => [
+			'alt' => 'Server banner images',
+		],
+		'about' => [
+			'header' => 'Decentralized photo sharing social media powered by {pixelfedLink}',
+			'stats' => [
+				'posts' => 'Posts',
+				'activeUsers' => 'Active Users',
+				'totalUsers' => 'Total Users',
+			],
+			'details' => [
+				'about' => 'About',
+				'serverRules' => 'Server Rules',
+				'supportedFeatures' => 'Supported Features'
+			],
+			'features' => [
+				'photoPosts' => 'Photo Posts',
+				'photoAlbums' => 'Photo Albums',
+				'photoFilters' => 'Photo Filters',
+				'collections' => 'Collections',
+				'comments' => 'Comments',
+				'hashtags' => 'Hashtags',
+				'likes' => 'Likes',
+				'notifications' => 'Notifications',
+				'shares' => 'Shares',
+				'federation' => 'Federation',
+				'mobileAppSupport' => 'Mobile App Support',
+				'stories' => 'Stories',
+				'videos' => 'Videos'
+			],
+		],
+		'discover' => [
+			'tagline' => 'Discover accounts and people',
+			'empty' => 'Nothing to show yet! Check back later.',
+		],
+		'explore' => [
+			'tagline' => 'Explore trending posts',
+		],
+		'notfound' => [
+			'header' => '404 - Not Found',
+			'description' => 'The page you are looking for does not exist',
+			'goback' => 'Go back home'
+		],
+		'footer' => [
+			'help' => 'Help',
+			'terms' => 'Terms',
+			'privacy' => 'Privacy',
+			'mobileApps' => 'Applications mobiles',
+			'poweredByPixelfed' => 'Powered by Pixelfed'
+		]
+	],
+
+	'uiSettings' => [
+		'title' => 'UI Settings',
+		'theme' => 'Theme',
+		'themeAutoMode' => 'Auto',
+		'themeDarkMode' => 'Dark',
+		'themeLightMode' => 'Light',
+		'profileLayout' => 'Profile Layout',
+		'layoutGrid' => 'Grid',
+		'layoutMasonry' => 'Masonry',
+		'layoutFeed' => 'Feed',
+		'compactMediaPreviews' => 'Compact Media Previews',
+		'loadComments' => 'Load Comments',
+		'hideCountsStats' => 'Hide Counts & Stats'
 	],
 
 	'directMessages' => [
@@ -97,6 +187,7 @@ return [
 		'modlog' => 'modlog',
 		'post' => 'post',
 		'story' => 'story',
+		'noneFound' => 'No notifications found',
 	],
 
 	'post' => [
@@ -107,17 +198,22 @@ return [
 	],
 
 	'profile' => [
+		'actions' => [
+			'requestFollow' => 'Follow',
+			'unfollow' => 'Unfollow',
+			'editProfile' => 'Edit Profile',
+		],
+		'relationship' => [
+			'followerCount' => 'Follower | Followers',
+			'followingCount' => 'Following',
+			'following' => 'Following',
+			'followRequested' => 'Follow Requested',
+			'followsYou' => 'Follows You'
+		],
 		'posts' => 'Posts',
-		'followers' => 'Followers',
-		'following' => 'Following',
 		'admin' => 'Admin',
 		'collections' => 'Collections',
-		'follow' => 'Follow',
-		'unfollow' => 'Unfollow',
-		'editProfile' => 'Edit Profile',
-		'followRequested' => 'Follow Requested',
 		'joined' => 'Joined',
-
 		'emptyCollections' => 'We can\'t seem to find any collections',
 		'emptyPosts' => 'We can\'t seem to find any posts',
 	],
@@ -176,11 +272,38 @@ return [
 	],
 
 	'timeline' => [
-		'peopleYouMayKnow' => 'People you may know'
+		'peopleYouMayKnow' => 'People you may know',
+
+		'onboarding' => [
+			'welcome' => 'Welcome',
+			'thisIsYourHomeFeed' => 'This is your home feed, a chronological feed of posts from accounts you follow.',
+			'letUsHelpYouFind' => 'Let us help you find some interesting people to follow',
+			'refreshFeed' => 'Refresh my feed',
+		],
 	],
 
 	'hashtags' => [
 		'emptyFeed' => 'We can\'t seem to find any posts for this hashtag'
 	],
 
+	'report' => [
+		'report' => 'Report',
+		'selectReason' => 'Select a reason',
+		'reported' => 'Reported',
+		'sendingReport' => 'Sending report',
+		'thanksMsg' => 'Thanks for the report, people like you help keep our community safe!',
+		'contactAdminMsg' => 'If you\'d like to contact an administrator about this post or report',
+	],
+
+	'sidebar' => [
+		'followingCount' => 'Following',
+		'followersCount' => 'Followers',
+		'compose' => 'Compose New Post',
+
+		'createdrop' => [
+			'collection' => 'Create Collection',
+			'story' => 'Create Story',
+			'accountSettings' => 'Account Settings',
+		],
+	],
 ];

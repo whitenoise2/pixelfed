@@ -124,14 +124,14 @@
 						class="btn btn-link stat-item"
 						@click="toggleTab('followers')">
 						<strong :title="profile.followers_count">{{ formatCount(profile.followers_count) }}</strong>
-						<span>{{ $t('profile.followers') }}</span>
+						<span>{{ $tc('profile.relationship.followerCount', profile.followers_count) }}</span>
 					</button>
 
 					<button
 						class="btn btn-link stat-item"
 						@click="toggleTab('following')">
 						<strong :title="profile.following_count">{{ formatCount(profile.following_count) }}</strong>
-						<span>{{ $t('profile.following') }}</span>
+						<span>{{ $tc('profile.relationship.followingCount', profile.following_count) }}</span>
 					</button>
 				</div>
 			</div>
@@ -141,9 +141,9 @@
 					<!-- <router-link
 						class="btn btn-light font-weight-bold btn-block follow-btn"
 						to="/i/web/settings">
-						{{ $t('profile.editProfile') }}
+						{{ $t('profile.actions.editProfile') }}
 					</router-link> -->
-                    <a class="btn btn-light font-weight-bold btn-block follow-btn" href="/settings/home">{{ $t('profile.editProfile') }}</a>
+                    <a class="btn btn-light font-weight-bold btn-block follow-btn" href="/settings/home">{{ $t('profile.actions.editProfile') }}</a>
 					<a v-if="!profile.locked" class="btn btn-light font-weight-bold btn-block follow-btn mt-md-n4" href="/i/web/my-portfolio">
                         My Portfolio
                         <span class="badge badge-success ml-1">NEW</span>

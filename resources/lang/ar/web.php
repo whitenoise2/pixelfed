@@ -13,6 +13,7 @@ return [
 		'shared' => 'تمَّ مُشارَكَتُه',
 		'shares' => 'مُشارَكَات',
 		'unshare' => 'إلغاء المُشارَكَة',
+		'bookmark' => 'Bookmark',
 
 		'cancel' => 'إلغاء',
 		'copyLink' => 'نَسخ الرابِط',

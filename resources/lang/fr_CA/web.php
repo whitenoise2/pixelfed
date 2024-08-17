@@ -200,7 +200,7 @@ return [
 			'editProfile' => 'Modifier mon profil',
 		],
 		'relationship' => [
-			'followersCount' => 'Abonné·e | Abonné·e·s',
+			'followerCount' => 'Abonné·e | Abonné·e·s',
 			'followingCount' => 'Abonnement | Abonnements',
 			'following' => 'Abonné',
 			'followRequested' => 'Abonnement demandé',

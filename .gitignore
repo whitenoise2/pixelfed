@@ -20,6 +20,8 @@
 /public/hot
 /public/storage
 /public/vendor/horizon
+/public/_lang
+/public/js
 /storage/*.key
 /storage/docker
 /vendor

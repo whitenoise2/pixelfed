@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Project file to build Pixelfed codebase. -->
+
+<project name = "Pixelfed" default = "build">
+
+  <!-- added folders to include lookups -->
+  <includepath classpath = "vendor/phing/phing/classes" />
+  <includepath classpath = "build/lib" />
+  <includepath classpath = "build/phing/tasks" />
+
+  <!-- CUSTOM TASKS -->
+  <taskdef classname="pixelfed.i18n.generate" name="i18nGenerate" />
+
+
+  <!-- TARGETS -->
+  <target name = "build" description = "assemble/generate codebase">
+    <i18nGenerate />
+  </target> 
+  
+  <target name = "install" depends = "build" description = "install all requirements on the system">
+  </target>
+
+</project>
