@@ -7,18 +7,27 @@
   <!-- added folders to include lookups -->
   <includepath classpath = "vendor/phing/phing/classes" />
   <includepath classpath = "build/lib" />
-  <includepath classpath = "build/phing/tasks" />
+  <includepath classpath = "build/phing" />
 
   <!-- CUSTOM TASKS -->
-  <taskdef classname="pixelfed.i18n.generate" name="i18nGenerate" />
+  <taskdef classname="tasks.pixelfed.i18n.GenerateTask" name="generatei18n" />
 
 
   <!-- TARGETS -->
-  <target name = "build" description = "assemble/generate codebase">
-    <i18nGenerate />
-  </target> 
+  <target name = "build_translations" description = "generate/verify translations">
+    <generatei18n />
+  </target>
   
-  <target name = "install" depends = "build" description = "install all requirements on the system">
+  <target name = "build_web" description = "generate/pack web assets">
+    <exec executable = "npm" checkreturn = "true" logoutput = "true">
+      <arg value = "run" />
+      <arg value = "development" />
+    </exec>
   </target>
 
+  <target name = "build" description = "assemble/generate codebase">
+    <phingcall target = "build_translations" />
+    <phingcall target = "build_web" />
+  </target> 
+  
 </project>

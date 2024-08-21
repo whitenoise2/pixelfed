@@ -5,6 +5,7 @@
 /.composer
 /.env
 /.env.dottie-backup
+/.vscode
 #/.git
 /.git-credentials
 /.gitconfig
